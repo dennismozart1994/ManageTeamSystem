@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Generation Time: 14-Set-2017 às 17:30
+-- Generation Time: 15-Set-2017 às 00:19
 -- Versão do servidor: 10.1.19-MariaDB
 -- PHP Version: 7.0.13
 
@@ -139,8 +139,35 @@ CREATE TABLE `tab_lider_projeto` (
 
 CREATE TABLE `tab_mot_pend` (
   `id_mtp` int(11) NOT NULL,
-  `nome_mtp` text NOT NULL,
+  `nome_mtp` varchar(255) NOT NULL,
   `id_user` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Extraindo dados da tabela `tab_mot_pend`
+--
+
+INSERT INTO `tab_mot_pend` (`id_mtp`, `nome_mtp`, `id_user`) VALUES
+(1, 'Agendamento de Reunião', 1),
+(2, 'Recebimento de Documentação', 1),
+(3, 'Massa de Dados', 1),
+(4, 'Liberação do Ambiente', 1),
+(5, 'Aprovação do Cronograma', 1),
+(6, 'Aprovação do RTF', 1);
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura da tabela `tab_notify`
+--
+
+CREATE TABLE `tab_notify` (
+  `id_notify` int(11) NOT NULL,
+  `id_projeto` int(11) NOT NULL,
+  `id_from_user` int(11) NOT NULL,
+  `id_to_user` int(11) NOT NULL,
+  `status_notify` varchar(255) NOT NULL,
+  `description_notify` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
@@ -173,13 +200,13 @@ CREATE TABLE `tab_projeto` (
 --
 
 INSERT INTO `tab_projeto` (`id_prj`, `ts_prj`, `nmp_prj`, `id_cc`, `id_lc`, `id_lp`, `id_user`, `id_inmetrics_user`, `id_f`, `id_status`, `id_mtp`, `doc_prj`, `reu_prj`, `mrr_prj`, `crono_prj`, `aprv_prj`) VALUES
-(1, '999.999', 'Projeto Teste', 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1),
-(2, '888.888', 'Teste de projeto 2', 2, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1),
-(3, '777.777', 'Teste de Projeto', 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1),
-(4, '555.555', 'Teste de projeto finalizado', 1, 1, 1, 1, 1, 5, 1, 1, 1, 1, 1, 1, 1),
-(5, '444.444', 'Teste de projeto Cancelado', 1, 1, 1, 1, 1, 8, 1, 1, 1, 1, 1, 1, 1),
-(6, '555.555', 'Projeto teste 20', 1, 1, 1, 1, 1, 2, 2, 1, 1, 1, 1, 1, 1),
-(7, '123.456', 'Teste projeto 300', 1, 1, 1, 1, 1, 3, 3, 1, 1, 1, 1, 1, 1);
+(1, '999.999', 'Projeto Teste', 1, 1, 1, 1, 1, 1, 1, 5, 1, 1, 1, 1, 1),
+(2, '888.888', 'Teste de projeto 2', 2, 2, 2, 1, 1, 1, 1, 5, 1, 1, 1, 1, 1),
+(3, '777.777', 'Teste de Projeto', 1, 1, 1, 1, 1, 1, 1, 5, 1, 1, 1, 1, 1),
+(4, '555.555', 'Teste de projeto finalizado', 1, 1, 1, 1, 5, 5, 1, 2, 1, 1, 1, 1, 1),
+(5, '444.444', 'Teste de projeto Cancelado', 1, 1, 1, 1, 1, 8, 1, 2, 1, 1, 1, 1, 1),
+(6, '555.555', 'Projeto teste 20', 1, 1, 1, 1, 5, 2, 2, 2, 1, 1, 1, 1, 1),
+(7, '123.456', 'Teste projeto 300', 1, 1, 1, 1, 5, 3, 3, 5, 1, 1, 1, 1, 1);
 
 -- --------------------------------------------------------
 
@@ -219,15 +246,18 @@ CREATE TABLE `tab_user` (
   `funcao_user` varchar(255) NOT NULL,
   `tel_user` int(20) NOT NULL,
   `email_in_user` varchar(255) NOT NULL,
-  `senha_user` varchar(255) NOT NULL
+  `senha_user` varchar(255) NOT NULL,
+  `thumbnail_user` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Extraindo dados da tabela `tab_user`
 --
 
-INSERT INTO `tab_user` (`id_user`, `id_cc`, `nome_user`, `funcao_user`, `tel_user`, `email_in_user`, `senha_user`) VALUES
-(1, 1, 'Dennis Mozart', 'Analista de Teste Jr.', 986786566, 'densilva@inmetrics.com.br', 'teste');
+INSERT INTO `tab_user` (`id_user`, `id_cc`, `nome_user`, `funcao_user`, `tel_user`, `email_in_user`, `senha_user`, `thumbnail_user`) VALUES
+(1, 1, 'Dennis Mozart', 'Analista de Testes Jr.', 986786566, 'densilva@inmetrics.com.br', 'teste', ''),
+(4, 1, 'Rafael Alexandrino', 'Líder de Testes', 988887777, 'rafsouza@inmetrics.com.br', 'teste', ''),
+(5, 1, 'Victor dos Santos', 'Analista de Testes Jr.', 988877788, 'victorsa@inmetrics.com.br', 'teste', '');
 
 --
 -- Indexes for dumped tables
@@ -333,7 +363,7 @@ ALTER TABLE `tab_lider_projeto`
 -- AUTO_INCREMENT for table `tab_mot_pend`
 --
 ALTER TABLE `tab_mot_pend`
-  MODIFY `id_mtp` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_mtp` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 --
 -- AUTO_INCREMENT for table `tab_projeto`
 --
@@ -348,7 +378,7 @@ ALTER TABLE `tab_status`
 -- AUTO_INCREMENT for table `tab_user`
 --
 ALTER TABLE `tab_user`
-  MODIFY `id_user` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id_user` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;

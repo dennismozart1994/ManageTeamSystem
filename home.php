@@ -12,6 +12,7 @@ if(isset($_REQUEST['logout']))
 {
 	$user->logout();
 }
+
 ?>
 
 <!DOCTYPE html>
@@ -68,27 +69,16 @@ if(isset($_REQUEST['logout']))
                   <div class="col-lg-9 main-chart">
                   
                   	<div class="row mtbox">
-                  		<a href="#"><div class="col-md-3 col-sm-3 col-md-offset-1 box0">
-                  			<div class="box1">
-					  			<span class="li_data"></span>
-					  			<h3>{AoP}</h3>
-                  			</div>
-					  			<p>Você possui {AoP} projetos sob sua responsabilidade</p>
-                  		</div></a>
-                  		<a href="#"><div class="col-md-3 col-sm-3 box0">
-                  			<div class="box1">
-					  			<span class="li_news"></span>
-					  			<h3>{DocNR}</h3>
-                  			</div>
-					  			<p>Existem {DocNR} projetos pendentes de recebimento de documentação.</p>
-                  		</div></a>
-                  		<a href="#"><div class="col-md-3 col-sm-3 box0">
-                  			<div class="box1">
-					  			<span class="li_stack"></span>
-					  			<h3>{AdC}</h3>
-                  			</div>
-					  			<p>Existem {AdC} projetos pendentes de aprovação do cronograma.</p>
-                  		</div></a>                	
+                  		<?php 
+							if((utf8_encode($_SESSION['funcao']) == "Líder de Testes") || (utf8_encode($_SESSION['funcao']) == "Gerente de Projetos") || (utf8_encode($_SESSION['funcao']) == "Administrador"))
+							{
+								$user->yourproblems('manager');
+							}
+							else
+							{
+								$user->yourproblems('user');
+							}
+						?>             	
                   	</div><!-- /row mt -->	
 					
 					<div class="row mt">               	
@@ -106,14 +96,32 @@ if(isset($_REQUEST['logout']))
 								  </tr>
 								  </thead>
 								  <tbody>
-									<?php $user->getProjects('phase'); ?>
+									<?php 
+										if((utf8_encode($_SESSION['funcao']) == "Líder de Testes") || (utf8_encode($_SESSION['funcao']) == "Gerente de Projetos") || (utf8_encode($_SESSION['funcao']) == "Administrador"))
+										{
+											$user->getProjects('phase');
+										}
+										else
+										{
+											$user->getProjects('phaseuser');
+										}
+									?>
 								  </tbody>
 							  </table>
                       		</div>
                       	</div><!-- /col-md-4 -->      
 
                       	<div class="col-md-4 col-sm-4 mb">
-								<?php $user->getProjects('finish');?>
+								<?php 
+									if((utf8_encode($_SESSION['funcao']) == "Líder de Testes") || (utf8_encode($_SESSION['funcao']) == "Gerente de Projetos") || (utf8_encode($_SESSION['funcao']) == "Administrador"))
+										{
+											$user->getProjects('finish');
+										}
+										else
+										{
+											$user->getProjects('finishuser');
+										}
+									?>
                       	</div>
 
                       	<div class="col-md-4 col-sm-4 mb">
@@ -130,7 +138,16 @@ if(isset($_REQUEST['logout']))
 								  </tr>
 								  </thead>
 								  <tbody>
-									<?php $user->getProjects('status');?>
+									<?php 
+										if((utf8_encode($_SESSION['funcao']) == "Líder de Testes") || (utf8_encode($_SESSION['funcao']) == "Gerente de Projetos") || (utf8_encode($_SESSION['funcao']) == "Administrador"))
+											{
+												$user->getProjects('status');
+											}
+											else
+											{
+												$user->getProjects('statususer');
+											}
+									?>
 								  </tbody>
 							  </table>
                       		</div>
@@ -153,7 +170,7 @@ if(isset($_REQUEST['logout']))
                               <li><span>2</span></li>
                               <li><span>0</span></li>
                           </ul>
-                          <?php $user->getProjects('projectxanalyst');?>
+                          <?php $user->getProjects('graphic');?>
                       </div>
                       <!--custom chart end-->
 					</div><!-- /row -->				
@@ -173,7 +190,7 @@ if(isset($_REQUEST['logout']))
       <footer class="site-footer">
           <div class="text-center">
               2014 - Alvarez.is
-              <a href="index.html#" class="go-top">
+              <a href="home.php?id=<?php echo $_SESSION['id'];?>#" class="go-top">
                   <i class="fa fa-angle-up"></i>
               </a>
           </div>
