@@ -1,3 +1,23 @@
+<?php
+session_start();
+require_once('classes/userf.php');
+require_once('classes/project.php');
+
+$user = new user;
+$project = new projects;
+
+// ACCESS WITHOUT LOGIN
+if(!isset($_SESSION['login']))
+{
+	header('Location: index.php');
+}
+
+// LOGOUT
+if(isset($_REQUEST['logout']))
+{
+	$user->logout();
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -54,33 +74,18 @@
                             <table class="table table-bordered table-striped table-condensed">
                               <thead>
                               <tr>
-                                  <th>T.S.</th>
-                                  <th>Projeto</th>
-                                  <th>Líder T.M</th>
-                                  <th>Líder P.</th>
-                                  <th>Anl. Inmetrics</th>
                                   <th>Fase</th>
-                                  <th>Status</th>
-                                  <th>M.P</th>
-								  <th></th>
+								  <th>Data</th>
+                                  <th>Previsto</th>
+                                  <th>Realizado</th>
+                                  <th>Anl. Inmetrics</th>
+                                  <th>Nota</th>
                               </tr>
                               </thead>
                               <tbody>
-							  <!-- Todo Fill with Project Information -->
-                              <tr>
-                                  <td class="numeric">999.999</td>
-                                  <td>Teste de layout para projeção de whatever the hell that means</td>
-                                  <td>João da Silva</td>
-                                  <td>Marcelo Casseb</td>
-                                  <td>Marcos Paulo de Azevedo Afonso</td>
-                                  <td>Modelagem</td>
-                                  <td>Em andamento</td>
-                                  <td>Envio de Documentação Rede</td>
-								<!-- Todo get id from project -->
-								  <td><a href="project.php?p=123456"><button class="btn btn-primary btn-xs" onClick="href=project.php"><i class=" fa fa-search"></i></button></td></a>
-								 <!-- End Todo -->
-                              </tr>
-							  <!-- End Todo -->
+							  <?php
+								$project->getHistory($_GET['p']);
+							  ?>
                               </tbody>
                           </table>
                         </section>

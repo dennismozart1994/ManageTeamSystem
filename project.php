@@ -1,3 +1,24 @@
+<?php
+session_start();
+require_once('classes/userf.php');
+require_once('classes/project.php');
+
+$user = new user;
+$project = new projects;
+
+// ACCESS WITHOUT LOGIN
+if(!isset($_SESSION['login']))
+{
+	header('Location: index.php');
+}
+
+// LOGOUT
+if(isset($_REQUEST['logout']))
+{
+	$user->logout();
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -49,144 +70,8 @@
           		<div class="col-lg-12">
 					<div class="form-panel">
 						<form class="form-horizontal style-form" method="get">
-                          <div class="form-group">
-                              <label class="col-sm-2 col-sm-2 control-label">Ticket Service</label>
-                              <div class="col-sm-2">
-                                  <input class="form-control" id="disabledInput" type="text" placeholder="999.999" disabled>
-                              </div>
-                          </div>
-						  
-						  <div class="form-group">
-                              <label class="col-lg-2 col-sm-2 control-label">Projeto</label>
-							  <div class="col-sm-6">
-                                  <input type="text"  class="form-control" value="Teste de layout para projeção de whatever the hell that means" disabled>
-                              </div>
-                          </div>
-						  
-						  <div class="form-group">
-                              <label class="col-lg-12 col-sm-12 control-label"><h4>Líderes</h4></label>
-                              <div class="col-lg-3">
-                                  <p class="form-control-static"><b>Testes e Mudanças:</b></p>
-								  <select class="form-control" disabled>
-									  <option><?php echo "TM Leader"?></option>
-									  <option><?php echo "TM Leader"?></option>
-									  <option><?php echo "TM Leader"?></option>
-									  <option><?php echo "TM Leader"?></option>
-									  <option><?php echo "TM Leader"?></option>
-								  </select>
-                              </div>
-							  <div class="col-lg-3">
-                                  <p class="form-control-static"><b>Projeto Rede:</b></p>
-								  <select class="form-control" disabled>
-									  <option><?php echo "Project Leader"?></option>
-									  <option><?php echo "Project Leader"?></option>
-									  <option><?php echo "Project Leader"?></option>
-									  <option><?php echo "Project Leader"?></option>
-									  <option><?php echo "Project Leader"?></option>
-								  </select>
-                              </div>
-							   <div class="col-lg-4">
-                                  <p class="form-control-static"><b>Responsável Inmetrics:</b></p>
-								  <select class="form-control" disabled>
-									  <option><?php echo "Inmetrics Analyst"?></option>
-									  <option><?php echo "Inmetrics Analyst"?></option>
-									  <option><?php echo "Inmetrics Analyst"?></option>
-									  <option><?php echo "Inmetrics Analyst"?></option>
-									  <option><?php echo "Inmetrics Analyst"?></option>
-								  </select>
-                              </div>
-                          </div>
-						  
-						  
-						  <div class="form-group">
-                              <label class="col-lg-12 col-sm-12 control-label"><h4>Andamento</h4></label>
-                              <div class="col-lg-3">
-                                  <p class="form-control-static"><b>Fase:</b></p>
-								  <select class="form-control" disabled>
-									  <option><?php echo "Fase"?></option>
-									  <option><?php echo "Fase"?></option>
-									  <option><?php echo "Fase"?></option>
-									  <option><?php echo "Fase"?></option>
-									  <option><?php echo "Fase"?></option>
-								  </select>
-                              </div>
-							  <div class="col-lg-3">
-                                  <p class="form-control-static"><b>Status:</b></p>
-								  <select class="form-control" disabled>
-									  <option><?php echo "Status"?></option>
-									  <option><?php echo "Status"?></option>
-									  <option><?php echo "Status"?></option>
-									  <option><?php echo "Status"?></option>
-									  <option><?php echo "Status"?></option>
-								  </select>
-                              </div>
-							   <div class="col-lg-4">
-                                  <p class="form-control-static"><b>Motivo da pendência</b></p>
-								  <select class="form-control" disabled>
-									  <option><?php echo "Delay reason"?></option>
-									  <option><?php echo "Delay reason"?></option>
-									  <option><?php echo "Delay reason"?></option>
-									  <option><?php echo "Delay reason"?></option>
-									  <option><?php echo "Delay reason"?></option>
-								  </select>
-                              </div>
-                          </div>
-						  
-						  <div class="form-group">
-							<label class="col-lg-12 col-sm-12 control-label"><h4>Checklist Inicial</h4></label>
-                              <div class="col-lg-2">
-                                  <p class="form-control-static"><b>Análise de doc(s)?</b></p>
-								  <select class="form-control" disabled>
-									  <option><?php echo "Sim"?></option>
-									  <option><?php echo "Não"?></option>
-								  </select>
-                              </div>
-							  <div class="col-lg-2">
-                                  <p class="form-control-static"><b>Reunião?</b></p>
-								  <select class="form-control" disabled>
-									  <option><?php echo "Sim"?></option>
-									  <option><?php echo "Não"?></option>
-								  </select>
-                              </div>
-							  <div class="col-lg-2">
-                                  <p class="form-control-static"><b>MRR?</b></p>
-								  <select class="form-control" disabled>
-									  <option><?php echo "Sim"?></option>
-									  <option><?php echo "Não"?></option>
-								  </select>
-                              </div>
-							  <div class="col-lg-2">
-                                  <p class="form-control-static"><b>Cronograma?</b></p>
-								  <select class="form-control" disabled>
-									  <option><?php echo "Sim"?></option>
-									  <option><?php echo "Não"?></option>
-								  </select>
-                              </div>
-							  <div class="col-lg-2">
-                                  <p class="form-control-static"><b>Aprovação?</b></p>
-								  <select class="form-control" disabled>
-									  <option><?php echo "Sim"?></option>
-									  <option><?php echo "Não"?></option>
-								  </select>
-                              </div>
-						  </div>
-						  
-						  <div class="form-group">
-							<label class="col-lg-12 col-sm-12 control-label"><h4>Previsto<?php echo "Current phase: XX%";?></h4></label>
-						  </div>
-						  <div class="form-group">
-							<label class="col-lg-12 col-sm-12 control-label"><h4>Realizado<?php echo "Current phase: XX%";?></h4></label>
-						  </div>
-						  
-						  <div class="form-group">
-							<div class="col-sm-2">
-                                  <a class="btn btn-success btn-sm pull-left" href="history.php?p=123456">Salvar Alterações</a>
-                              </div>
-							<div class="col-sm-2">
-                                <a class="btn btn-success btn-sm pull-left" href="history.php?p=123456">Ver histórico do projeto</a>
-                            </div>
-						  </div>
-                      </form>
+						  <?php $project->getInfo($_GET['p'])?>
+						</form>
 					</div>
           		</div>
           	</div>

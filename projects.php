@@ -1,3 +1,31 @@
+<?php
+session_start();
+require_once('classes/userf.php');
+require_once('classes/project.php');
+
+$user = new user;
+$project = new projects;
+$permissions = array("Líder de Testes", "Gerente de Projetos", "Administrador");
+
+// ACCESS WITHOUT LOGIN
+if(!isset($_SESSION['login']))
+{
+	header('Location: index.php');
+}
+
+// PERMISSIONS
+if(!(in_array(utf8_encode($_SESSION['funcao']), $permissions)))
+{
+	$user->logout();
+}
+
+// LOGOUT
+if(isset($_REQUEST['logout']))
+{
+	$user->logout();
+}
+
+?>
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -89,26 +117,9 @@
                               </tr>
                               </thead>
                               <tbody>
-							  <!-- Todo Fill with Project Information -->
-                              <tr>
-                                  <td class="numeric">999.999</td>
-                                  <td>Teste de layout para projeção</td>
-                                  <td>João da Silva</td>
-                                  <td>Marcelo Casseb</td>
-                                  <td>Marcos Paulo de Azevedo Afonso</td>
-                                  <td>Modelagem</td>
-                                  <td>Em andamento</td>
-                                  <td>Envio de Documentação Rede</td>
-								<!-- Todo get id from project -->
-								  <td>
-									<a data-toggle="modal" href="index.php#myModal"><button class="btn btn-primary btn-xs"><i class="fa fa-pencil"></i></button></a>
-									<a href="project.php?p=123456"><button class="btn btn-primary btn-xs" onClick="href=project.php"><i class="fa fa-search"></i></button></a>
-									<a data-toggle="modal" href="index.php#encerramento"><button class="btn btn-success btn-xs"><i class=" fa fa-check"></i></button></a>
-									<a data-toggle="modal" href="index.php#cancelamento"><button class="btn btn-danger btn-xs"><i class="fa fa-ban"></i></button></a>
-								  </td>
-								 <!-- End Todo -->
-                              </tr>
-							  <!-- End Todo -->
+							  <?php
+									$project->getProjects('none');
+							  ?>
                               </tbody>
                           </table>
                           </section>

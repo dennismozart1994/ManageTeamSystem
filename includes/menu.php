@@ -20,8 +20,14 @@
                           <span>Projetos</span>
                       </a>
                       <ul class="sub">
-                          <li><a  href="projects.php">Gerenciar Projetos</a></li>
-                          <li><a  href="newproject.php">Novo Projeto</a></li>
+						  <?php
+							$lvl = array("Líder de Testes", "Gerente de Projetos", "Administrador");
+							if(in_array(utf8_encode($_SESSION['funcao']), $lvl))
+							{
+								echo '<li><a  href="projects.php">Gerenciar Projetos</a></li>';
+								echo '<li><a  href="newproject.php">Novo Projeto</a></li>';
+							}
+						  ?>
                           <li><a  href="myprojects.php">Meus Projetos</a></li>
                       </ul>
                   </li>

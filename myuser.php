@@ -1,3 +1,24 @@
+<?php
+session_start();
+require_once('classes/userf.php');
+require_once('classes/project.php');
+
+$user = new user;
+$project = new projects;
+
+// ACCESS WITHOUT LOGIN
+if(!isset($_SESSION['login']))
+{
+	header('Location: index.php');
+}
+
+// LOGOUT
+if(isset($_REQUEST['logout']))
+{
+	$user->logout();
+}
+
+?>
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -50,19 +71,48 @@
                           <div class="form-group">
                               <label class="col-sm-1 col-sm-1 control-label">Nome</label>
                               <div class="col-sm-4">
-                                  <input class="form-control" id="disabledInput" type="text" required value="Nome do usuário">
+                                  <input class="form-control" id="disabledInput" type="text" name="username"
+								  <?php 
+									if(isset($_REQUEST['tm']))
+									{
+										echo ' required value="Nome do usuário" disabled';
+									}
+									else
+									{
+										echo ' required value="'.$_SESSION['nome'].'"';
+									} 
+								  ?>
+								  >
                               </div>
                           </div>
 						  
 						  <div class="form-group">
                               <label class="col-lg-1 col-sm-1 control-label">E-mail</label>
 							  <div class="col-sm-4">
-                                  <input type="email" required class="form-control" value="meuemail@meudominio.com.br" disabled>
+                                  <input type="email" required class="form-control" 
+								  <?php 
+									if(isset($_REQUEST['tm']))
+									{
+										echo ' required value="email@usuario" disabled';
+									}
+									else
+									{
+										echo ' required value="'.$_SESSION['login'].'" disabled';
+									} 
+								  ?>
+								  >
                               </div>
                           </div>
 						  
 						  <div class="form-group">
-                              <label class="col-lg-1 col-sm-1 control-label">Senha</label>
+                              <label class="col-lg-1 col-sm-1 control-label">Nova Senha</label>
+							  <div class="col-sm-4">
+                                  <input type="password" required class="form-control" value="Senha">
+                              </div>
+                          </div>
+						  
+						  <div class="form-group">
+                              <label class="col-lg-1 col-sm-1 control-label">Confirmar Senha</label>
 							  <div class="col-sm-4">
                                   <input type="password" required class="form-control" value="Senha">
                               </div>
@@ -99,7 +149,7 @@
 						  
 						  <div class="form-group">
 							<div class="col-sm-4">
-                                  <a class="btn btn-success btn-sm pull-left" href="manageusers.php">Adicionar</a>
+                                  <a class="btn btn-success btn-sm pull-left" href="manageusers.php">Salvar alterações</a>
                               </div>
 						  </div>
 						  
