@@ -1,3 +1,31 @@
+<?php
+session_start();
+require_once('classes/userf.php');
+require_once('classes/parameters.php');
+
+$user = new user;
+$param = new parameters;
+$permissions = array("Líder de Testes", "Gerente de Projetos", "Administrador");
+
+// ACCESS WITHOUT LOGIN
+if(!isset($_SESSION['login']))
+{
+	header('Location: index.php');
+}
+
+// PERMISSIONS
+if(!(in_array(utf8_encode($_SESSION['funcao']), $permissions)))
+{
+	$user->logout();
+}
+
+// LOGOUT
+if(isset($_REQUEST['logout']))
+{
+	$user->logout();
+}
+
+?>
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -50,14 +78,14 @@
                           <div class="form-group">
                               <label class="col-sm-2 col-sm-2 control-label">Ticket Service</label>
                               <div class="col-sm-2">
-                                  <input class="form-control" id="disabledInput" type="text" placeholder="Número do TS">
+                                  <input class="form-control" name="ts" id="disabledInput" type="text" placeholder="Número do TS">
                               </div>
                           </div>
 						  
 						  <div class="form-group">
                               <label class="col-lg-2 col-sm-2 control-label">Projeto</label>
 							  <div class="col-sm-6">
-                                  <input type="text"  class="form-control" placeholder="Nome do projeto">
+                                  <input type="text" name="nomeprojeto" class="form-control" placeholder="Nome do projeto">
                               </div>
                           </div>
 						  
@@ -65,32 +93,26 @@
                               <label class="col-lg-12 col-sm-12 control-label"><h4>Líderes</h4></label>
                               <div class="col-lg-3">
                                   <p class="form-control-static"><b>Testes e Mudanças:</b></p>
-								  <select class="form-control">
-									  <option><?php echo "TM Leader"?></option>
-									  <option><?php echo "TM Leader"?></option>
-									  <option><?php echo "TM Leader"?></option>
-									  <option><?php echo "TM Leader"?></option>
-									  <option><?php echo "TM Leader"?></option>
+								  <select name="ltm" class="form-control">
+									  <?php 
+										$param->getLTM("select", "none");
+									  ?>
 								  </select>
                               </div>
 							  <div class="col-lg-3">
                                   <p class="form-control-static"><b>Projeto Rede:</b></p>
-								  <select class="form-control">
-									  <option><?php echo "Project Leader"?></option>
-									  <option><?php echo "Project Leader"?></option>
-									  <option><?php echo "Project Leader"?></option>
-									  <option><?php echo "Project Leader"?></option>
-									  <option><?php echo "Project Leader"?></option>
+								  <select name="lp" class="form-control">
+									  <?php 
+										$param->getLP("select", "none");
+									  ?>
 								  </select>
                               </div>
 							   <div class="col-lg-4">
                                   <p class="form-control-static"><b>Responsável Inmetrics:</b></p>
-								  <select class="form-control">
-									  <option><?php echo "Inmetrics Analyst"?></option>
-									  <option><?php echo "Inmetrics Analyst"?></option>
-									  <option><?php echo "Inmetrics Analyst"?></option>
-									  <option><?php echo "Inmetrics Analyst"?></option>
-									  <option><?php echo "Inmetrics Analyst"?></option>
+								  <select name="analyst" class="form-control">
+									  <?php 
+										$param->getAnalyst("select", "none");
+									  ?>
 								  </select>
                               </div>
                           </div>
@@ -100,32 +122,26 @@
                               <label class="col-lg-12 col-sm-12 control-label"><h4>Andamento</h4></label>
                               <div class="col-lg-3">
                                   <p class="form-control-static"><b>Fase:</b></p>
-								  <select class="form-control">
-									  <option><?php echo "Fase"?></option>
-									  <option><?php echo "Fase"?></option>
-									  <option><?php echo "Fase"?></option>
-									  <option><?php echo "Fase"?></option>
-									  <option><?php echo "Fase"?></option>
+								  <select name="phases" class="form-control">
+									  <?php 
+										$param->getPhases("select", "none");
+									  ?>
 								  </select>
                               </div>
 							  <div class="col-lg-3">
                                   <p class="form-control-static"><b>Status:</b></p>
-								  <select class="form-control">
-									  <option><?php echo "Status"?></option>
-									  <option><?php echo "Status"?></option>
-									  <option><?php echo "Status"?></option>
-									  <option><?php echo "Status"?></option>
-									  <option><?php echo "Status"?></option>
+								  <select name="status" class="form-control">
+									  <?php 
+										$param->getStatus("select", "none");
+									  ?>
 								  </select>
                               </div>
 							   <div class="col-lg-4">
                                   <p class="form-control-static"><b>Motivo da pendência</b></p>
-								  <select class="form-control">
-									  <option><?php echo "Delay reason"?></option>
-									  <option><?php echo "Delay reason"?></option>
-									  <option><?php echo "Delay reason"?></option>
-									  <option><?php echo "Delay reason"?></option>
-									  <option><?php echo "Delay reason"?></option>
+								  <select name="delayreason" class="form-control">
+									  <?php 
+										$param->getPendencia("select", "none");
+									  ?>
 								  </select>
                               </div>
                           </div>
@@ -134,37 +150,37 @@
 							<label class="col-lg-12 col-sm-12 control-label"><h4>Checklist Inicial</h4></label>
                               <div class="col-lg-2">
                                   <p class="form-control-static"><b>Análise de doc(s)?</b></p>
-								  <select class="form-control">
-									  <option><?php echo "Sim"?></option>
-									  <option><?php echo "Não"?></option>
+								  <select name="doc" class="form-control">
+									  <option value='1'>Sim</option>
+									  <option value='0'>Não</option>
 								  </select>
                               </div>
 							  <div class="col-lg-2">
                                   <p class="form-control-static"><b>Reunião?</b></p>
-								  <select class="form-control">
-									  <option><?php echo "Sim"?></option>
-									  <option><?php echo "Não"?></option>
+								  <select name="meeting" class="form-control">
+									  <option value='1'>Sim</option>
+									  <option value='0'>Não</option>
 								  </select>
                               </div>
 							  <div class="col-lg-2">
                                   <p class="form-control-static"><b>MRR?</b></p>
-								  <select class="form-control">
-									  <option><?php echo "Sim"?></option>
-									  <option><?php echo "Não"?></option>
+								  <select name="mrr" class="form-control">
+									  <option value='1'>Sim</option>
+									  <option value='0'>Não</option>
 								  </select>
                               </div>
 							  <div class="col-lg-2">
                                   <p class="form-control-static"><b>Cronograma?</b></p>
-								  <select class="form-control">
-									  <option><?php echo "Sim"?></option>
-									  <option><?php echo "Não"?></option>
+								  <select  name="schedule" class="form-control">
+									  <option value='1'>Sim</option>
+									  <option value='0'>Não</option>
 								  </select>
                               </div>
 							  <div class="col-lg-2">
                                   <p class="form-control-static"><b>Aprovação?</b></p>
-								  <select class="form-control">
-									  <option><?php echo "Sim"?></option>
-									  <option><?php echo "Não"?></option>
+								  <select name="aproved" class="form-control">
+									  <option value='1'>Sim</option>
+									  <option value='0'>Não</option>
 								  </select>
                               </div>
 						  </div>

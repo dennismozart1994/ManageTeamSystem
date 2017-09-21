@@ -77,10 +77,14 @@ if(isset($_REQUEST['logout']))
 									{
 										echo ' required value="Nome do usuário" disabled';
 									}
+									else if(isset($_REQUEST['edit']))
+									{
+										// TODO Fill with User Information
+									}
 									else
 									{
 										echo ' required value="'.$_SESSION['nome'].'"';
-									} 
+									}
 								  ?>
 								  >
                               </div>
@@ -94,6 +98,10 @@ if(isset($_REQUEST['logout']))
 									if(isset($_REQUEST['tm']))
 									{
 										echo ' required value="email@usuario" disabled';
+									}
+									else if(isset($_REQUEST['edit']))
+									{
+										// TODO Fill with User Information
 									}
 									else
 									{

@@ -1,3 +1,29 @@
+<?php
+session_start();
+require_once('classes/userf.php');
+
+$user = new user;
+$permissions = array("Líder de Testes", "Gerente de Projetos", "Administrador");
+
+// ACCESS WITHOUT LOGIN
+if(!isset($_SESSION['login']))
+{
+	header('Location: index.php');
+}
+
+// PERMISSIONS
+if(!(in_array(utf8_encode($_SESSION['funcao']), $permissions)))
+{
+	$user->logout();
+}
+
+// LOGOUT
+if(isset($_REQUEST['logout']))
+{
+	$user->logout();
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -72,21 +98,9 @@
                               </tr>
                               </thead>
                               <tbody>
-							  <!-- Todo Fill with User Information -->
-                              <tr>
-                                  <td class="numeric">999.999</td>
-                                  <td>Dennis Mozart da Silva</td>
-                                  <td>densilva@inmetrics.com.br</td>
-                                  <td>REDE164994</td>
-                                  <td>Analista de Testes Jr.</td>
-								<!-- Todo get id from user -->
-								  <td>
-									<a data-toggle="modal" href="index.php#myModal"><button class="btn btn-primary btn-xs"><i class="fa fa-pencil"></i></button></a>
-									<a data-toggle="modal" href="index.php#cancelamento"><button class="btn btn-danger btn-xs"><i class="fa fa-ban"></i></button></a>
-								  </td>
-								 <!-- End Todo -->
-                              </tr>
-							  <!-- End Todo -->
+								<?php
+									$user->getUsers();
+								?>
                               </tbody>
                           </table>
                           </section>

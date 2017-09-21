@@ -1,3 +1,30 @@
+<?php
+session_start();
+require_once('classes/userf.php');
+require_once('classes/parameters.php');
+
+$user = new user;
+$param = new parameters;
+$permissions = array("Líder de Testes", "Gerente de Projetos", "Administrador");
+
+// ACCESS WITHOUT LOGIN
+if(!isset($_SESSION['login']))
+{
+	header('Location: index.php');
+}
+
+// PERMISSIONS
+if(!(in_array(utf8_encode($_SESSION['funcao']), $permissions)))
+{
+	$user->logout();
+}
+
+// LOGOUT
+if(isset($_REQUEST['logout']))
+{
+	$user->logout();
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -74,19 +101,9 @@
                               </tr>
                               </thead>
                               <tbody>
-							  <!-- Todo Fill with User Information -->
-                              <tr>
-								  <td>999.999</td>
-                                  <td>Modelagem</td>
-								  <td>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi at metus nibh. Suspendisse ultricies quis elit in auctor. Ut sagittis dui sit amet lorem posuere interdum.</td>
-								<!-- Todo get id from user -->
-								  <td>
-									<a data-toggle="modal" href="lp.php#editar"><button class="btn btn-primary btn-xs"><i class="fa fa-pencil"></i></button></a>
-									<a data-toggle="modal" href="lp.php#cancelamento"><button class="btn btn-danger btn-xs"><i class="fa fa-ban"></i></button></a>
-								  </td>
-								 <!-- End Todo -->
-                              </tr>
-							  <!-- End Todo -->
+								<?php
+									$param->getPhases("normal", "none");
+								?>
                               </tbody>
                           </table>
                           </section>

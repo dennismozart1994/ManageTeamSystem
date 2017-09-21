@@ -26,7 +26,7 @@ class parameters
 					$nome = $result->Nome;
 					$email = $result->Email;
 					$cliente = $result->NomeCliente;
-					if($type = "select")
+					if($type == "select")
 					{
 						if($exception != $id_lp)
 						{
@@ -41,8 +41,8 @@ class parameters
                                   <td>'.utf8_encode($email).'</td>
                                   <td>'.utf8_encode($cliente).'</td>
 								  <td>
-									<a data-toggle="modal" href="lp.php#editar"><button class="btn btn-primary btn-xs"><i class="fa fa-pencil"></i></button></a>
-									<a data-toggle="modal" href="lp.php#cancelamento"><button class="btn btn-danger btn-xs"><i class="fa fa-ban"></i></button></a>
+									<a data-toggle="modal" href="lp.php?id='.$id_lp.'#editar"><button class="btn btn-primary btn-xs"><i class="fa fa-pencil"></i></button></a>
+									<a data-toggle="modal" href="lp.php?id='.$id_lp.'#cancelamento"><button class="btn btn-danger btn-xs"><i class="fa fa-ban"></i></button></a>
 								  </td>
                             </tr>';
 					}
@@ -74,7 +74,7 @@ class parameters
 					$nome = $result->Nome;
 					$email = $result->Email;
 					$cliente = $result->NomeCliente;
-					if($type = "select")
+					if($type == "select")
 					{
 						if($id_lc != $exception)
 						{
@@ -123,7 +123,7 @@ class parameters
 					$email = $result->Email;
 					$funcao = $result->Funcao;
 					$cc = $result->CentroDeCusto;
-					if($type = "select")
+					if($type == "select")
 					{
 						if($id_user != $exception)
 						{
@@ -167,7 +167,7 @@ class parameters
 					$id_phase = $result->ID;
 					$nome = $result->Nome;
 					$description = $result->Descricao;
-					if($type = "select")
+					if($type == "select")
 					{
 						if($id_phase != $exception)
 						{
@@ -209,7 +209,7 @@ class parameters
 					$id_status = $result->ID;
 					$nome = $result->Nome;
 					$description = $result->Descricao;
-					if($type = "select")
+					if($type == "select")
 					{
 						if($id_status != $exception)
 						{
@@ -251,7 +251,7 @@ class parameters
 					$id_mtp = $result->ID;
 					$nome = $result->Nome;
 					$description = $result->Descricao;
-					if($type = "select")
+					if($type == "select")
 					{
 						if($id_mtp != $exception)
 						{

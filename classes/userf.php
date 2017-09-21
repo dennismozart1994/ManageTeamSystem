@@ -688,6 +688,47 @@
 			}
 		}
 		
+		public function getUsers()
+		{
+			$connect = new connection;
+			if($connect->tryconnect())
+			{
+				$connector = $connect->getConnector();
+				
+				$sql = "SELECT user.id_user AS ID, user.nome_user AS Nome, user.email_in_user AS Email, centroc.desc_cc AS CentroCusto, user.funcao_user AS Funcao 
+				FROM TAB_user AS user 
+				INNER JOIN TAB_cc AS centroc ON user.id_cc=centroc.id_cc 
+				WHERE user.id_cc=:cc";
+				$query = $connector->prepare($sql);
+				$query->bindParam(':cc', $_SESSION['cc'], PDO::PARAM_STR);
+				$query->execute();
+				$rowC = $query->rowCount();
+				if($rowC > 0)
+				{
+					while($result = $query->FETCH(PDO::FETCH_OBJ))
+					{
+						$id = $result->ID;
+						$nome = utf8_encode($result->Nome);
+						$email = utf8_encode($result->Email);
+						$centrocusto = utf8_encode($result->CentroCusto);
+						$funcao_user = utf8_encode($result->Funcao);
+						
+						echo '<tr>
+                                  <td class="numeric">'.$id.'</td>
+                                  <td>'.$nome.'</td>
+                                  <td>'.$email.'</td>
+                                  <td>'.$centrocusto.'</td>
+                                  <td>'.$funcao_user.'</td>
+								  <td>
+									<a data-toggle="modal" href="myuser.php?edit='.$id.'"><button class="btn btn-primary btn-xs"><i class="fa fa-pencil"></i></button></a>
+									<a data-toggle="modal" href="manageusers.php?id='.$id.'#cancelamento"><button class="btn btn-danger btn-xs"><i class="fa fa-ban"></i></button></a>
+								  </td>
+                              </tr>';
+					}
+				}
+			}
+		}
+		
 	}
 
 ?>
