@@ -12,7 +12,7 @@
 				$dbname = 'inproject';
 				$userdb = 'root';
 				$pass = '';
-				$connection = new PDO("mysql:host=$host;dbname=$dbname","$userdb","$pass");
+				$connection = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8","$userdb","$pass");
 				$connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 				self::$connector = $connection;
 				return true;

@@ -42,6 +42,26 @@
 			header('Location: index.php');
 		}
 		
+		//
+		public function getUserField($id, $field)
+		{
+			$connect = new connection;
+			if($connect->tryconnect())
+			{
+				$connector = $connect->getConnector();
+				$sql = "SELECT $field FROM tab_user WHERE id_user=:u";
+				$query = $connector->prepare($sql);
+				$query->bindParam(':u', $id, PDO::PARAM_STR);
+				$query->execute();
+				$rowC = $query->rowCount();
+				while($result=$query->FETCH(PDO::FETCH_OBJ))
+				{
+					$rField = $result->$field;
+				}
+				return $rField;
+			}
+		}
+		
 		// TEAM MEMBERS
 		public function ShowTeam()
 		{
@@ -65,7 +85,7 @@
 						$image = $returns->thumbnail_user;
 						$funcao = $returns->funcao_user;
 						
-						if((utf8_encode($funcao) != 'Líder de Testes') && (utf8_encode($funcao) != 'Gerente de Projetos') && (utf8_encode($funcao) != 'Administrador'))
+						if(($funcao != 'Líder de Testes') && ($funcao != 'Gerente de Projetos') && ($funcao != 'Administrador'))
 						{
 							// NORMAL USER
 							// CHECK IF IT IS AVAILABLE
@@ -111,7 +131,7 @@
 							echo '		</div>';
 							echo '		<div class="details">';
 							echo '			<p>'.$name.'<br/>';
-							echo '			   <muted>'.utf8_encode($funcao).'</muted>';
+							echo '			   <muted>'.$funcao.'</muted>';
 							echo '			</p>';
 							echo '		</div>';
 							echo '	  </div></a>';
@@ -224,7 +244,7 @@
 						if((reset($count)>0)&&($limit<4))
 						{
 							echo '<tr align="left">';
-							echo '<td>'.utf8_encode($nome).'</td>';
+							echo '<td>'.$nome.'</td>';
 							echo '<td>'.reset($count).'</td>';
 							echo '<td>';
 							echo '<a href="projects.php?filter&type=fase&id='.$fase.'"><button class="btn btn-success btn-xs"><i class="fa fa-search"></i></button></a>';
@@ -265,7 +285,7 @@
 						if((reset($count)>0)&&($limit<4))
 						{
 							echo '<tr align="left">';
-							echo '<td>'.utf8_encode($nome).'</td>';
+							echo '<td>'.$nome.'</td>';
 							echo '<td>'.reset($count).'</td>';
 							echo '<td>';
 							echo '<a href="projects.php?filter&type=fase&id='.$fase.'"><button class="btn btn-success btn-xs"><i class="fa fa-search"></i></button></a>';
@@ -443,7 +463,7 @@
 						if(reset($rowCproject)>0 && ($limit<4))
 						{
 							echo '<tr align="left">';
-							echo '	<td>'.utf8_encode($nome).'</td>';
+							echo '	<td>'.$nome.'</td>';
 							echo '	<td>'.reset($rowCproject).'</td>';
 							echo '	<td>';
 							echo '	  <a href="projects.php?filter&type=status&id='.$id.'"><button class="btn btn-success btn-xs"><i class="fa fa-search"></i></button></a>';
@@ -487,7 +507,7 @@
 						if(reset($rowCproject)>0 && ($limit<4))
 						{
 							echo '<tr align="left">';
-							echo '	<td>'.utf8_encode($nome).'</td>';
+							echo '	<td>'.$nome.'</td>';
 							echo '	<td>'.reset($rowCproject).'</td>';
 							echo '	<td>';
 							echo '	  <a href="projects.php?filter&type=status&id='.$id.'"><button class="btn btn-success btn-xs"><i class="fa fa-search"></i></button></a>';
@@ -698,9 +718,10 @@
 				$sql = "SELECT user.id_user AS ID, user.nome_user AS Nome, user.email_in_user AS Email, centroc.desc_cc AS CentroCusto, user.funcao_user AS Funcao 
 				FROM TAB_user AS user 
 				INNER JOIN TAB_cc AS centroc ON user.id_cc=centroc.id_cc 
-				WHERE user.id_cc=:cc";
+				WHERE user.id_cc=:cc AND user.id_user != :myuser";
 				$query = $connector->prepare($sql);
 				$query->bindParam(':cc', $_SESSION['cc'], PDO::PARAM_STR);
+				$query->bindParam(':myuser', $_SESSION['id'], PDO::PARAM_STR);
 				$query->execute();
 				$rowC = $query->rowCount();
 				if($rowC > 0)
@@ -708,10 +729,10 @@
 					while($result = $query->FETCH(PDO::FETCH_OBJ))
 					{
 						$id = $result->ID;
-						$nome = utf8_encode($result->Nome);
-						$email = utf8_encode($result->Email);
-						$centrocusto = utf8_encode($result->CentroCusto);
-						$funcao_user = utf8_encode($result->Funcao);
+						$nome = $result->Nome;
+						$email = $result->Email;
+						$centrocusto = $result->CentroCusto;
+						$funcao_user = $result->Funcao;
 						
 						echo '<tr>
                                   <td class="numeric">'.$id.'</td>

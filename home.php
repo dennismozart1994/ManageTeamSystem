@@ -70,7 +70,7 @@ if(isset($_REQUEST['logout']))
                   
                   	<div class="row mtbox">
                   		<?php 
-							if((utf8_encode($_SESSION['funcao']) == "Líder de Testes") || (utf8_encode($_SESSION['funcao']) == "Gerente de Projetos") || (utf8_encode($_SESSION['funcao']) == "Administrador"))
+							if(($_SESSION['funcao'] == "Líder de Testes") || ($_SESSION['funcao'] == "Gerente de Projetos") || ($_SESSION['funcao'] == "Administrador"))
 							{
 								$user->yourproblems('manager');
 							}
@@ -97,7 +97,7 @@ if(isset($_REQUEST['logout']))
 								  </thead>
 								  <tbody>
 									<?php 
-										if((utf8_encode($_SESSION['funcao']) == "Líder de Testes") || (utf8_encode($_SESSION['funcao']) == "Gerente de Projetos") || (utf8_encode($_SESSION['funcao']) == "Administrador"))
+										if(($_SESSION['funcao'] == "Líder de Testes") || ($_SESSION['funcao'] == "Gerente de Projetos") || ($_SESSION['funcao'] == "Administrador"))
 										{
 											$user->getProjects('phase');
 										}
@@ -113,7 +113,7 @@ if(isset($_REQUEST['logout']))
 
                       	<div class="col-md-4 col-sm-4 mb">
 								<?php 
-									if((utf8_encode($_SESSION['funcao']) == "Líder de Testes") || (utf8_encode($_SESSION['funcao']) == "Gerente de Projetos") || (utf8_encode($_SESSION['funcao']) == "Administrador"))
+									if(($_SESSION['funcao'] == "Líder de Testes") || ($_SESSION['funcao'] == "Gerente de Projetos") || ($_SESSION['funcao'] == "Administrador"))
 										{
 											$user->getProjects('finish');
 										}
@@ -139,7 +139,7 @@ if(isset($_REQUEST['logout']))
 								  </thead>
 								  <tbody>
 									<?php 
-										if((utf8_encode($_SESSION['funcao']) == "Líder de Testes") || (utf8_encode($_SESSION['funcao']) == "Gerente de Projetos") || (utf8_encode($_SESSION['funcao']) == "Administrador"))
+										if(($_SESSION['funcao'] == "Líder de Testes") || ($_SESSION['funcao'] == "Gerente de Projetos") || ($_SESSION['funcao'] == "Administrador"))
 											{
 												$user->getProjects('status');
 											}

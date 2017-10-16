@@ -12,7 +12,7 @@ if(!isset($_SESSION['login']))
 }
 
 // PERMISSIONS
-if(!(in_array(utf8_encode($_SESSION['funcao']), $permissions)))
+if(!(in_array($_SESSION['funcao'], $permissions)))
 {
 	$user->logout();
 }

@@ -14,7 +14,7 @@ if(!isset($_SESSION['login']))
 }
 
 // PERMISSIONS
-if(!(in_array(utf8_encode($_SESSION['funcao']), $permissions)))
+if(!(in_array($_SESSION['funcao'], $permissions)))
 {
 	$user->logout();
 }
@@ -23,6 +23,21 @@ if(!(in_array(utf8_encode($_SESSION['funcao']), $permissions)))
 if(isset($_REQUEST['logout']))
 {
 	$user->logout();
+}
+
+if(isset($_REQUEST['name'])&&isset($_REQUEST['email']))
+{
+	$param->InsertLTM(0, $_GET['name'],$_GET['email'], $_SESSION['id']);
+}
+
+if(isset($_REQUEST['nameuser'])&&isset($_REQUEST['emailuser']))
+{
+	$param->UpdateLTM(0, $_GET['id'], $_GET['nameuser'],$_GET['emailuser'], $_SESSION['id']);
+}
+
+if(isset($_REQUEST['delete']))
+{
+	$param->DeleteLTM(0, $_GET['delete']);
 }
 ?>
 <!DOCTYPE html>
@@ -33,6 +48,7 @@ if(isset($_REQUEST['logout']))
     <meta name="description" content="">
     <meta name="author" content="Dashboard">
     <meta name="keyword" content="Dashboard, Bootstrap, Admin, Template, Theme, Responsive, Fluid, Retina">
+	<meta http-equiv="Content-type" content="text/html;charset=utf-8" />
 
     <title>InProject - Líderes de Projetos</title>
 
@@ -112,98 +128,14 @@ if(isset($_REQUEST['logout']))
 		  	</div><!-- /row -->
 		</section><! --/wrapper -->
       </section><!-- /MAIN CONTENT -->
-				 
-		 <!-- Modal cancelamento-->
-		  <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="cancelamento" class="modal fade">
-			  <div class="modal-dialog">
-				  <div class="modal-content">
-					  <div class="modal-header">
-						  <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-						  <h4 class="modal-title">Tem certeza que deseja excluir o Líder de Projetos?</h4>
-					  </div>
-					  <div class="modal-footer">
-						  <button data-dismiss="modal" class="btn btn-default" type="button">Não</button>
-						  <button data-dismiss="modal" data-toggle="modal" href="index.php#cancelado" class="btn btn-theme" type="button">Sim</button>
-					  </div>
-				  </div>
-			  </div>
-		  </div>
-		 <!-- modal -->
-		 
-		 <!-- Modal cancelado-->
-		  <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="cancelado" class="modal fade">
-			  <div class="modal-dialog">
-				  <div class="modal-content">
-					  <div class="modal-header">
-						  <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-						  <h4 class="modal-title">Excluído</h4>
-					  </div>
-					  <div class="modal-body">
-						  <p>O usuário foi excluído com sucesso!</p>
-					  </div>
-					  <div class="modal-footer">
-						  <button data-dismiss="modal" class="btn btn-theme" type="button">OK</button>
-					  </div>
-				  </div>
-			  </div>
-		  </div>
-		 <!-- modal -->
-		 
-		 
-		 <!-- Modal Editar Líder-->
-		  <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="editar" class="modal fade">
-			  <div class="modal-dialog">
-				  <div class="modal-content">
-					  <div class="modal-header">
-						  <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-						  <h4 class="modal-title">Editar dados do Líder de Projetos?</h4>
-					  </div>
-					  <div class="modal-body">
-						<p>Nome</p>
-						<input class="form-control" type="text" value="Marcelo Casseb"/>
-						<p><br/>E-mail</p>
-						<input class="form-control" type="email" value="mcasseb@redecardsa.com.br"/>
-						<p><br/>Projeto</p>
-						<select class="form-control" required>
-						  <option><?php echo "Rede"?></option>
-						  <option><?php echo "Rede"?></option>
-						  <option><?php echo "Rede"?></option>
-						  <option><?php echo "Rede"?></option>
-						  <option><?php echo "Rede"?></option>
-					    </select>
-					  </div>
-					  <div class="modal-footer">
-						  <button data-dismiss="modal" class="btn btn-default" type="button">Cancelar</button>
-						  <button data-dismiss="modal" data-toggle="modal" href="lp.php#concluido" class="btn btn-theme" type="button">Salvar</button>
-					  </div>
-				  </div>
-			  </div>
-		  </div>
-		 <!-- modal -->
-		 
-		 <!-- Modal Concluído-->
-		  <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="concluido" class="modal fade">
-			  <div class="modal-dialog">
-				  <div class="modal-content">
-					  <div class="modal-header">
-						  <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-						  <h4 class="modal-title">Concluído</h4>
-					  </div>
-					  <div class="modal-body">
-						  <p>Os dados foram alterados com sucesso!</p>
-					  </div>
-					  <div class="modal-footer">
-						  <button data-dismiss="modal" class="btn btn-theme" type="button">OK</button>
-					  </div>
-				  </div>
-			  </div>
-		  </div>
-		 <!-- modal -->
-		 
-		 
-		 
+		 <!-- modal -->		 
+		<?php
+			$param->getLTM_DeleteModal(0);
+			$param->getLTM_Modal(0);
+		?>
 		 <!-- Modal Add Líder-->
 		  <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="addLider" class="modal fade">
+			<form method="get" action="">
 			  <div class="modal-dialog">
 				  <div class="modal-content">
 					  <div class="modal-header">
@@ -212,43 +144,17 @@ if(isset($_REQUEST['logout']))
 					  </div>
 					  <div class="modal-body">
 						<p>Nome</p>
-						<input class="form-control" type="text" placeholder="Nome do Líder de Projetos"/>
+						<input class="form-control" type="text" name="name" placeholder="Nome do Líder de Projetos"/>
 						<p><br/>E-mail</p>
-						<input class="form-control" type="email" placeholder="e-mail para contato"/>
-						<p><br/>Projeto</p>
-						<select class="form-control" required>
-						  <option><?php echo "Rede"?></option>
-						  <option><?php echo "Rede"?></option>
-						  <option><?php echo "Rede"?></option>
-						  <option><?php echo "Rede"?></option>
-						  <option><?php echo "Rede"?></option>
-					    </select>
+						<input class="form-control" type="email" name="email" placeholder="e-mail para contato"/>
 					  </div>
 					  <div class="modal-footer">
 						  <button data-dismiss="modal" class="btn btn-default" type="button">Cancelar</button>
-						  <button data-dismiss="modal" data-toggle="modal" href="index.php#confirmation" class="btn btn-theme" type="button">Adicionar</button>
+						  <button href="index.php#confirmation" class="btn btn-theme" type="submit">Adicionar</button>
 					  </div>
 				  </div>
 			  </div>
-		  </div>
-		 <!-- modal -->
-		 
-		 <!-- Modal nota adicionada-->
-		  <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="confirmation" class="modal fade">
-			  <div class="modal-dialog">
-				  <div class="modal-content">
-					  <div class="modal-header">
-						  <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-						  <h4 class="modal-title">Parâmetro adicionado</h4>
-					  </div>
-					  <div class="modal-body">
-						  <p>Parâmetro adicionado com sucesso!</p>
-					  </div>
-					  <div class="modal-footer">
-						  <button data-dismiss="modal" class="btn btn-theme" type="button">OK</button>
-					  </div>
-				  </div>
-			  </div>
+			</form>
 		  </div>
 		 <!-- modal -->
 		 

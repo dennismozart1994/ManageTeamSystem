@@ -2,9 +2,12 @@
 session_start();
 require_once('classes/userf.php');
 require_once('classes/project.php');
+require_once('classes/parameters.php');
 
 $user = new user;
 $project = new projects;
+$params = new parameters;
+
 
 // ACCESS WITHOUT LOGIN
 if(!isset($_SESSION['login']))
@@ -72,21 +75,7 @@ if(isset($_REQUEST['logout']))
                               <label class="col-sm-1 col-sm-1 control-label">Nome</label>
                               <div class="col-sm-4">
                                   <input class="form-control" id="disabledInput" type="text" name="username"
-								  <?php 
-									if(isset($_REQUEST['tm']))
-									{
-										echo ' required value="Nome do usuário" disabled';
-									}
-									else if(isset($_REQUEST['edit']))
-									{
-										// TODO Fill with User Information
-									}
-									else
-									{
-										echo ' required value="'.$_SESSION['nome'].'"';
-									}
-								  ?>
-								  >
+								  <?php if(isset($_REQUEST['tm'])){echo ' required value="Nome do usuário" disabled';}else if(isset($_REQUEST['edit'])){echo ' required value="'.$user->getUserField($_GET['edit'], 'nome_user').'"';}else{echo ' required value="'.$_SESSION['nome'].'"';}?>>
                               </div>
                           </div>
 						  
@@ -94,47 +83,44 @@ if(isset($_REQUEST['logout']))
                               <label class="col-lg-1 col-sm-1 control-label">E-mail</label>
 							  <div class="col-sm-4">
                                   <input type="email" required class="form-control" 
-								  <?php 
-									if(isset($_REQUEST['tm']))
-									{
-										echo ' required value="email@usuario" disabled';
-									}
-									else if(isset($_REQUEST['edit']))
-									{
-										// TODO Fill with User Information
-									}
-									else
-									{
-										echo ' required value="'.$_SESSION['login'].'" disabled';
-									} 
-								  ?>
-								  >
+								  <?php if(isset($_REQUEST['tm'])){echo ' required value="email@usuario" disabled';}else if(isset($_REQUEST['edit'])){echo ' required value="'.$user->getUserField($_GET['edit'], 'email_in_user').'"';}else{echo ' required value="'.$_SESSION['login'].'" disabled';}?>>
                               </div>
                           </div>
 						  
 						  <div class="form-group">
                               <label class="col-lg-1 col-sm-1 control-label">Nova Senha</label>
 							  <div class="col-sm-4">
-                                  <input type="password" required class="form-control" value="Senha">
+                                  <input type="password" required class="form-control"
+								  <?php if(isset($_REQUEST['tm'])){echo ' required value="'.$user->getUserField($_GET['tm'], 'senha_user').'"';}else if(isset($_REQUEST['edit'])){echo ' required value="'.$user->getUserField($_GET['edit'], 'senha_user').'"';}else{echo ' required value="'.$user->getUserField($_SESSION['id'], 'senha_user').'"';}?>>
                               </div>
                           </div>
 						  
 						  <div class="form-group">
                               <label class="col-lg-1 col-sm-1 control-label">Confirmar Senha</label>
 							  <div class="col-sm-4">
-                                  <input type="password" required class="form-control" value="Senha">
+                                  <input type="password" required class="form-control"
+								  <?php if(isset($_REQUEST['tm'])){echo ' required value="'.$user->getUserField($_GET['tm'], 'senha_user').'"';}else if(isset($_REQUEST['edit'])){echo ' required value="'.$user->getUserField($_GET['edit'], 'senha_user').'"';}else{echo ' required value="'.$user->getUserField($_SESSION['id'], 'senha_user').'"';}?>>
                               </div>
                           </div>
 						  
 						  <div class="form-group">
 							 <label class="col-lg-1 col-sm-1 control-label">Centro de Custo</label>
 							   <div class="col-lg-4">
-								  <select class="form-control" required>
-									  <option><?php echo "REDE164994"?></option>
-									  <option><?php echo "REDE164994"?></option>
-									  <option><?php echo "REDE164994"?></option>
-									  <option><?php echo "REDE164994"?></option>
-									  <option><?php echo "REDE164994"?></option>
+								  <select class="form-control" <?php if(isset($_REQUEST['tm'])){echo "disabled ";} if(!(isset($_REQUEST['edit']))){echo "disabled ";}?> required>
+									  <?php if(isset($_REQUEST['tm']))
+										  {
+											  $params->GetThisCC($_GET['tm']);
+											  $params->GetCC($_GET['tm']);
+										  }
+										  else if(isset($_REQUEST['edit']))
+										  {
+											  $params->GetThisCC($_GET['edit']);
+											  $params->GetCC($_GET['edit']);
+										  }else{
+											  $params->GetThisCC($_SESSION['id']);
+											  $params->GetCC($_SESSION['id']);
+										  }
+									  ?>
 								  </select>
                               </div>
 						  </div>
@@ -142,22 +128,52 @@ if(isset($_REQUEST['logout']))
 						  <div class="form-group">
                               <label class="col-lg-1 col-sm-1 control-label">Cargo</label>
 							   <div class="col-lg-2">
-								  <select class="form-control" required>
-									  <option><?php echo "Job"?></option>
-									  <option><?php echo "Job"?></option>
-									  <option><?php echo "Job"?></option>
-									  <option><?php echo "Job"?></option>
-									  <option><?php echo "Job"?></option>
+								  <select class="form-control" <?php if(isset($_REQUEST['tm'])){echo "disabled ";} if(!(isset($_REQUEST['edit']))){echo "disabled ";}?>required>
+										<?php 
+											if(isset($_REQUEST['tm']))
+												{
+													$funcao = $user->getUserField($_GET['tm'], 'funcao_user');
+													echo '<option value="'.$funcao.'">'.$funcao.'</option>';
+													echo '<option value="Auxiliar de Testes">Auxiliar de Testes</option>';
+													echo '<option value="Analista de Testes Jr.">Analista de Testes Jr.</option>';
+													echo '<option value="Analista de Testes Pl.">Analista de Testes Pl.</option>';
+													echo '<option value="Analista de Testes Sr.">Analista de Testes Sr.</option>';
+													echo '<option value="Auxiliar de Automação">Auxiliar de Automação</option>';
+													echo '<option value="Analista de Automação Jr.">Analista de Automação Jr.</option>';
+													echo '<option value="Analista de Automação Pl.">Analista de Automação Pl.</option>';
+													echo '<option value="Analista de Automação Sr.">Analista de Automação Sr.</option>';
+													echo '<option value="Líder de Testes">Líder de Testes</option>';
+													echo '<option value="Gerente de Projetos">Gerente de Projetos</option>';
+												}
+												else if(isset($_REQUEST['edit']))
+												{
+													$funcao = $user->getUserField($_GET['edit'], 'funcao_user');
+													echo '<option value="'.$funcao.'">'.$funcao.'</option>';
+													echo '<option value="Auxiliar de Testes">Auxiliar de Testes</option>';
+													echo '<option value="Analista de Testes Jr.">Analista de Testes Jr.</option>';
+													echo '<option value="Analista de Testes Pl.">Analista de Testes Pl.</option>';
+													echo '<option value="Analista de Testes Sr.">Analista de Testes Sr.</option>';
+													echo '<option value="Auxiliar de Automação">Auxiliar de Automação</option>';
+													echo '<option value="Analista de Automação Jr.">Analista de Automação Jr.</option>';
+													echo '<option value="Analista de Automação Pl.">Analista de Automação Pl.</option>';
+													echo '<option value="Analista de Automação Sr.">Analista de Automação Sr.</option>';
+													echo '<option value="Líder de Testes">Líder de Testes</option>';
+													echo '<option value="Gerente de Projetos">Gerente de Projetos</option>';
+												}else{
+													$funcao = $user->getUserField($_SESSION['id'], 'funcao_user');
+													echo '<option value="'.$funcao.'">'.$funcao.'</option>';
+												}
+										?>
 								  </select>
                               </div>
 							  <div class="col-lg-7">
-								<input class="btn btn-default btn-file col-lg-3" type="file">
+								<input class="btn btn-default btn-file col-lg-3" type="file" required>
 							  </div>
                           </div>
 						  
 						  <div class="form-group">
 							<div class="col-sm-4">
-                                  <a class="btn btn-success btn-sm pull-left" href="manageusers.php">Salvar alterações</a>
+                                  <input type="submit" value="Salvar alterações" class="btn btn-success btn-sm pull-left">
                               </div>
 						  </div>
 						  
@@ -165,9 +181,12 @@ if(isset($_REQUEST['logout']))
 					</div>
           		</div>
           	</div>
-			<!-- End Todo -->
-			<h3><i class="fa fa-angle-right"></i>Projetos sob responsabilidade do analista</h3>
-          	<div class="row mt">
+			<?php 
+				if(!(isset($_REQUEST['edit'])))
+				{
+					// Only shows if its not at edit mode
+			?>
+					<div class="row mt">
 			  		<div class="col-lg-12">
                       <div class="content-panel">
                       <h4><i class="fa fa-angle-right"></i>Filtros</h4>
@@ -212,29 +231,25 @@ if(isset($_REQUEST['logout']))
                               </tr>
                               </thead>
                               <tbody>
-							  <!-- Todo Fill with Project Information -->
-                              <tr>
-                                  <td class="numeric">999.999</td>
-                                  <td>Teste de layout para projeção</td>
-                                  <td>João da Silva</td>
-                                  <td>Marcelo Casseb</td>
-                                  <td>Marcos Paulo de Azevedo Afonso</td>
-                                  <td>Modelagem</td>
-                                  <td>Em andamento</td>
-                                  <td>Envio de Documentação Rede</td>
-								<!-- Todo get id from project -->
-								  <td>
-									<a href="project.php?p=123456"><button class="btn btn-primary btn-xs" onClick="href=project.php"><i class="fa fa-search"></i></button></a>
-								  </td>
-								 <!-- End Todo -->
-                              </tr>
-							  <!-- End Todo -->
+								<?php 
+									if(isset($_REQUEST['tm']))
+									{
+										$project->showtmprojects($_GET['tm']);
+									}
+									else
+									{
+										$project->getProjects("normaluser");
+									}
+								?>
                               </tbody>
                           </table>
                           </section>
                   </div><!-- /content-panel -->
                </div><!-- /col-lg-4 -->			
 		  	</div><!-- /row -->
+				<?php
+					}
+				?>
 		</section><! --/wrapper -->
       </section><!-- /MAIN CONTENT -->
 

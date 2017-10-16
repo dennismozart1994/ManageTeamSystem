@@ -92,7 +92,7 @@ class projects
                               <div class="col-lg-3">
                                   <p class="form-control-static"><b>Testes e Mudanças:</b></p>
 								  <select class="form-control">
-									  <option value="'.$id_ltm.'">'.utf8_encode($ltm).'</option>';
+									  <option value="'.$id_ltm.'">'.$ltm.'</option>';
 									  // OTHERS LTM
 										$lc = new parameters;
 										$lc->getLTM("select", $id_ltm);
@@ -101,7 +101,7 @@ class projects
 							  <div class="col-lg-3">
                                   <p class="form-control-static"><b>Projeto Rede:</b></p>
 								  <select class="form-control">
-									  <option value="'.$id_lp.'">'.utf8_encode($lp).'</option>';
+									  <option value="'.$id_lp.'">'.$lp.'</option>';
 									// OTHERS LP
 									$lp = new parameters;
 									$lp->getLP("select", $id_lp);
@@ -110,7 +110,7 @@ class projects
 							   <div class="col-lg-4">
                                   <p class="form-control-static"><b>Responsável Inmetrics:</b></p>
 								  <select class="form-control">
-									  <option value="'.$id_analista.'">'.utf8_encode($analista).'</option>';
+									  <option value="'.$id_analista.'">'.$analista.'</option>';
 									  // OTHERS ANALYST
 									  $analyst = new parameters;
 									  $analyst->getAnalyst("select", $id_analista);
@@ -123,7 +123,7 @@ class projects
                               <div class="col-lg-3">
                                   <p class="form-control-static"><b>Fase:</b></p>
 								  <select class="form-control">
-									  <option value="'.$id_f.'">'.utf8_encode($fase).'</option>';
+									  <option value="'.$id_f.'">'.$fase.'</option>';
 									  // OTHERS ANALYST
 									  $phase = new parameters;
 									  $phase->getPhases("select", $id_f);
@@ -132,7 +132,7 @@ class projects
 							  <div class="col-lg-3">
                                   <p class="form-control-static"><b>Status:</b></p>
 								  <select class="form-control">
-									  <option value="'.$id_status.'">'.utf8_encode($status).'</option>';
+									  <option value="'.$id_status.'">'.$status.'</option>';
 									  // OTHERS STATUS
 									  $phase = new parameters;
 									  $phase->getStatus("select", $id_status);
@@ -141,7 +141,7 @@ class projects
 							   <div class="col-lg-4">
                                   <p class="form-control-static"><b>Motivo da pendência</b></p>
 								  <select class="form-control">
-									  <option value="'.$id_pendencia.'">'.utf8_encode($pendencia).'</option>';
+									  <option value="'.$id_pendencia.'">'.$pendencia.'</option>';
 									 // PENDING
 									  $phase = new parameters;
 									  $phase->getPendencia("select", $id_pendencia); 
@@ -234,10 +234,10 @@ class projects
 						  </div>';
 					// ------------------------------ Previsto e realizado pra fase ---------------------------//
 					echo '<div class="form-group">
-							<label class="col-lg-12 col-sm-12 control-label"><h4>'.utf8_encode($fase).' Previsto: '.$previsto.'</h4></label>
+							<label class="col-lg-12 col-sm-12 control-label"><h4>'.$fase.' Previsto: '.$previsto.'</h4></label>
 						  </div>
 						  <div class="form-group">
-							<label class="col-lg-12 col-sm-12 control-label"><h4>'.utf8_encode($fase).' Realizado: '.$realizado.'</h4></label>
+							<label class="col-lg-12 col-sm-12 control-label"><h4>'.$fase.' Realizado: '.$realizado.'</h4></label>
 						  </div>';
 					echo '<div class="form-group">
 							<div class="col-sm-2">
@@ -272,7 +272,7 @@ class projects
 			INNER JOIN TAB_fases AS fases ON fases.id_f = projeto.id_f 
 			INNER JOIN TAB_status AS status ON status.id_status = projeto.id_status 
 			INNER JOIN TAB_mot_pend AS mot_pend ON mot_pend.id_mtp = projeto.id_mtp 
-			WHERE projeto.id_cc=:cc AND projeto.id_inmetrics_user=:user";
+			WHERE projeto.id_cc=:cc AND projeto.id_inmetrics_user=:user AND projeto.id_f != 5 AND projeto.id_f != 8";
 			$query = $connector->prepare($sql);
 			$query->bindParam(':cc', $_SESSION['cc'], PDO::PARAM_STR);
 			$query->bindParam(':user', $_SESSION['id'], PDO::PARAM_STR);
@@ -284,13 +284,13 @@ class projects
 				{
 					$idprojeto = $result->ID;
 					$ts = $result->TS;
-					$nomeprojeto = utf8_encode($result->NomeProjeto);
-					$ltm = utf8_encode($result->NomeLiderTestes);
-					$lp = utf8_encode($result->NomeLiderProjetos);
-					$analista = utf8_encode($result->NomeAnalista);
-					$fase = utf8_encode($result->NomeFase);
-					$status = utf8_encode($result->NomeStatus);
-					$pendencia = utf8_encode($result->NomeMotivo);
+					$nomeprojeto = $result->NomeProjeto;
+					$ltm = $result->NomeLiderTestes;
+					$lp = $result->NomeLiderProjetos;
+					$analista = $result->NomeAnalista;
+					$fase = $result->NomeFase;
+					$status = $result->NomeStatus;
+					$pendencia = $result->NomeMotivo;
 					echo '		<tr>';
 					echo '			  <td class="numeric">'.$ts.'</td>';
 					echo '			  <td>'.$nomeprojeto.'</td>';
@@ -305,6 +305,63 @@ class projects
 					echo '				<a href="project.php?p='.$idprojeto.'"><button class="btn btn-primary btn-xs"><i class="fa fa-search"></i></button></a>';
 					echo '				<a data-toggle="modal" href="myprojects.php#encerramento"><button class="btn btn-success btn-xs"><i class=" fa fa-check"></i></button></a>';
 					echo '				<a data-toggle="modal" href="myprojects.php#cancelamento"><button class="btn btn-danger btn-xs"><i class="fa fa-ban"></i></button></a>';
+					echo '			  </td>';
+					echo '		</tr>';
+				}
+			}
+		}
+	}
+	
+	public function showtmprojects($id)
+	{
+		$connect = new connection;
+		if($connect->tryconnect())
+		{
+			$connector = $connect->getConnector();
+			$sql = "SELECT projeto.id_prj AS ID, projeto.ts_prj AS TS, projeto.nmp_prj AS NomeProjeto, 
+			ltm.nome_lc AS NomeLiderTestes, 
+			lp.nome_lp AS NomeLiderProjetos, 
+			user.nome_user AS NomeAnalista, 
+			fases.nome_f AS NomeFase,
+			status.nome_status AS NomeStatus,
+			mot_pend.nome_mtp AS NomeMotivo 
+			FROM TAB_projeto AS projeto 
+			INNER JOIN TAB_lider_cliente AS ltm ON ltm.id_lc = projeto.id_lc 
+			INNER JOIN TAB_lider_projeto AS lp ON lp.id_lp = projeto.id_lp 
+			INNER JOIN TAB_user AS user ON user.id_user = projeto.id_inmetrics_user 
+			INNER JOIN TAB_fases AS fases ON fases.id_f = projeto.id_f 
+			INNER JOIN TAB_status AS status ON status.id_status = projeto.id_status 
+			INNER JOIN TAB_mot_pend AS mot_pend ON mot_pend.id_mtp = projeto.id_mtp 
+			WHERE projeto.id_cc=:cc AND projeto.id_inmetrics_user=:user AND projeto.id_f != 5 AND projeto.id_f != 8";
+			$query = $connector->prepare($sql);
+			$query->bindParam(':cc', $_SESSION['cc'], PDO::PARAM_STR);
+			$query->bindParam(':user', $id, PDO::PARAM_STR);
+			$query->execute();
+			$rowC = $query->rowCount();
+			if($rowC > 0)
+			{
+				while($result = $query->FETCH(PDO::FETCH_OBJ))
+				{
+					$idprojeto = $result->ID;
+					$ts = $result->TS;
+					$nomeprojeto = $result->NomeProjeto;
+					$ltm = $result->NomeLiderTestes;
+					$lp = $result->NomeLiderProjetos;
+					$analista = $result->NomeAnalista;
+					$fase = $result->NomeFase;
+					$status = $result->NomeStatus;
+					$pendencia = $result->NomeMotivo;
+					echo '		<tr>';
+					echo '			  <td class="numeric">'.$ts.'</td>';
+					echo '			  <td>'.$nomeprojeto.'</td>';
+					echo '			  <td>'.$ltm.'</td>';
+					echo '			  <td>'.$lp.'</td>';
+					echo '			  <td>'.$analista.'</td>';
+					echo '			  <td>'.$fase.'</td>';
+					echo '			  <td>'.$status.'</td>';
+					echo '			  <td>'.$pendencia.'</td>';
+					echo '			  <td>';
+					echo '				<a href="project.php?p='.$idprojeto.'"><button class="btn btn-primary btn-xs"><i class="fa fa-search"></i></button></a>';
 					echo '			  </td>';
 					echo '		</tr>';
 				}
@@ -336,12 +393,12 @@ class projects
 				while($result = $query->FETCH(PDO::FETCH_OBJ))
 				{
 					echo '	<tr>
-								<td>'.utf8_encode($result->nomefase).'</td>
+								<td>'.$result->nomefase.'</td>
 								<td>'.date('d/m/Y', strtotime($result->data)).'</td>
-								<td>'.utf8_encode($result->previsto).'</td>
-								<td>'.utf8_encode($result->realizado).'</td>
-								<td>'.utf8_encode($result->nomeuser).'</td>
-								<td>'.utf8_encode($result->descricao).'</td>
+								<td>'.$result->previsto.'</td>
+								<td>'.$result->realizado.'</td>
+								<td>'.$result->nomeuser.'</td>
+								<td>'.$result->descricao.'</td>
 							</tr>';
 				}
 			}
@@ -379,13 +436,13 @@ class projects
 				{
 					$idprojeto = $result->ID;
 					$ts = $result->TS;
-					$nomeprojeto = utf8_encode($result->NomeProjeto);
-					$ltm = utf8_encode($result->NomeLiderTestes);
-					$lp = utf8_encode($result->NomeLiderProjetos);
-					$analista = utf8_encode($result->NomeAnalista);
-					$fase = utf8_encode($result->NomeFase);
-					$status = utf8_encode($result->NomeStatus);
-					$pendencia = utf8_encode($result->NomeMotivo);
+					$nomeprojeto = $result->NomeProjeto;
+					$ltm = $result->NomeLiderTestes;
+					$lp = $result->NomeLiderProjetos;
+					$analista = $result->NomeAnalista;
+					$fase = $result->NomeFase;
+					$status = $result->NomeStatus;
+					$pendencia = $result->NomeMotivo;
 					echo '		<tr>';
 					echo '			  <td class="numeric">'.$ts.'</td>';
 					echo '			  <td>'.$nomeprojeto.'</td>';
