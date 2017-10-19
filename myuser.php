@@ -8,7 +8,6 @@ $user = new user;
 $project = new projects;
 $params = new parameters;
 
-
 // ACCESS WITHOUT LOGIN
 if(!isset($_SESSION['login']))
 {
@@ -19,6 +18,88 @@ if(!isset($_SESSION['login']))
 if(isset($_REQUEST['logout']))
 {
 	$user->logout();
+}
+
+if(isset($_POST['save'])&&isset($_REQUEST['update'])&&isset($_FILES['thumbnail']))
+{
+	$id = $_GET['edit'];
+	$name = trim(strip_tags($_POST['username']));
+	$email = trim(strip_tags($_POST['email']));
+	$tel = trim(strip_tags($_POST['tel']));
+	$pass1 = trim(strip_tags($_POST['pass']));
+	$pass2 = trim(strip_tags($_POST['pass2']));
+	$cc = trim(strip_tags($_POST['cc']));
+	$funcao = trim(strip_tags($_POST['funcao']));
+
+	
+	$thumb_name = $_FILES['thumbnail']['name']; //THUMBNAIL NAME
+	$tmp_thumb = $_FILES['thumbnail']['tmp_name']; // TEMP NAME OF THE FILE
+	//GET THUMBNAIL EXTENSION
+	$ext_thumb = @end(explode('.', $thumb_name));
+	$ext_thumb = strtolower($ext_thumb);
+	$new_name_thumb = (md5(uniqid('thumbnail_'.rand(), TRUE))).'.'.$ext_thumb; //NEW THUMBNAIL NAME
+	$type_thumb = $_FILES['thumbnail']['type']; // FILE TYPE
+	$size_thumb = $_FILES['thumbnail']['size']; // FILE SIZE
+	$error_thumb = $_FILES['thumbnail']['error']; //ERROR MESSAGE
+	$path_thumb = "user_thumb/".$new_name_thumb; //THUMBNAIL NEW PATH
+	$accepted_thumb = array('jpeg', 'jpg', 'png'); // TIPOS DE MINIATURA
+					
+	if($pass1 == $pass2)
+	{
+		if(isset($_FILES['thumbnail']))
+		{
+			// IF IMAGE HAS LESS THEN 2MB, NO ERRORS AND HAS THE ACCEPTED FILE TYPE
+			if(in_array($ext_thumb, $accepted_thumb) && $error_thumb === 0 && $size_thumb < 2097152)
+			{
+				$user->UploadImage($id, $cc, $name, $funcao, $tel, $email, $pass1, $new_name_thumb, $tmp_thumb, $path_thumb, 1);
+			}
+		}
+	}
+	else
+	{
+		echo '<script>alert("Senhas informadas não conferem! Por gentileza digite a mesma senha em ambos os campos!"); window.location.href = "myuser.php?edit='.$id.'";</script>';
+	}
+}
+
+if(isset($_POST['save'])&&isset($_REQUEST['myuser'])&&isset($_FILES['thumbnail']))
+{
+	$id = $_SESSION['id'];
+	$name = trim(strip_tags($_POST['username']));
+	$email = $_SESSION['login'];
+	$tel = $_SESSION['tel'];
+	$pass1 = trim(strip_tags($_POST['pass']));
+	$pass2 = trim(strip_tags($_POST['pass2']));
+	$cc = $_SESSION['cc'];
+	$funcao = $_SESSION['funcao'];
+
+	
+	$thumb_name = $_FILES['thumbnail']['name']; //THUMBNAIL NAME
+	$tmp_thumb = $_FILES['thumbnail']['tmp_name']; // TEMP NAME OF THE FILE
+	//GET THUMBNAIL EXTENSION
+	$ext_thumb = @end(explode('.', $thumb_name));
+	$ext_thumb = strtolower($ext_thumb);
+	$new_name_thumb = (md5(uniqid('thumbnail_'.rand(), TRUE))).'.'.$ext_thumb; //NEW THUMBNAIL NAME
+	$type_thumb = $_FILES['thumbnail']['type']; // FILE TYPE
+	$size_thumb = $_FILES['thumbnail']['size']; // FILE SIZE
+	$error_thumb = $_FILES['thumbnail']['error']; //ERROR MESSAGE
+	$path_thumb = "user_thumb/".$new_name_thumb; //THUMBNAIL NEW PATH
+	$accepted_thumb = array('jpeg', 'jpg', 'png'); // TIPOS DE MINIATURA
+					
+	if($pass1 == $pass2)
+	{
+		if(isset($_FILES['thumbnail']))
+		{
+			// IF IMAGE HAS LESS THEN 2MB, NO ERRORS AND HAS THE ACCEPTED FILE TYPE
+			if(in_array($ext_thumb, $accepted_thumb) && $error_thumb === 0 && $size_thumb < 2097152)
+			{
+				$user->UploadImage($id, $cc, $name, $funcao, $tel, $email, $pass1, $new_name_thumb, $tmp_thumb, $path_thumb, 2);
+			}
+		}
+	}
+	else
+	{
+		echo '<script>alert("Senhas informadas não conferem! Por gentileza digite a mesma senha em ambos os campos!"); window.location.href = "myuser.php";</script>';
+	}
 }
 
 ?>
@@ -70,7 +151,7 @@ if(isset($_REQUEST['logout']))
           	<div class="row mt">
           		<div class="col-lg-12">
 					<div class="form-panel">
-						<form class="form-horizontal style-form" method="get">
+						<form class="form-horizontal style-form" method="post" action="<?php if(isset($_GET['edit'])){echo '?edit='.$_GET['edit'].'&update';}else{echo '?edit='.$_SESSION['id'].'&myuser';}?>" enctype="multipart/form-data">
                           <div class="form-group">
                               <label class="col-sm-1 col-sm-1 control-label">Nome</label>
                               <div class="col-sm-4">
@@ -82,15 +163,23 @@ if(isset($_REQUEST['logout']))
 						  <div class="form-group">
                               <label class="col-lg-1 col-sm-1 control-label">E-mail</label>
 							  <div class="col-sm-4">
-                                  <input type="email" required class="form-control" 
+                                  <input type="email" name="email" required class="form-control" 
 								  <?php if(isset($_REQUEST['tm'])){echo ' required value="email@usuario" disabled';}else if(isset($_REQUEST['edit'])){echo ' required value="'.$user->getUserField($_GET['edit'], 'email_in_user').'"';}else{echo ' required value="'.$_SESSION['login'].'" disabled';}?>>
+                              </div>
+                          </div>
+						  
+						  <div class="form-group">
+                              <label class="col-lg-1 col-sm-1 control-label">Telefone</label>
+							  <div class="col-sm-4">
+                                  <input type="text" name="tel" required class="form-control" 
+								  <?php if(isset($_REQUEST['tm'])){echo ' required value="(xx) xxxxx - xxxx" disabled';}else if(isset($_REQUEST['edit'])){echo ' required value="'.$user->getUserField($_GET['edit'], 'tel_user').'"';}else{echo ' required value="'.$_SESSION['tel'].'" disabled';}?>>
                               </div>
                           </div>
 						  
 						  <div class="form-group">
                               <label class="col-lg-1 col-sm-1 control-label">Nova Senha</label>
 							  <div class="col-sm-4">
-                                  <input type="password" required class="form-control"
+                                  <input type="password" name="pass" required class="form-control"
 								  <?php if(isset($_REQUEST['tm'])){echo ' required value="'.$user->getUserField($_GET['tm'], 'senha_user').'"';}else if(isset($_REQUEST['edit'])){echo ' required value="'.$user->getUserField($_GET['edit'], 'senha_user').'"';}else{echo ' required value="'.$user->getUserField($_SESSION['id'], 'senha_user').'"';}?>>
                               </div>
                           </div>
@@ -98,7 +187,7 @@ if(isset($_REQUEST['logout']))
 						  <div class="form-group">
                               <label class="col-lg-1 col-sm-1 control-label">Confirmar Senha</label>
 							  <div class="col-sm-4">
-                                  <input type="password" required class="form-control"
+                                  <input type="password" name="pass2" required class="form-control"
 								  <?php if(isset($_REQUEST['tm'])){echo ' required value="'.$user->getUserField($_GET['tm'], 'senha_user').'"';}else if(isset($_REQUEST['edit'])){echo ' required value="'.$user->getUserField($_GET['edit'], 'senha_user').'"';}else{echo ' required value="'.$user->getUserField($_SESSION['id'], 'senha_user').'"';}?>>
                               </div>
                           </div>
@@ -106,7 +195,7 @@ if(isset($_REQUEST['logout']))
 						  <div class="form-group">
 							 <label class="col-lg-1 col-sm-1 control-label">Centro de Custo</label>
 							   <div class="col-lg-4">
-								  <select class="form-control" <?php if(isset($_REQUEST['tm'])){echo "disabled ";} if(!(isset($_REQUEST['edit']))){echo "disabled ";}?> required>
+								  <select class="form-control" name="cc" <?php if(isset($_REQUEST['tm'])){echo "disabled ";} if(!(isset($_REQUEST['edit']))){echo "disabled ";}?> required>
 									  <?php if(isset($_REQUEST['tm']))
 										  {
 											  $params->GetThisCC($_GET['tm']);
@@ -128,7 +217,7 @@ if(isset($_REQUEST['logout']))
 						  <div class="form-group">
                               <label class="col-lg-1 col-sm-1 control-label">Cargo</label>
 							   <div class="col-lg-2">
-								  <select class="form-control" <?php if(isset($_REQUEST['tm'])){echo "disabled ";} if(!(isset($_REQUEST['edit']))){echo "disabled ";}?>required>
+								  <select class="form-control" name="funcao" <?php if(isset($_REQUEST['tm'])){echo "disabled ";} if(!(isset($_REQUEST['edit']))){echo "disabled ";}?>required>
 										<?php 
 											if(isset($_REQUEST['tm']))
 												{
@@ -166,14 +255,16 @@ if(isset($_REQUEST['logout']))
 										?>
 								  </select>
                               </div>
-							  <div class="col-lg-7">
-								<input class="btn btn-default btn-file col-lg-3" type="file" required>
+							  <div class="form-group">
+								  <div class="col-lg-7">
+									<input class="btn btn-default btn-file col-lg-3" name="thumbnail" id="thumbnail" type="file" required>
+								  </div>
 							  </div>
                           </div>
 						  
 						  <div class="form-group">
 							<div class="col-sm-4">
-                                  <input type="submit" value="Salvar alterações" class="btn btn-success btn-sm pull-left">
+                                  <input type="submit" value="Salvar alterações" name="save" class="btn btn-success btn-sm pull-left">
                               </div>
 						  </div>
 						  

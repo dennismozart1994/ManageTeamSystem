@@ -224,7 +224,7 @@ if(isset($_REQUEST['logout']))
             // (string | mandatory) the heading of the notification
             title: 'Bem vindo de volta!',
             // (string | mandatory) the text inside the notification
-            text: 'Esse sistema está em fase beta e portanto erros poderão ocorrer durante sua utilização. Reporte os erros encontrados <a href="http://testedelink" target="_blank" style="color:#ffd777">clicando aqui</a>.',
+            text: 'Esse sistema está em fase beta e portanto erros poderão ocorrer durante sua utilização. Reporte os erros encontrados <a href="https://trello.com/b/Pftudfpw/bug-report" target="_blank" style="color:#ffd777">clicando aqui</a>.',
             // (string | optional) the image to display on the left
             image: '',
             // (bool | optional) if you want it to fade out on its own or just sit there
