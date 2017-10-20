@@ -22,6 +22,12 @@ if(isset($_REQUEST['logout']))
 {
 	$user->logout();
 }
+
+if(isset($_GET['id']) && isset($_REQUEST['delete']))
+{
+	$id = $_GET['id'];
+	$user->DeleteUser($id);
+}
 ?>
 
 <!DOCTYPE html>
@@ -110,22 +116,9 @@ if(isset($_REQUEST['logout']))
 		</section><! --/wrapper -->
       </section><!-- /MAIN CONTENT -->
 				 
-		 <!-- Modal cancelamento-->
-		  <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="cancelamento" class="modal fade">
-			  <div class="modal-dialog">
-				  <div class="modal-content">
-					  <div class="modal-header">
-						  <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-						  <h4 class="modal-title">Tem certeza que deseja excluir o usuário?</h4>
-					  </div>
-					  <div class="modal-footer">
-						  <button data-dismiss="modal" class="btn btn-default" type="button">Não</button>
-						  <button data-dismiss="modal" data-toggle="modal" href="index.php#cancelado" class="btn btn-theme" type="button">Sim</button>
-					  </div>
-				  </div>
-			  </div>
-		  </div>
-		 <!-- modal -->
+		<?php
+			$user->getUsersDeleteModal();
+		?>
 		 
 		 <!-- Modal cancelado-->
 		  <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="cancelado" class="modal fade">

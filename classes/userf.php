@@ -10,7 +10,7 @@ class user
 		if($connect->tryconnect())
 		{
 			$connector = $connect->getConnector();
-			$sql = "SELECT * FROM tab_user WHERE email_in_user=:u AND senha_user=:p";
+			$sql = "SELECT * FROM tab_user WHERE email_in_user=:u AND senha_user=:p AND active_user = 0";
 			$query = $connector->prepare($sql);
 			$query->bindParam(':u', $user, PDO::PARAM_STR);
 			$query->bindParam(':p', $pass, PDO::PARAM_STR);
@@ -51,7 +51,7 @@ class user
 		if($connect->tryconnect())
 		{
 			$connector = $connect->getConnector();
-			$sql = "SELECT $field FROM tab_user WHERE id_user=:u";
+			$sql = "SELECT $field FROM tab_user WHERE id_user=:u AND active_user = 0";
 			$query = $connector->prepare($sql);
 			$query->bindParam(':u', $id, PDO::PARAM_STR);
 			$query->execute();
@@ -73,7 +73,7 @@ class user
 		{
 			$connector = $connect->getConnector();
 			
-			$sql = "SELECT * from TAB_user AS user WHERE user.id_cc=:cc";
+			$sql = "SELECT * from TAB_user AS user WHERE user.id_cc=:cc AND active_user = 0";
 			$query = $connector->prepare($sql);
 			$query->bindParam(':cc', $_SESSION['cc'], PDO::PARAM_STR);
 			$query->execute();
@@ -550,7 +550,7 @@ class user
 			$connector = $connection->getConnector();
 			
 			$sql = "SELECT COUNT(*) from TAB_projeto AS projeto INNER JOIN TAB_user AS user ON projeto.id_cc = user.id_cc
-					WHERE projeto.id_inmetrics_user=:user AND (projeto.id_inmetrics_user = user.id_user) AND projeto.id_f != 5 AND projeto.id_f != 8";
+					WHERE projeto.id_inmetrics_user=:user AND (projeto.id_inmetrics_user = user.id_user) AND projeto.id_f != 5 AND projeto.id_f != 8 AND user.active_user = 0";
 			
 			$query = $connector->prepare($sql);
 			$query->bindParam(':user', $_SESSION['id'], PDO::PARAM_STR);
@@ -573,7 +573,7 @@ class user
 		{
 			$connector = $connection->getConnector();
 			$sql = "SELECT COUNT(*) from TAB_projeto AS projeto INNER JOIN TAB_user AS user ON projeto.id_cc = user.id_cc
-					WHERE projeto.id_inmetrics_user=:user AND (projeto.id_inmetrics_user = user.id_user) AND projeto.id_mtp = 2 AND projeto.id_f != 5 AND projeto.id_f != 8";
+					WHERE projeto.id_inmetrics_user=:user AND (projeto.id_inmetrics_user = user.id_user) AND projeto.id_mtp = 2 AND projeto.id_f != 5 AND projeto.id_f != 8 AND user.active_user = 0";
 			
 			$query = $connector->prepare($sql);
 			$query->bindParam(':user', $_SESSION['id'], PDO::PARAM_STR);
@@ -596,7 +596,7 @@ class user
 		{
 			$connector = $connection->getConnector();
 			$sql = "SELECT COUNT(*) from TAB_projeto AS projeto INNER JOIN TAB_user AS user ON projeto.id_cc = user.id_cc
-					WHERE projeto.id_inmetrics_user=:user AND (projeto.id_inmetrics_user = user.id_user) AND projeto.id_mtp = 5 AND projeto.id_f != 5 AND projeto.id_f != 8";
+					WHERE projeto.id_inmetrics_user=:user AND (projeto.id_inmetrics_user = user.id_user) AND projeto.id_mtp = 5 AND projeto.id_f != 5 AND projeto.id_f != 8 AND user.active_user = 0";
 			
 			$query = $connector->prepare($sql);
 			$query->bindParam(':user', $_SESSION['id'], PDO::PARAM_STR);
@@ -693,7 +693,7 @@ class user
 					$id = $return_users->id_user;
 					$nome = $return_users->nome_user;
 					$sqlproject = "SELECT COUNT(*) from TAB_projeto AS projeto INNER JOIN TAB_user AS user ON projeto.id_cc = user.id_cc
-					WHERE projeto.id_inmetrics_user=:user AND (projeto.id_inmetrics_user = user.id_user) AND projeto.id_f != 5 AND projeto.id_f != 8";
+					WHERE projeto.id_inmetrics_user=:user AND (projeto.id_inmetrics_user = user.id_user) AND projeto.id_f != 5 AND projeto.id_f != 8 AND user.active_user = 0";
 					$queryproject = $connector->prepare($sqlproject);
 					$queryproject->bindParam(':user', $id, PDO::PARAM_STR);
 					$queryproject->execute();
@@ -720,7 +720,7 @@ class user
 			$sql = "SELECT user.id_user AS ID, user.nome_user AS Nome, user.email_in_user AS Email, centroc.desc_cc AS CentroCusto, user.funcao_user AS Funcao 
 			FROM TAB_user AS user 
 			INNER JOIN TAB_cc AS centroc ON user.id_cc=centroc.id_cc 
-			WHERE user.id_cc=:cc AND user.id_user != :myuser";
+			WHERE user.id_cc=:cc AND user.id_user != :myuser AND user.active_user = 0";
 			$query = $connector->prepare($sql);
 			$query->bindParam(':cc', $_SESSION['cc'], PDO::PARAM_STR);
 			$query->bindParam(':myuser', $_SESSION['id'], PDO::PARAM_STR);
@@ -744,10 +744,77 @@ class user
 							  <td>'.$funcao_user.'</td>
 							  <td>
 								<a data-toggle="modal" href="myuser.php?edit='.$id.'"><button class="btn btn-primary btn-xs"><i class="fa fa-pencil"></i></button></a>
-								<a data-toggle="modal" href="manageusers.php?id='.$id.'#cancelamento"><button class="btn btn-danger btn-xs"><i class="fa fa-ban"></i></button></a>
+								<a data-toggle="modal" href="manageusers.php#cancelamento'.$id.'"><button class="btn btn-danger btn-xs"><i class="fa fa-ban"></i></button></a>
 							  </td>
 						  </tr>';
 				}
+			}
+		}
+	}
+	
+	public function getUsersDeleteModal()
+	{
+		$connect = new connection;
+		if($connect->tryconnect())
+		{
+			$connector = $connect->getConnector();
+			
+			$sql = "SELECT user.id_user AS ID FROM TAB_user AS user 
+			INNER JOIN TAB_cc AS centroc ON user.id_cc=centroc.id_cc 
+			WHERE user.id_cc=:cc AND user.id_user != :myuser AND user.active_user = 0";
+			$query = $connector->prepare($sql);
+			$query->bindParam(':cc', $_SESSION['cc'], PDO::PARAM_STR);
+			$query->bindParam(':myuser', $_SESSION['id'], PDO::PARAM_STR);
+			$query->execute();
+			$rowC = $query->rowCount();
+			if($rowC > 0)
+			{
+				while($result = $query->FETCH(PDO::FETCH_OBJ))
+				{
+					$id = $result->ID;					
+					echo '<!-- Modal cancelamento-->
+							<div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="cancelamento'.$id.'" class="modal fade">
+								<form method="get" action="">
+									<div class="modal-dialog">
+										<div class="modal-content">
+											<div class="modal-header">
+												<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+												<h4 class="modal-title">Tem certeza que deseja desativar o usuário?</h4>
+												<input id="id" name="id" type="hidden" value="'.$id.'">
+											</div>
+											<div class="modal-footer">
+												<button data-dismiss="modal" class="btn btn-default" type="button">Não</button>
+												<button href="index.php#cancelado" class="btn btn-theme" type="submit" name="delete">Sim</button>
+											</div>
+										</div>
+									</div>
+								</form>
+							</div>
+						<!-- modal -->';
+				}
+			}
+		}
+	}
+	
+	public function DeleteUser($id)
+	{
+		$connect = new connection;
+		if($connect->tryconnect())
+		{
+			$connector = $connect->getConnector();
+			
+			$sql = "UPDATE TAB_user SET active_user=1 WHERE id_user=:user";
+			$query = $connector->prepare($sql);
+			$query->bindParam(':user', $id, PDO::PARAM_STR);
+			$query->execute();
+			$rowC = $query->rowCount();
+			if($rowC>0)
+			{
+				echo '<script>alert("Usuário desativado com sucesso!"); window.location.href = "manageusers.php";</script>';
+			}
+			else
+			{
+				echo '<script>alert("Erro ao desativar usuário!"); window.location.href = "manageusers.php";</script>';
 			}
 		}
 	}
