@@ -1,6 +1,8 @@
 <?php
 require_once('connection.php');
 require_once('parameters.php');
+require_once('notify.php');
+
 class projects
 {
 	public function getProjects($type)
@@ -11,6 +13,58 @@ class projects
 			break;
 			default: self::manage();
 			break;
+		}
+	}
+	
+	// --------------------- INSERT, UPDATE AND DELETE DATA FROM DATABASE --------------------------//
+	public function InsertProject($id, $projectname, $ltm, $lp, $respInmetrics, $phase, $status, $pendency, $doc, $meeting, $mrr, $schedule, $approvement)
+	{
+		$connect = new connection;
+		$notify = new notify;
+		
+		if($connect->tryconnect())
+		{
+			$connector = $connect->getConnector();
+			$sql = "INSERT INTO 
+			TAB_projeto(ts_prj, nmp_prj, id_cc, id_lc, id_lp, id_user, id_inmetrics_user, id_f, id_status, id_mtp, doc_prj, reu_prj, mrr_prj, crono_prj, aprv_prj) 
+			VALUES(:ts, :name, :client, :ltm, :lp, :user, :responsable, :phase, :status, :pendency, :doc, :meeting, :mrr, :schedule, :approvement)";
+			$query = $connector->prepare($sql);
+			$query->bindParam(':ts', $id, PDO::PARAM_STR);
+			$query->bindParam(':name', $projectname, PDO::PARAM_STR);
+			$query->bindParam(':client', $_SESSION['cc'], PDO::PARAM_STR);
+			$query->bindParam(':ltm', $ltm, PDO::PARAM_STR);
+			$query->bindParam(':lp', $lp, PDO::PARAM_STR);
+			$query->bindParam(':user', $_SESSION['id'], PDO::PARAM_STR);
+			$query->bindParam(':responsable', $respInmetrics, PDO::PARAM_STR);
+			$query->bindParam(':phase', $phase, PDO::PARAM_STR);
+			$query->bindParam(':status', $status, PDO::PARAM_STR);
+			$query->bindParam(':pendency', $pendency, PDO::PARAM_STR);
+			$query->bindParam(':doc', $doc, PDO::PARAM_STR);
+			$query->bindParam(':meeting', $meeting, PDO::PARAM_STR);
+			$query->bindParam(':mrr', $mrr, PDO::PARAM_STR);
+			$query->bindParam(':schedule', $schedule, PDO::PARAM_STR);
+			$query->bindParam(':approvement', $approvement, PDO::PARAM_STR);
+			$query->execute();
+			$rowC = $query->rowCount();
+			if($rowC>0)
+			{
+				$projectid = $connector->lastInsertId();
+				$status = "Novo projeto!";
+				$message = "Você possui um novo projeto sob sua responsabilidade!";
+				
+				$historyinsert = "INSERT INTO TAB_historico(data_hst, id_f, prvt_hst, rlzd_hst, desc_hst, id_prj, id_user) 
+				VALUES(NOW(), :phase, 100, 0, 'Projeto recebido para estimativa de custos', :project, :user)";
+				$queryhst = $connector->prepare($historyinsert);
+				$queryhst->bindParam(':phase', $phase, PDO::PARAM_STR);
+				$queryhst->bindParam(':project', $projectid, PDO::PARAM_STR);
+				$queryhst->bindParam(':user', $_SESSION['id'], PDO::PARAM_STR);
+				$queryhst->execute();
+				$count = $queryhst->rowCount();
+				if($count>0)
+				{
+					$notify->AddNotify($projectid, $_SESSION['id'], $respInmetrics, $status, $message);
+				}
+			}
 		}
 	}
 	
@@ -72,20 +126,6 @@ class projects
 					$id_pendencia = $result->ID_Pendencia;
 					$previsto = $result->Previsto;
 					$realizado = $result->Realizado;
-					
-					echo '<div class="form-group">
-							<label class="col-sm-2 col-sm-2 control-label">Ticket Service</label>
-							<div class="col-sm-2">
-								<input class="form-control" id="disabledInput" type="text" value="'.$ts.'" disabled>
-							</div>
-						</div>';
-						
-					echo '<div class="form-group">
-                              <label class="col-lg-2 col-sm-2 control-label">Projeto</label>
-							  <div class="col-sm-6">
-                                  <input type="text"  class="form-control" value="'.$nome.'" disabled>
-                              </div>
-                          </div>';
 						  
 					echo '<div class="form-group">
                               <label class="col-lg-12 col-sm-12 control-label"><h4>Líderes</h4></label>
@@ -464,6 +504,24 @@ class projects
 		}
 	}
 	
-	
+	// GET ANY PROJECT FIELD
+	public function getProjectField($id, $field)
+	{
+		$connect = new connection;
+		if($connect->tryconnect())
+		{
+			$connector = $connect->getConnector();
+			$sql = "SELECT $field FROM TAB_projeto WHERE id_prj=:u";
+			$query = $connector->prepare($sql);
+			$query->bindParam(':u', $id, PDO::PARAM_STR);
+			$query->execute();
+			$rowC = $query->rowCount();
+			while($result=$query->FETCH(PDO::FETCH_OBJ))
+			{
+				$rField = $result->$field;
+			}
+			return $rField;
+		}
+	}
 }
 ?>

@@ -4,7 +4,6 @@ require_once('classes/PHPMailer/email.php');
 $mail = new email;
 if(isset($_SESSION['login']))
 {
-	$mail->sendEmail('densilva@inmetrics.com.br', 'Dennis Mozart', 'Teste', utf8_decode('Esta é uma mensagem de teste do plugin'), false, '');
 	header('Location: home.php');
 }
 else

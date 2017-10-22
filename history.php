@@ -62,7 +62,7 @@ if(isset($_REQUEST['logout']))
       <!--main content start-->
       <section id="main-content">
           <section class="wrapper site-min-height">
-          	<h3><i class="fa fa-angle-right"></i><?php echo "Project Name"?></h3>
+          	<h3><i class="fa fa-angle-right"></i><?php if(isset($_GET['p'])){echo $project->getProjectField($_GET['p'], 'nmp_prj');} ?></h3>
           	<div class="row mt">
 			  	<div class="col-lg-12">
                     <div class="content-panel">

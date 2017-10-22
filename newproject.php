@@ -2,9 +2,12 @@
 session_start();
 require_once('classes/userf.php');
 require_once('classes/parameters.php');
+require_once('classes/project.php');
 
 $user = new user;
 $param = new parameters;
+$project = new projects;
+
 $permissions = array("Líder de Testes", "Gerente de Projetos", "Administrador");
 
 // ACCESS WITHOUT LOGIN
@@ -23,6 +26,25 @@ if(!(in_array($_SESSION['funcao'], $permissions)))
 if(isset($_REQUEST['logout']))
 {
 	$user->logout();
+}
+
+if(isset($_POST['add']))
+{
+	$ts = strip_tags($_POST['ts']);
+	$projectname = strip_tags($_POST['nomeprojeto']);
+	$ltm = strip_tags($_POST['ltm']);
+	$lp = strip_tags($_POST['lp']);
+	$analyst = strip_tags($_POST['analyst']);
+	$phases = strip_tags($_POST['phases']);
+	$status = strip_tags($_POST['status']);
+	$delayreason = strip_tags($_POST['delayreason']);
+	$doc = strip_tags($_POST['doc']);
+	$meeting = strip_tags($_POST['meeting']);
+	$mrr = strip_tags($_POST['mrr']);
+	$schedule = strip_tags($_POST['schedule']);
+	$approved = strip_tags($_POST['aproved']);
+	
+	$project->InsertProject($ts, $projectname, $ltm, $lp, $analyst, $phases, $status, $delayreason, $doc, $meeting, $mrr, $schedule, $approved);
 }
 
 ?>
@@ -74,18 +96,18 @@ if(isset($_REQUEST['logout']))
           	<div class="row mt">
           		<div class="col-lg-12">
 					<div class="form-panel">
-						<form class="form-horizontal style-form" method="get">
+						<form class="form-horizontal style-form" method="post">
                           <div class="form-group">
                               <label class="col-sm-2 col-sm-2 control-label">Ticket Service</label>
                               <div class="col-sm-2">
-                                  <input class="form-control" name="ts" id="disabledInput" type="text" placeholder="Número do TS">
+                                  <input class="form-control" name="ts" id="disabledInput" type="text" placeholder="Número do TS" required>
                               </div>
                           </div>
 						  
 						  <div class="form-group">
                               <label class="col-lg-2 col-sm-2 control-label">Projeto</label>
 							  <div class="col-sm-6">
-                                  <input type="text" name="nomeprojeto" class="form-control" placeholder="Nome do projeto">
+                                  <input type="text" name="nomeprojeto" class="form-control" placeholder="Nome do projeto" required>
                               </div>
                           </div>
 						  
@@ -93,7 +115,7 @@ if(isset($_REQUEST['logout']))
                               <label class="col-lg-12 col-sm-12 control-label"><h4>Líderes</h4></label>
                               <div class="col-lg-3">
                                   <p class="form-control-static"><b>Testes e Mudanças:</b></p>
-								  <select name="ltm" class="form-control">
+								  <select name="ltm" class="form-control" required>
 									  <?php 
 										$param->getLTM("select", "none");
 									  ?>
@@ -101,7 +123,7 @@ if(isset($_REQUEST['logout']))
                               </div>
 							  <div class="col-lg-3">
                                   <p class="form-control-static"><b>Projeto Rede:</b></p>
-								  <select name="lp" class="form-control">
+								  <select name="lp" class="form-control" required>
 									  <?php 
 										$param->getLP("select", "none");
 									  ?>
@@ -109,7 +131,7 @@ if(isset($_REQUEST['logout']))
                               </div>
 							   <div class="col-lg-4">
                                   <p class="form-control-static"><b>Responsável Inmetrics:</b></p>
-								  <select name="analyst" class="form-control">
+								  <select name="analyst" class="form-control" required>
 									  <?php 
 										$param->getAnalyst("select", "none");
 									  ?>
@@ -122,7 +144,7 @@ if(isset($_REQUEST['logout']))
                               <label class="col-lg-12 col-sm-12 control-label"><h4>Andamento</h4></label>
                               <div class="col-lg-3">
                                   <p class="form-control-static"><b>Fase:</b></p>
-								  <select name="phases" class="form-control">
+								  <select name="phases" class="form-control" required>
 									  <?php 
 										$param->getPhases("select", "none");
 									  ?>
@@ -130,7 +152,7 @@ if(isset($_REQUEST['logout']))
                               </div>
 							  <div class="col-lg-3">
                                   <p class="form-control-static"><b>Status:</b></p>
-								  <select name="status" class="form-control">
+								  <select name="status" class="form-control" required>
 									  <?php 
 										$param->getStatus("select", "none");
 									  ?>
@@ -138,7 +160,7 @@ if(isset($_REQUEST['logout']))
                               </div>
 							   <div class="col-lg-4">
                                   <p class="form-control-static"><b>Motivo da pendência</b></p>
-								  <select name="delayreason" class="form-control">
+								  <select name="delayreason" class="form-control" required>
 									  <?php 
 										$param->getPendencia("select", "none");
 									  ?>
@@ -150,35 +172,35 @@ if(isset($_REQUEST['logout']))
 							<label class="col-lg-12 col-sm-12 control-label"><h4>Checklist Inicial</h4></label>
                               <div class="col-lg-2">
                                   <p class="form-control-static"><b>Análise de doc(s)?</b></p>
-								  <select name="doc" class="form-control">
+								  <select name="doc" class="form-control" required>
 									  <option value='1'>Sim</option>
 									  <option value='0'>Não</option>
 								  </select>
                               </div>
 							  <div class="col-lg-2">
                                   <p class="form-control-static"><b>Reunião?</b></p>
-								  <select name="meeting" class="form-control">
+								  <select name="meeting" class="form-control" required>
 									  <option value='1'>Sim</option>
 									  <option value='0'>Não</option>
 								  </select>
                               </div>
 							  <div class="col-lg-2">
                                   <p class="form-control-static"><b>MRR?</b></p>
-								  <select name="mrr" class="form-control">
+								  <select name="mrr" class="form-control" required>
 									  <option value='1'>Sim</option>
 									  <option value='0'>Não</option>
 								  </select>
                               </div>
 							  <div class="col-lg-2">
                                   <p class="form-control-static"><b>Cronograma?</b></p>
-								  <select  name="schedule" class="form-control">
+								  <select  name="schedule" class="form-control" required>
 									  <option value='1'>Sim</option>
 									  <option value='0'>Não</option>
 								  </select>
                               </div>
 							  <div class="col-lg-2">
                                   <p class="form-control-static"><b>Aprovação?</b></p>
-								  <select name="aproved" class="form-control">
+								  <select name="aproved" class="form-control" required>
 									  <option value='1'>Sim</option>
 									  <option value='0'>Não</option>
 								  </select>
@@ -187,7 +209,7 @@ if(isset($_REQUEST['logout']))
 						  
 						  <div class="form-group">
 							<div class="col-sm-4">
-                                  <a class="btn btn-success btn-sm pull-left" href="history.php?p=123456">Adicionar</a>
+                                  <button class="btn btn-success btn-sm pull-left" name="add" type="submit">Adicionar</button>
                               </div>
 						  </div>
 						  

@@ -111,7 +111,7 @@ if(isset($_POST['save'])&&isset($_REQUEST['myuser'])&&isset($_FILES['thumbnail']
     <meta name="description" content="">
     <meta name="author" content="Dashboard">
     <meta name="keyword" content="Dashboard, Bootstrap, Admin, Template, Theme, Responsive, Fluid, Retina">
-    <title>InProject - Meu usuário</title>
+    <title>InProject - <?php if(isset($_REQUEST['tm'])){echo $user->getUserField($_GET['tm'], 'nome_user');}else if(isset($_REQUEST['edit'])){echo $user->getUserField($_GET['edit'], 'nome_user');}else{echo "Meu usuário";}?></title>
     <!-- Bootstrap core CSS -->
     <link href="assets/css/bootstrap.css" rel="stylesheet">
     <!--external css-->
@@ -147,24 +147,31 @@ if(isset($_POST['save'])&&isset($_REQUEST['myuser'])&&isset($_FILES['thumbnail']
       <section id="main-content">
           <section class="wrapper">
 			<!-- Todo Fill the fields with the User Information -->
-          	<h3><i class="fa fa-angle-right"></i>Meu usuário</h3>
+          	<h3><i class="fa fa-angle-right"></i><?php if(isset($_REQUEST['tm'])){echo $user->getUserField($_GET['tm'], 'nome_user');}else if(isset($_REQUEST['edit'])){echo $user->getUserField($_GET['edit'], 'nome_user');}else{echo "Meu usuário";}?></h3>
           	<div class="row mt">
           		<div class="col-lg-12">
 					<div class="form-panel">
 						<form class="form-horizontal style-form" method="post" action="<?php if(isset($_GET['edit'])){echo '?edit='.$_GET['edit'].'&update';}else{echo '?edit='.$_SESSION['id'].'&myuser';}?>" enctype="multipart/form-data">
-                          <div class="form-group">
+                          <?php
+							if(!(isset($_GET['tm'])))
+							{
+						  ?>
+						  <div class="form-group">
                               <label class="col-sm-1 col-sm-1 control-label">Nome</label>
                               <div class="col-sm-4">
                                   <input class="form-control" id="disabledInput" type="text" name="username"
-								  <?php if(isset($_REQUEST['tm'])){echo ' required value="Nome do usuário" disabled';}else if(isset($_REQUEST['edit'])){echo ' required value="'.$user->getUserField($_GET['edit'], 'nome_user').'"';}else{echo ' required value="'.$_SESSION['nome'].'"';}?>>
+								  <?php if(isset($_REQUEST['tm'])){echo ' required value="'.$user->getUserField($_GET['tm'], 'nome_user').'" disabled';}else if(isset($_REQUEST['edit'])){echo ' required value="'.$user->getUserField($_GET['edit'], 'nome_user').'"';}else{echo ' required value="'.$_SESSION['nome'].'"';}?>>
                               </div>
                           </div>
+						  <?php
+							}
+						  ?>
 						  
 						  <div class="form-group">
                               <label class="col-lg-1 col-sm-1 control-label">E-mail</label>
 							  <div class="col-sm-4">
                                   <input type="email" name="email" required class="form-control" 
-								  <?php if(isset($_REQUEST['tm'])){echo ' required value="email@usuario" disabled';}else if(isset($_REQUEST['edit'])){echo ' required value="'.$user->getUserField($_GET['edit'], 'email_in_user').'"';}else{echo ' required value="'.$_SESSION['login'].'" disabled';}?>>
+								  <?php if(isset($_REQUEST['tm'])){echo ' required value="'.$user->getUserField($_GET['tm'], 'email_in_user').'" disabled';}else if(isset($_REQUEST['edit'])){echo ' required value="'.$user->getUserField($_GET['edit'], 'email_in_user').'"';}else{echo ' required value="'.$_SESSION['login'].'" disabled';}?>>
                               </div>
                           </div>
 						  
@@ -172,10 +179,14 @@ if(isset($_POST['save'])&&isset($_REQUEST['myuser'])&&isset($_FILES['thumbnail']
                               <label class="col-lg-1 col-sm-1 control-label">Telefone</label>
 							  <div class="col-sm-4">
                                   <input type="text" name="tel" required class="form-control" 
-								  <?php if(isset($_REQUEST['tm'])){echo ' required value="(xx) xxxxx - xxxx" disabled';}else if(isset($_REQUEST['edit'])){echo ' required value="'.$user->getUserField($_GET['edit'], 'tel_user').'"';}else{echo ' required value="'.$_SESSION['tel'].'" disabled';}?>>
+								  <?php if(isset($_REQUEST['tm'])){echo ' required value="'.$user->getUserField($_GET['tm'], 'tel_user').'" disabled';}else if(isset($_REQUEST['edit'])){echo ' required value="'.$user->getUserField($_GET['edit'], 'tel_user').'"';}else{echo ' required value="'.$_SESSION['tel'].'" disabled';}?>>
                               </div>
                           </div>
 						  
+						  <?php
+							if(!(isset($_GET['tm'])))
+							{
+						  ?>
 						  <div class="form-group">
                               <label class="col-lg-1 col-sm-1 control-label">Nova Senha</label>
 							  <div class="col-sm-4">
@@ -191,6 +202,9 @@ if(isset($_POST['save'])&&isset($_REQUEST['myuser'])&&isset($_FILES['thumbnail']
 								  <?php if(isset($_REQUEST['tm'])){echo ' required value="'.$user->getUserField($_GET['tm'], 'senha_user').'"';}else if(isset($_REQUEST['edit'])){echo ' required value="'.$user->getUserField($_GET['edit'], 'senha_user').'"';}else{echo ' required value="'.$user->getUserField($_SESSION['id'], 'senha_user').'"';}?>>
                               </div>
                           </div>
+						  <?php
+						  }
+						  ?>
 						  
 						  <div class="form-group">
 							 <label class="col-lg-1 col-sm-1 control-label">Centro de Custo</label>
@@ -255,18 +269,32 @@ if(isset($_POST['save'])&&isset($_REQUEST['myuser'])&&isset($_FILES['thumbnail']
 										?>
 								  </select>
                               </div>
+							  <?php
+								if(!(isset($_GET['tm'])))
+								{
+							  ?>
 							  <div class="form-group">
 								  <div class="col-lg-7">
 									<input class="btn btn-default btn-file col-lg-3" name="thumbnail" id="thumbnail" type="file" required>
 								  </div>
 							  </div>
+							  <?php
+								}
+							  ?>
                           </div>
 						  
+						  <?php
+							if(!(isset($_GET['tm'])))
+							{
+						  ?>
 						  <div class="form-group">
 							<div class="col-sm-4">
                                   <input type="submit" value="Salvar alterações" name="save" class="btn btn-success btn-sm pull-left">
                               </div>
 						  </div>
+						  <?php
+							}
+						  ?>
 						  
                       </form>
 					</div>

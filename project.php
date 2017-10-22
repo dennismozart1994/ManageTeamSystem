@@ -2,9 +2,11 @@
 session_start();
 require_once('classes/userf.php');
 require_once('classes/project.php');
+require_once('classes/notify.php');
 
 $user = new user;
 $project = new projects;
+$notify = new notify;
 
 // ACCESS WITHOUT LOGIN
 if(!isset($_SESSION['login']))
@@ -17,6 +19,10 @@ if(isset($_REQUEST['logout']))
 {
 	$user->logout();
 }
+
+if(isset($_GET['del'])){
+	$notify->DeleteNotify($_GET['del']);
+}
 ?>
 
 <!DOCTYPE html>
@@ -28,7 +34,7 @@ if(isset($_REQUEST['logout']))
     <meta name="author" content="Dashboard">
     <meta name="keyword" content="Dashboard, Bootstrap, Admin, Template, Theme, Responsive, Fluid, Retina">
 	<!-- Todo Fill title with the project name -->
-    <title>InProject - <?php echo "Project Name" ?></title>
+    <title>InProject - <?php if(isset($_GET['p'])){echo "Ticket ".$project->getProjectField($_GET['p'], 'ts_prj')." - ".$project->getProjectField($_GET['p'], 'nmp_prj');}?></title>
 	<!-- End Todo -->
     <!-- Bootstrap core CSS -->
     <link href="assets/css/bootstrap.css" rel="stylesheet">
@@ -65,7 +71,7 @@ if(isset($_REQUEST['logout']))
       <section id="main-content">
           <section class="wrapper">
 			<!-- Todo Fill the fields with the Project Information -->
-          	<h3><i class="fa fa-angle-right"></i><?php echo "Project Name" ?></h3>
+          	<h3><i class="fa fa-angle-right"></i><?php if(isset($_GET['p'])){echo "Ticket ".$project->getProjectField($_GET['p'], 'ts_prj')." - ".$project->getProjectField($_GET['p'], 'nmp_prj');} ?></h3>
           	<div class="row mt">
           		<div class="col-lg-12">
 					<div class="form-panel">

@@ -5,7 +5,7 @@ require 'vendor/autoload.php';
 
 class email
 {
-	public function sendEmail($to, $name, $subject, $message, $attachment, $file)
+	public function sendEmail($to, $name, $subject, $message, $attachment, $file, $link)
 	{
 		$mail = new PHPMailer;
 		//Tell PHPMailer to use SMTP
@@ -39,8 +39,9 @@ class email
 		//Set the subject line
 		$mail->Subject = $subject;
 		//Replace the plain text body with one created manually
-		$mail->Body = strip_tags($message);
-		$mail->AltBody = strip_tags($message);
+		$mail->Body = $message;
+		$mail->IsHTML(true); 
+		$mail->AltBody = $message;
 		if($attachment)
 		{
 			//Attach an image file
@@ -53,7 +54,7 @@ class email
 		} 
 		else 
 		{
-			echo "Message sent!";
+			echo '<script>alert("Projeto inserido com sucesso!"); window.location.href = "'.$link.'"</script>';
 			
 			//Section 2: IMAP
 			//Uncomment these to save your message in the 'Sent Mail' folder.
