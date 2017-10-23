@@ -406,7 +406,7 @@ class user
 				$cancelled = 0;
 				$finished = 0;
 			}
-			echo '<a href="projects.php?filter&type=cf&id='.$_SESSION['id'].'"><div class="white-panel pn donut-chart">';
+			echo '<a href="myprojects.php?filter&type=cf&id='.$_SESSION['id'].'"><div class="white-panel pn donut-chart">';
 			echo '	<div class="white-header">';
 			echo '		<h5>Projetos Cancelados / Finalizados</h5>';
 			echo '	</div>';

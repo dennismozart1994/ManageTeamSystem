@@ -23,6 +23,24 @@ if(isset($_REQUEST['logout']))
 if(isset($_GET['del'])){
 	$notify->DeleteNotify($_GET['del']);
 }
+
+if(isset($_POST['update_project']) && isset($_GET['p']))
+{
+	$id = $_GET['p'];
+	$ltm = $_POST['ltm'];
+	$lp = $_POST['lp'];
+	$analyst = $_POST['analyst'];
+	$phase = $_POST['phase'];
+	$status = $_POST['status'];
+	$pendency = $_POST['pendency'];
+	$doc = $_POST['doc'];
+	$meeting = $_POST['meeting'];
+	$mrr = $_POST['mrr'];
+	$schedule = $_POST['schedule'];
+	$approvement = $_POST['approvement'];
+	
+	$project->UpdateProjectInfo($id, $ltm, $lp, $analyst, $phase, $status, $pendency, $doc, $meeting, $mrr, $schedule, $approvement);
+}
 ?>
 
 <!DOCTYPE html>
@@ -75,7 +93,7 @@ if(isset($_GET['del'])){
           	<div class="row mt">
           		<div class="col-lg-12">
 					<div class="form-panel">
-						<form class="form-horizontal style-form" method="get">
+						<form class="form-horizontal style-form" method="post" action="">
 						  <?php $project->getInfo($_GET['p'])?>
 						</form>
 					</div>

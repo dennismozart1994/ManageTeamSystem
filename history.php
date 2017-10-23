@@ -17,6 +17,19 @@ if(isset($_REQUEST['logout']))
 {
 	$user->logout();
 }
+
+if(isset($_POST['add_note']))
+{
+	$id = $_POST['id'];
+	$date = $_POST['date'];
+	$phase = $_POST['phase'];
+	$predicted = $_POST['predicted'];
+	$accomplished = $_POST['accomplished'];
+	$note = strip_tags($_POST['note']);
+	
+	$project->addHistoryNote($date, $phase, $predicted, $accomplished, $note, $id, $_SESSION['id']);
+}
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -68,7 +81,12 @@ if(isset($_REQUEST['logout']))
                     <div class="content-panel">
 					  <h4><i class="fa fa-history"></i>Histórico do projeto</h4>
 						<!-- Todo Add new event -->
-						<a data-toggle="modal" class="btn btn-success btn-sm pull-left" href="index.php#myModal">Adicionar nota</a>
+						<?php
+							if(($project->getProjectField($_GET['p'], 'id_f') != 5)&&($project->getProjectField($_GET['p'], 'id_f') != 8))
+							{
+								echo "<a data-toggle='modal' class='btn btn-success btn-sm pull-left' href='history.php?p=".$_GET['p']."#myModal".$_GET['p']."'>Adicionar nota</a>";
+							}
+						?>
 						<!-- End Todo -->
                         <section id="unseen">
                             <table class="table table-bordered table-striped table-condensed">
@@ -94,40 +112,9 @@ if(isset($_REQUEST['logout']))
 		  	</div><!-- /row -->
 		</section><!-- /wrapper -->
       </section><!-- /MAIN CONTENT -->
-		<!-- Modal Add nota-->
-		  <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="myModal" class="modal fade">
-			  <div class="modal-dialog">
-				  <div class="modal-content">
-					  <div class="modal-header">
-						  <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-						  <h4 class="modal-title">Adicionar Nota</h4>
-					  </div>
-					  <div class="modal-body">
-						<p>Data</p>
-						<input class="form-control" type="text" data-mask="00/00/0000"/>
-						<p><br/>Fase</p>
-						<select class="form-control" required>
-						  <option><?php echo "Modelagem"?></option>
-						  <option><?php echo "Modelagem"?></option>
-						  <option><?php echo "Modelagem"?></option>
-						  <option><?php echo "Modelagem"?></option>
-						  <option><?php echo "Modelagem"?></option>
-					    </select>
-						<p>Previsto</p>
-						<input class="form-control" type="text"/>
-						<p>Realizado</p>
-						<input class="form-control" type="text"/>
-						<p><br/>Nota</p>
-						<textarea class="form-control" rows="5" id="comment"></textarea>
-					  </div>
-					  <div class="modal-footer">
-						  <button data-dismiss="modal" class="btn btn-default" type="button">Cancelar</button>
-						  <button data-dismiss="modal" data-toggle="modal" href="index.php#confirmation" class="btn btn-theme" type="button">Adicionar</button>
-					  </div>
-				  </div>
-			  </div>
-		  </div>
-		 <!-- modal -->
+		<?php
+			$project->AddHistoryModal($_GET['p']);
+		?>
 		 
 		 <!-- Modal nota adicionada-->
 		  <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="confirmation" class="modal fade">

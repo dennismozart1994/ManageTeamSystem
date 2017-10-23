@@ -1,30 +1,70 @@
 <?php
 session_start();
 require_once('classes/userf.php');
+require_once('classes/parameters.php');
 require_once('classes/project.php');
 
-$user = new user;
-$project = new projects;
-$permissions = array("Líder de Testes", "Gerente de Projetos", "Administrador");
+	$user = new user;
+	$project = new projects;
+	$param = new parameters;
+	$permissions = array("Líder de Testes", "Gerente de Projetos", "Administrador");
 
-// ACCESS WITHOUT LOGIN
-if(!isset($_SESSION['login']))
-{
-	header('Location: index.php');
-}
+	// ACCESS WITHOUT LOGIN
+	if(!isset($_SESSION['login']))
+	{
+		header('Location: index.php');
+	}
 
-// PERMISSIONS
-if(!(in_array($_SESSION['funcao'], $permissions)))
-{
-	$user->logout();
-}
+	// PERMISSIONS
+	if(!(in_array($_SESSION['funcao'], $permissions)))
+	{
+		$user->logout();
+	}
 
-// LOGOUT
-if(isset($_REQUEST['logout']))
-{
-	$user->logout();
-}
+	// LOGOUT
+	if(isset($_REQUEST['logout']))
+	{
+		$user->logout();
+	}
 
+	if(isset($_POST['add_note']))
+	{
+		$id = $_POST['id'];
+		$date = $_POST['date'];
+		$phase = $_POST['phase'];
+		$predicted = $_POST['predicted'];
+		$accomplished = $_POST['accomplished'];
+		$note = strip_tags($_POST['note']);
+		
+		$project->addHistoryNote($date, $phase, $predicted, $accomplished, $note, $id, $_SESSION['id']);
+	}
+
+	if(isset($_POST['finish_project']))
+	{
+		$id = $_POST['id'];
+		
+		// 5 - Finalizado
+		// 8 - Cancelado
+		$phase = 5; 
+		
+		$project->UpdatePhase($phase, 'Projeto finalizado', $id, $_SESSION['id'], 0);
+	}
+	
+	if(isset($_POST['cancel_project']))
+	{
+		$id = $_POST['id'];
+		$note = strip_tags($_POST['note']);
+		$reason = $_POST['reason'];
+		
+		$message = $reason.' - '.$note;
+		
+		
+		// 5 - Finalizado
+		// 8 - Cancelado
+		$phase = 8; 
+		
+		$project->UpdatePhase($phase, $message, $id, $_SESSION['id'], 0);
+	}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -128,130 +168,9 @@ if(isset($_REQUEST['logout']))
 		  	</div><!-- /row -->
 		</section><! --/wrapper -->
       </section><!-- /MAIN CONTENT -->
-		<!-- Modal Add nota-->
-		  <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="myModal" class="modal fade">
-			  <div class="modal-dialog">
-				  <div class="modal-content">
-					  <div class="modal-header">
-						  <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-						  <h4 class="modal-title">Adicionar Nota</h4>
-					  </div>
-					  <div class="modal-body">
-						<p>Data</p>
-						<input class="form-control" type="text" data-mask="00/00/0000"/>
-						<p><br/>Fase</p>
-						<select class="form-control" required>
-						  <option><?php echo "Modelagem"?></option>
-						  <option><?php echo "Modelagem"?></option>
-						  <option><?php echo "Modelagem"?></option>
-						  <option><?php echo "Modelagem"?></option>
-						  <option><?php echo "Modelagem"?></option>
-					    </select>
-						<p>Previsto</p>
-						<input class="form-control" type="text"/>
-						<p>Realizado</p>
-						<input class="form-control" type="text"/>
-						<p><br/>Nota</p>
-						<textarea class="form-control" rows="5" id="comment"></textarea>
-					  </div>
-					  <div class="modal-footer">
-						  <button data-dismiss="modal" class="btn btn-default" type="button">Cancelar</button>
-						  <button data-dismiss="modal" data-toggle="modal" href="index.php#confirmation" class="btn btn-theme" type="button">Adicionar</button>
-					  </div>
-				  </div>
-			  </div>
-		  </div>
-		<!-- modal -->
-		 
-		 <!-- Modal nota adicionada-->
-		  <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="confirmation" class="modal fade">
-			  <div class="modal-dialog">
-				  <div class="modal-content">
-					  <div class="modal-header">
-						  <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-						  <h4 class="modal-title">Nota adicionada</h4>
-					  </div>
-					  <div class="modal-body">
-						  <p>Nota adicionada com sucesso!</p>
-					  </div>
-					  <div class="modal-footer">
-						  <button data-dismiss="modal" class="btn btn-theme" type="button">OK</button>
-					  </div>
-				  </div>
-			  </div>
-		  </div>
-		 <!-- modal -->
-		<!-- Modal encerramento-->
-		  <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="encerramento" class="modal fade">
-			  <div class="modal-dialog">
-				  <div class="modal-content">
-					  <div class="modal-header">
-						  <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-						  <h4 class="modal-title">Tem certeza que deseja finalizar o projeto?</h4>
-					  </div>
-					  <div class="modal-footer">
-						  <button data-dismiss="modal" class="btn btn-default" type="button">Não</button>
-						  <button data-dismiss="modal" data-toggle="modal" href="index.php#encerrado" class="btn btn-theme" type="button">Sim</button>
-					  </div>
-				  </div>
-			  </div>
-		  </div>
-		 <!-- modal -->
-		 
-		 <!-- Modal encerrado-->
-		  <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="encerrado" class="modal fade">
-			  <div class="modal-dialog">
-				  <div class="modal-content">
-					  <div class="modal-header">
-						  <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-						  <h4 class="modal-title">Encerrado</h4>
-					  </div>
-					  <div class="modal-body">
-						  <p>O projeto foi finalizado com sucesso!</p>
-					  </div>
-					  <div class="modal-footer">
-						  <button data-dismiss="modal" class="btn btn-theme" type="button">OK</button>
-					  </div>
-				  </div>
-			  </div>
-		  </div>
-		 <!-- modal -->
-		 
-		 <!-- Modal cancelamento-->
-		  <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="cancelamento" class="modal fade">
-			  <div class="modal-dialog">
-				  <div class="modal-content">
-					  <div class="modal-header">
-						  <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-						  <h4 class="modal-title">Tem certeza que deseja cancelar o projeto?</h4>
-					  </div>
-					  <div class="modal-footer">
-						  <button data-dismiss="modal" class="btn btn-default" type="button">Não</button>
-						  <button data-dismiss="modal" data-toggle="modal" href="index.php#cancelado" class="btn btn-theme" type="button">Sim</button>
-					  </div>
-				  </div>
-			  </div>
-		  </div>
-		 <!-- modal -->
-		 
-		 <!-- Modal cancelado-->
-		  <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="cancelado" class="modal fade">
-			  <div class="modal-dialog">
-				  <div class="modal-content">
-					  <div class="modal-header">
-						  <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-						  <h4 class="modal-title">Cancelado</h4>
-					  </div>
-					  <div class="modal-body">
-						  <p>O projeto foi cancelado com sucesso!</p>
-					  </div>
-					  <div class="modal-footer">
-						  <button data-dismiss="modal" class="btn btn-theme" type="button">OK</button>
-					  </div>
-				  </div>
-			  </div>
-		  </div>
-		 <!-- modal -->
+		<?php
+			$project->manageAddHistoryModal();
+		?>
       <!--main content end-->
       <!--footer start-->
       <footer class="site-footer">

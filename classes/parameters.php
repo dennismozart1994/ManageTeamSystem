@@ -580,6 +580,31 @@ class parameters
 		}
 	}
 	
+	public function getOnePhase($phaseid)
+	{
+		$connect = new connection;
+		if($connect->tryconnect())
+		{
+			$connector = $connect->getConnector();
+			$sql = "SELECT fases.id_f AS ID, fases.nome_f AS Nome, fases.desc_f AS Descricao
+			FROM TAB_fases AS fases WHERE fases.id_f=:phase";
+			$query = $connector->prepare($sql);
+			$query->bindParam(':phase', $phaseid, PDO::PARAM_INT);
+			$query->execute();
+			$rowC = $query->rowCount();
+			if($rowC > 0)
+			{
+				while($result = $query->FETCH(PDO::FETCH_OBJ))
+				{
+					$id_phase = $result->ID;
+					$nome = $result->Nome;
+					$description = $result->Descricao;
+					echo '<option value="'.$id_phase.'">'.$nome.'</option>';
+				}
+			}
+		}
+	}
+	
 	public function getStatus($type, $exception)
 	{
 		$connect = new connection;
