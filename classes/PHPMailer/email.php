@@ -5,7 +5,7 @@ require 'vendor/autoload.php';
 
 class email
 {
-	public function sendEmail($to, $name, $subject, $message, $attachment, $file, $link)
+	public function sendEmail($to, $name, $subject, $message, $attachment, $file, $link, $return)
 	{
 		$mail = new PHPMailer;
 		//Tell PHPMailer to use SMTP
@@ -50,11 +50,11 @@ class email
 		//send the message, check for errors
 		if (!$mail->send()) 
 		{
-			echo "Mailer Error: " . $mail->ErrorInfo;
-		} 
+			echo '<script>alert("Mailer Error: '. $mail->ErrorInfo.'"); window.location.href = "'.$link.'"</script>';
+		}
 		else 
 		{
-			echo '<script>alert("Projeto inserido com sucesso!"); window.location.href = "'.$link.'"</script>';
+			echo '<script>alert("'.$return.'"); window.location.href = "'.$link.'"</script>';
 			
 			//Section 2: IMAP
 			//Uncomment these to save your message in the 'Sent Mail' folder.

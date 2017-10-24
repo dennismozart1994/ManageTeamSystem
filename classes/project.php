@@ -16,6 +16,515 @@ class projects
 		}
 	}
 	
+	public function ApplyFilter($user, $phase, $projectname, $lvl)
+	{
+		$connect = new connection;
+		if($connect->tryconnect())
+		{
+			$connector = $connect->getConnector();
+			if($lvl == 0)
+			{
+				$sql = "SELECT projeto.id_prj AS ID, projeto.ts_prj AS TS, projeto.nmp_prj AS NomeProjeto, projeto.id_f AS ID_fase, 
+				ltm.nome_lc AS NomeLiderTestes, 
+				lp.nome_lp AS NomeLiderProjetos, 
+				user.nome_user AS NomeAnalista, 
+				fases.nome_f AS NomeFase,
+				status.nome_status AS NomeStatus,
+				mot_pend.nome_mtp AS NomeMotivo 
+				FROM TAB_projeto AS projeto 
+				INNER JOIN TAB_lider_cliente AS ltm ON ltm.id_lc = projeto.id_lc 
+				INNER JOIN TAB_lider_projeto AS lp ON lp.id_lp = projeto.id_lp 
+				INNER JOIN TAB_user AS user ON user.id_user = projeto.id_inmetrics_user 
+				INNER JOIN TAB_fases AS fases ON fases.id_f = projeto.id_f 
+				INNER JOIN TAB_status AS status ON status.id_status = projeto.id_status 
+				INNER JOIN TAB_mot_pend AS mot_pend ON mot_pend.id_mtp = projeto.id_mtp 
+				WHERE projeto.id_cc=:cc AND projeto.id_inmetrics_user=:user AND projeto.id_f=:phase AND nmp_prj LIKE CONCAT('%',:projectname,'%')";
+				$query = $connector->prepare($sql);
+				$query->bindParam(':cc', $_SESSION['cc'], PDO::PARAM_STR);
+				$query->bindParam(':user', $user, PDO::PARAM_STR);
+				$query->bindParam(':phase', $phase, PDO::PARAM_STR);
+				$query->bindParam(':projectname', $projectname, PDO::PARAM_STR);
+				$query->execute();
+				$rowC = $query->rowCount();
+				if($rowC > 0)
+				{
+					while($result = $query->FETCH(PDO::FETCH_OBJ))
+					{
+						$idprojeto = $result->ID;
+						$id_phase = $result->ID_fase;
+						$ts = $result->TS;
+						$nomeprojeto = $result->NomeProjeto;
+						$ltm = $result->NomeLiderTestes;
+						$lp = $result->NomeLiderProjetos;
+						$analista = $result->NomeAnalista;
+						$fase = $result->NomeFase;
+						$status = $result->NomeStatus;
+						$pendencia = $result->NomeMotivo;
+						echo '		<tr>';
+						echo '			  <td class="numeric">'.$ts.'</td>';
+						echo '			  <td>'.$nomeprojeto.'</td>';
+						echo '			  <td>'.$ltm.'</td>';
+						echo '			  <td>'.$lp.'</td>';
+						echo '			  <td>'.$analista.'</td>';
+						echo '			  <td>'.$fase.'</td>';
+						echo '			  <td>'.$status.'</td>';
+						echo '			  <td>'.$pendencia.'</td>';
+						echo '			  <td>';
+						if(($id_phase != 5) && ($id_phase != 8))
+						{
+							echo '				<a data-toggle="modal" href="myprojects.php#myModal'.$idprojeto.'"><button class="btn btn-primary btn-xs"><i class="fa fa-pencil"></i></button></a>';
+							echo '				<a data-toggle="modal" href="myprojects.php#encerramento'.$idprojeto.'"><button class="btn btn-success btn-xs"><i class=" fa fa-check"></i></button></a>';
+							echo '				<a data-toggle="modal" href="myprojects.php#cancelamento'.$idprojeto.'"><button class="btn btn-danger btn-xs"><i class="fa fa-ban"></i></button></a>';
+						}
+							echo '				<a href="project.php?p='.$idprojeto.'"><button class="btn btn-primary btn-xs"><i class="fa fa-search"></i></button></a>';
+							echo '			  </td>';
+						echo '		</tr>';
+					}
+				}
+			}
+			else
+			{
+				$sql = "SELECT projeto.id_prj AS ID, projeto.ts_prj AS TS, projeto.nmp_prj AS NomeProjeto, projeto.id_f AS ID_fase, 
+				ltm.nome_lc AS NomeLiderTestes, 
+				lp.nome_lp AS NomeLiderProjetos, 
+				user.nome_user AS NomeAnalista, 
+				fases.nome_f AS NomeFase,
+				status.nome_status AS NomeStatus,
+				mot_pend.nome_mtp AS NomeMotivo 
+				FROM TAB_projeto AS projeto 
+				INNER JOIN TAB_lider_cliente AS ltm ON ltm.id_lc = projeto.id_lc 
+				INNER JOIN TAB_lider_projeto AS lp ON lp.id_lp = projeto.id_lp 
+				INNER JOIN TAB_user AS user ON user.id_user = projeto.id_inmetrics_user 
+				INNER JOIN TAB_fases AS fases ON fases.id_f = projeto.id_f 
+				INNER JOIN TAB_status AS status ON status.id_status = projeto.id_status 
+				INNER JOIN TAB_mot_pend AS mot_pend ON mot_pend.id_mtp = projeto.id_mtp 
+				WHERE projeto.id_cc=:cc AND projeto.id_f=:phase AND nmp_prj LIKE CONCAT('%',:projectname,'%')";
+				$query = $connector->prepare($sql);
+				$query->bindParam(':cc', $_SESSION['cc'], PDO::PARAM_STR);
+				$query->bindParam(':phase', $phase, PDO::PARAM_STR);
+				$query->bindParam(':projectname', $projectname, PDO::PARAM_STR);
+				
+				$query->execute();
+				$rowC = $query->rowCount();
+				if($rowC > 0)
+				{
+					while($result = $query->FETCH(PDO::FETCH_OBJ))
+					{
+						$idprojeto = $result->ID;
+						$id_phase = $result->ID_fase;
+						$ts = $result->TS;
+						$nomeprojeto = $result->NomeProjeto;
+						$ltm = $result->NomeLiderTestes;
+						$lp = $result->NomeLiderProjetos;
+						$analista = $result->NomeAnalista;
+						$fase = $result->NomeFase;
+						$status = $result->NomeStatus;
+						$pendencia = $result->NomeMotivo;
+						echo '		<tr>';
+						echo '			  <td class="numeric">'.$ts.'</td>';
+						echo '			  <td>'.$nomeprojeto.'</td>';
+						echo '			  <td>'.$ltm.'</td>';
+						echo '			  <td>'.$lp.'</td>';
+						echo '			  <td>'.$analista.'</td>';
+						echo '			  <td>'.$fase.'</td>';
+						echo '			  <td>'.$status.'</td>';
+						echo '			  <td>'.$pendencia.'</td>';
+						echo '			  <td>';
+						if(($id_phase != 5) && ($id_phase != 8))
+						{
+							echo '				<a data-toggle="modal" href="projects.php#myModal'.$idprojeto.'"><button class="btn btn-primary btn-xs"><i class="fa fa-pencil"></i></button></a>';
+							echo '				<a data-toggle="modal" href="projects.php#encerramento'.$idprojeto.'"><button class="btn btn-success btn-xs"><i class=" fa fa-check"></i></button></a>';
+							echo '				<a data-toggle="modal" href="projects.php#cancelamento'.$idprojeto.'"><button class="btn btn-danger btn-xs"><i class="fa fa-ban"></i></button></a>';
+						}
+						echo '				<a href="project.php?p='.$idprojeto.'"><button class="btn btn-primary btn-xs"><i class="fa fa-search"></i></button></a>';
+						echo '			  </td>';
+						echo '		</tr>';
+					}
+				}
+			}
+		}
+	}
+	
+	public function getFProjects($type, $id, $lvl)
+	{
+		$connect = new connection;
+		if($connect->tryconnect())
+		{
+			$connector = $connect->getConnector();
+			// 0 - Normal USER
+			// 1 - Admin User
+			if($lvl = 0)
+			{
+				// filter by projects running
+				if(($type == "fase") && ($id == "andamento"))
+				{
+					$sql = "SELECT projeto.id_prj AS ID, projeto.ts_prj AS TS, projeto.nmp_prj AS NomeProjeto, projeto.id_f AS ID_fase, 
+					ltm.nome_lc AS NomeLiderTestes, 
+					lp.nome_lp AS NomeLiderProjetos, 
+					user.nome_user AS NomeAnalista, 
+					fases.nome_f AS NomeFase,
+					status.nome_status AS NomeStatus,
+					mot_pend.nome_mtp AS NomeMotivo 
+					FROM TAB_projeto AS projeto 
+					INNER JOIN TAB_lider_cliente AS ltm ON ltm.id_lc = projeto.id_lc 
+					INNER JOIN TAB_lider_projeto AS lp ON lp.id_lp = projeto.id_lp 
+					INNER JOIN TAB_user AS user ON user.id_user = projeto.id_inmetrics_user 
+					INNER JOIN TAB_fases AS fases ON fases.id_f = projeto.id_f 
+					INNER JOIN TAB_status AS status ON status.id_status = projeto.id_status 
+					INNER JOIN TAB_mot_pend AS mot_pend ON mot_pend.id_mtp = projeto.id_mtp 
+					WHERE projeto.id_cc=:cc AND projeto.id_inmetrics_user=:user AND projeto.id_f !=5 AND projeto.id_f !=8";
+					$query = $connector->prepare($sql);
+					$query->bindParam(':cc', $_SESSION['cc'], PDO::PARAM_STR);
+					$query->bindParam(':user', $_SESSION['id'], PDO::PARAM_STR);
+				}
+				// filter by finished projects
+				else if(($type == "cf"))
+				{
+					$sql = "SELECT projeto.id_prj AS ID, projeto.ts_prj AS TS, projeto.nmp_prj AS NomeProjeto, projeto.id_f AS ID_fase, 
+					ltm.nome_lc AS NomeLiderTestes, 
+					lp.nome_lp AS NomeLiderProjetos, 
+					user.nome_user AS NomeAnalista, 
+					fases.nome_f AS NomeFase,
+					status.nome_status AS NomeStatus,
+					mot_pend.nome_mtp AS NomeMotivo 
+					FROM TAB_projeto AS projeto 
+					INNER JOIN TAB_lider_cliente AS ltm ON ltm.id_lc = projeto.id_lc 
+					INNER JOIN TAB_lider_projeto AS lp ON lp.id_lp = projeto.id_lp 
+					INNER JOIN TAB_user AS user ON user.id_user = projeto.id_inmetrics_user 
+					INNER JOIN TAB_fases AS fases ON fases.id_f = projeto.id_f 
+					INNER JOIN TAB_status AS status ON status.id_status = projeto.id_status 
+					INNER JOIN TAB_mot_pend AS mot_pend ON mot_pend.id_mtp = projeto.id_mtp 
+					WHERE projeto.id_cc=:cc AND projeto.id_inmetrics_user=:user AND (projeto.id_f = 5 OR projeto.id_f = 8)";
+					$query = $connector->prepare($sql);
+					$query->bindParam(':cc', $_SESSION['cc'], PDO::PARAM_STR);
+					$query->bindParam(':user', $_SESSION['id'], PDO::PARAM_STR);
+				}
+				// filter by projects running and specific phase
+				else if(($type == "fase") && ($id != "andamento"))
+				{
+					$sql = "SELECT projeto.id_prj AS ID, projeto.ts_prj AS TS, projeto.nmp_prj AS NomeProjeto, projeto.id_f AS ID_fase, 
+					ltm.nome_lc AS NomeLiderTestes, 
+					lp.nome_lp AS NomeLiderProjetos, 
+					user.nome_user AS NomeAnalista, 
+					fases.nome_f AS NomeFase,
+					status.nome_status AS NomeStatus,
+					mot_pend.nome_mtp AS NomeMotivo 
+					FROM TAB_projeto AS projeto 
+					INNER JOIN TAB_lider_cliente AS ltm ON ltm.id_lc = projeto.id_lc 
+					INNER JOIN TAB_lider_projeto AS lp ON lp.id_lp = projeto.id_lp 
+					INNER JOIN TAB_user AS user ON user.id_user = projeto.id_inmetrics_user 
+					INNER JOIN TAB_fases AS fases ON fases.id_f = projeto.id_f 
+					INNER JOIN TAB_status AS status ON status.id_status = projeto.id_status 
+					INNER JOIN TAB_mot_pend AS mot_pend ON mot_pend.id_mtp = projeto.id_mtp 
+					WHERE projeto.id_cc=:cc AND projeto.id_inmetrics_user=:user AND projeto.id_f=:phase";
+					$query = $connector->prepare($sql);
+					$query->bindParam(':cc', $_SESSION['cc'], PDO::PARAM_STR);
+					$query->bindParam(':user', $_SESSION['id'], PDO::PARAM_STR);
+					$query->bindParam(':phase', $id, PDO::PARAM_STR);
+				}
+				// filter by status
+				else if(($type == "status"))
+				{
+					$sql = "SELECT projeto.id_prj AS ID, projeto.ts_prj AS TS, projeto.nmp_prj AS NomeProjeto, projeto.id_f AS ID_fase, 
+					ltm.nome_lc AS NomeLiderTestes, 
+					lp.nome_lp AS NomeLiderProjetos, 
+					user.nome_user AS NomeAnalista, 
+					fases.nome_f AS NomeFase,
+					status.nome_status AS NomeStatus,
+					mot_pend.nome_mtp AS NomeMotivo 
+					FROM TAB_projeto AS projeto 
+					INNER JOIN TAB_lider_cliente AS ltm ON ltm.id_lc = projeto.id_lc 
+					INNER JOIN TAB_lider_projeto AS lp ON lp.id_lp = projeto.id_lp 
+					INNER JOIN TAB_user AS user ON user.id_user = projeto.id_inmetrics_user 
+					INNER JOIN TAB_fases AS fases ON fases.id_f = projeto.id_f 
+					INNER JOIN TAB_status AS status ON status.id_status = projeto.id_status 
+					INNER JOIN TAB_mot_pend AS mot_pend ON mot_pend.id_mtp = projeto.id_mtp 
+					WHERE projeto.id_cc=:cc AND projeto.id_inmetrics_user=:user AND projeto.id_status=:status";
+					$query = $connector->prepare($sql);
+					$query->bindParam(':cc', $_SESSION['cc'], PDO::PARAM_STR);
+					$query->bindParam(':user', $_SESSION['id'], PDO::PARAM_STR);
+					$query->bindParam(':status', $id, PDO::PARAM_STR);
+				}
+				// filter by delay reason
+				else
+				{
+					$sql = "SELECT projeto.id_prj AS ID, projeto.ts_prj AS TS, projeto.nmp_prj AS NomeProjeto, projeto.id_f AS ID_fase, 
+					ltm.nome_lc AS NomeLiderTestes, 
+					lp.nome_lp AS NomeLiderProjetos, 
+					user.nome_user AS NomeAnalista, 
+					fases.nome_f AS NomeFase,
+					status.nome_status AS NomeStatus,
+					mot_pend.nome_mtp AS NomeMotivo 
+					FROM TAB_projeto AS projeto 
+					INNER JOIN TAB_lider_cliente AS ltm ON ltm.id_lc = projeto.id_lc 
+					INNER JOIN TAB_lider_projeto AS lp ON lp.id_lp = projeto.id_lp 
+					INNER JOIN TAB_user AS user ON user.id_user = projeto.id_inmetrics_user 
+					INNER JOIN TAB_fases AS fases ON fases.id_f = projeto.id_f 
+					INNER JOIN TAB_status AS status ON status.id_status = projeto.id_status 
+					INNER JOIN TAB_mot_pend AS mot_pend ON mot_pend.id_mtp = projeto.id_mtp 
+					WHERE projeto.id_cc=:cc AND projeto.id_inmetrics_user=:user AND projeto.id_mtp=:pendency";
+					$query = $connector->prepare($sql);
+					$query->bindParam(':cc', $_SESSION['cc'], PDO::PARAM_STR);
+					$query->bindParam(':user', $_SESSION['id'], PDO::PARAM_STR);
+					$query->bindParam(':pendency', $id, PDO::PARAM_STR);
+				}
+				$query->execute();
+				$rowC = $query->rowCount();
+				if($rowC > 0)
+				{
+					while($result = $query->FETCH(PDO::FETCH_OBJ))
+					{
+						$idprojeto = $result->ID;
+						$id_phase = $result->ID_fase;
+						$ts = $result->TS;
+						$nomeprojeto = $result->NomeProjeto;
+						$ltm = $result->NomeLiderTestes;
+						$lp = $result->NomeLiderProjetos;
+						$analista = $result->NomeAnalista;
+						$fase = $result->NomeFase;
+						$status = $result->NomeStatus;
+						$pendencia = $result->NomeMotivo;
+						echo '		<tr>';
+						echo '			  <td class="numeric">'.$ts.'</td>';
+						echo '			  <td>'.$nomeprojeto.'</td>';
+						echo '			  <td>'.$ltm.'</td>';
+						echo '			  <td>'.$lp.'</td>';
+						echo '			  <td>'.$analista.'</td>';
+						echo '			  <td>'.$fase.'</td>';
+						echo '			  <td>'.$status.'</td>';
+						echo '			  <td>'.$pendencia.'</td>';
+						echo '			  <td>';
+						if(($id_phase != 5) && ($id_phase != 8))
+						{
+							echo '				<a data-toggle="modal" href="myprojects.php#myModal'.$idprojeto.'"><button class="btn btn-primary btn-xs"><i class="fa fa-pencil"></i></button></a>';
+							echo '				<a data-toggle="modal" href="myprojects.php#encerramento'.$idprojeto.'"><button class="btn btn-success btn-xs"><i class=" fa fa-check"></i></button></a>';
+							echo '				<a data-toggle="modal" href="myprojects.php#cancelamento'.$idprojeto.'"><button class="btn btn-danger btn-xs"><i class="fa fa-ban"></i></button></a>';
+						}
+							echo '				<a href="project.php?p='.$idprojeto.'"><button class="btn btn-primary btn-xs"><i class="fa fa-search"></i></button></a>';
+											echo '			  </td>';
+						echo '		</tr>';
+					}
+				}
+			}
+			// Admin USER
+			if($lvl = 1)
+			{
+				// filter by projects running
+				if(($type == "fase") && ($id == "andamento"))
+				{
+					$sql = "SELECT projeto.id_prj AS ID, projeto.ts_prj AS TS, projeto.nmp_prj AS NomeProjeto, projeto.id_f AS ID_fase, 
+					ltm.nome_lc AS NomeLiderTestes, 
+					lp.nome_lp AS NomeLiderProjetos, 
+					user.nome_user AS NomeAnalista, 
+					fases.nome_f AS NomeFase,
+					status.nome_status AS NomeStatus,
+					mot_pend.nome_mtp AS NomeMotivo 
+					FROM TAB_projeto AS projeto 
+					INNER JOIN TAB_lider_cliente AS ltm ON ltm.id_lc = projeto.id_lc 
+					INNER JOIN TAB_lider_projeto AS lp ON lp.id_lp = projeto.id_lp 
+					INNER JOIN TAB_user AS user ON user.id_user = projeto.id_inmetrics_user 
+					INNER JOIN TAB_fases AS fases ON fases.id_f = projeto.id_f 
+					INNER JOIN TAB_status AS status ON status.id_status = projeto.id_status 
+					INNER JOIN TAB_mot_pend AS mot_pend ON mot_pend.id_mtp = projeto.id_mtp 
+					WHERE projeto.id_cc=:cc AND projeto.id_f !=5 AND projeto.id_f !=8";
+					$query = $connector->prepare($sql);
+					$query->bindParam(':cc', $_SESSION['cc'], PDO::PARAM_STR);
+				}
+				// filter by finished projects
+				else if(($type == "cf"))
+				{
+					$sql = "SELECT projeto.id_prj AS ID, projeto.ts_prj AS TS, projeto.nmp_prj AS NomeProjeto, projeto.id_f AS ID_fase, 
+					ltm.nome_lc AS NomeLiderTestes, 
+					lp.nome_lp AS NomeLiderProjetos, 
+					user.nome_user AS NomeAnalista, 
+					fases.nome_f AS NomeFase,
+					status.nome_status AS NomeStatus,
+					mot_pend.nome_mtp AS NomeMotivo 
+					FROM TAB_projeto AS projeto 
+					INNER JOIN TAB_lider_cliente AS ltm ON ltm.id_lc = projeto.id_lc 
+					INNER JOIN TAB_lider_projeto AS lp ON lp.id_lp = projeto.id_lp 
+					INNER JOIN TAB_user AS user ON user.id_user = projeto.id_inmetrics_user 
+					INNER JOIN TAB_fases AS fases ON fases.id_f = projeto.id_f 
+					INNER JOIN TAB_status AS status ON status.id_status = projeto.id_status 
+					INNER JOIN TAB_mot_pend AS mot_pend ON mot_pend.id_mtp = projeto.id_mtp 
+					WHERE projeto.id_cc=:cc AND (projeto.id_f = 5 OR projeto.id_f = 8)";
+					$query = $connector->prepare($sql);
+					$query->bindParam(':cc', $_SESSION['cc'], PDO::PARAM_STR);
+				}
+				// filter by projects running and specific phase
+				else if(($type == "fase") && ($id != "andamento"))
+				{
+					$sql = "SELECT projeto.id_prj AS ID, projeto.ts_prj AS TS, projeto.nmp_prj AS NomeProjeto, projeto.id_f AS ID_fase, 
+					ltm.nome_lc AS NomeLiderTestes, 
+					lp.nome_lp AS NomeLiderProjetos, 
+					user.nome_user AS NomeAnalista, 
+					fases.nome_f AS NomeFase,
+					status.nome_status AS NomeStatus,
+					mot_pend.nome_mtp AS NomeMotivo 
+					FROM TAB_projeto AS projeto 
+					INNER JOIN TAB_lider_cliente AS ltm ON ltm.id_lc = projeto.id_lc 
+					INNER JOIN TAB_lider_projeto AS lp ON lp.id_lp = projeto.id_lp 
+					INNER JOIN TAB_user AS user ON user.id_user = projeto.id_inmetrics_user 
+					INNER JOIN TAB_fases AS fases ON fases.id_f = projeto.id_f 
+					INNER JOIN TAB_status AS status ON status.id_status = projeto.id_status 
+					INNER JOIN TAB_mot_pend AS mot_pend ON mot_pend.id_mtp = projeto.id_mtp 
+					WHERE projeto.id_cc=:cc AND projeto.id_f=:phase";
+					$query = $connector->prepare($sql);
+					$query->bindParam(':cc', $_SESSION['cc'], PDO::PARAM_STR);
+					$query->bindParam(':phase', $id, PDO::PARAM_STR);
+				}
+				// filter by status
+				else if(($type == "status"))
+				{
+					$sql = "SELECT projeto.id_prj AS ID, projeto.ts_prj AS TS, projeto.nmp_prj AS NomeProjeto, projeto.id_f AS ID_fase, 
+					ltm.nome_lc AS NomeLiderTestes, 
+					lp.nome_lp AS NomeLiderProjetos, 
+					user.nome_user AS NomeAnalista, 
+					fases.nome_f AS NomeFase,
+					status.nome_status AS NomeStatus,
+					mot_pend.nome_mtp AS NomeMotivo 
+					FROM TAB_projeto AS projeto 
+					INNER JOIN TAB_lider_cliente AS ltm ON ltm.id_lc = projeto.id_lc 
+					INNER JOIN TAB_lider_projeto AS lp ON lp.id_lp = projeto.id_lp 
+					INNER JOIN TAB_user AS user ON user.id_user = projeto.id_inmetrics_user 
+					INNER JOIN TAB_fases AS fases ON fases.id_f = projeto.id_f 
+					INNER JOIN TAB_status AS status ON status.id_status = projeto.id_status 
+					INNER JOIN TAB_mot_pend AS mot_pend ON mot_pend.id_mtp = projeto.id_mtp 
+					WHERE projeto.id_cc=:cc AND projeto.id_status=:status";
+					$query = $connector->prepare($sql);
+					$query->bindParam(':cc', $_SESSION['cc'], PDO::PARAM_STR);
+					$query->bindParam(':status', $id, PDO::PARAM_STR);
+				}
+				// filter by delay reason
+				else
+				{
+					$sql = "SELECT projeto.id_prj AS ID, projeto.ts_prj AS TS, projeto.nmp_prj AS NomeProjeto, projeto.id_f AS ID_fase, 
+					ltm.nome_lc AS NomeLiderTestes, 
+					lp.nome_lp AS NomeLiderProjetos, 
+					user.nome_user AS NomeAnalista, 
+					fases.nome_f AS NomeFase,
+					status.nome_status AS NomeStatus,
+					mot_pend.nome_mtp AS NomeMotivo 
+					FROM TAB_projeto AS projeto 
+					INNER JOIN TAB_lider_cliente AS ltm ON ltm.id_lc = projeto.id_lc 
+					INNER JOIN TAB_lider_projeto AS lp ON lp.id_lp = projeto.id_lp 
+					INNER JOIN TAB_user AS user ON user.id_user = projeto.id_inmetrics_user 
+					INNER JOIN TAB_fases AS fases ON fases.id_f = projeto.id_f 
+					INNER JOIN TAB_status AS status ON status.id_status = projeto.id_status 
+					INNER JOIN TAB_mot_pend AS mot_pend ON mot_pend.id_mtp = projeto.id_mtp 
+					WHERE projeto.id_cc=:cc AND projeto.id_mtp=:pendency";
+					$query = $connector->prepare($sql);
+					$query->bindParam(':cc', $_SESSION['cc'], PDO::PARAM_STR);
+					$query->bindParam(':pendency', $id, PDO::PARAM_STR);
+				}
+				$query->execute();
+				$rowC = $query->rowCount();
+				if($rowC > 0)
+				{
+					while($result = $query->FETCH(PDO::FETCH_OBJ))
+					{
+						$idprojeto = $result->ID;
+						$id_phase = $result->ID_fase;
+						$ts = $result->TS;
+						$nomeprojeto = $result->NomeProjeto;
+						$ltm = $result->NomeLiderTestes;
+						$lp = $result->NomeLiderProjetos;
+						$analista = $result->NomeAnalista;
+						$fase = $result->NomeFase;
+						$status = $result->NomeStatus;
+						$pendencia = $result->NomeMotivo;
+						echo '		<tr>';
+						echo '			  <td class="numeric">'.$ts.'</td>';
+						echo '			  <td>'.$nomeprojeto.'</td>';
+						echo '			  <td>'.$ltm.'</td>';
+						echo '			  <td>'.$lp.'</td>';
+						echo '			  <td>'.$analista.'</td>';
+						echo '			  <td>'.$fase.'</td>';
+						echo '			  <td>'.$status.'</td>';
+						echo '			  <td>'.$pendencia.'</td>';
+						echo '			  <td>';
+						if(($id_phase != 5) && ($id_phase != 8))
+						{
+							echo '				<a data-toggle="modal" href="projects.php#myModal'.$idprojeto.'"><button class="btn btn-primary btn-xs"><i class="fa fa-pencil"></i></button></a>';
+							echo '				<a data-toggle="modal" href="projects.php#encerramento'.$idprojeto.'"><button class="btn btn-success btn-xs"><i class=" fa fa-check"></i></button></a>';
+							echo '				<a data-toggle="modal" href="projects.php#cancelamento'.$idprojeto.'"><button class="btn btn-danger btn-xs"><i class="fa fa-ban"></i></button></a>';
+						}
+						echo '				<a href="project.php?p='.$idprojeto.'"><button class="btn btn-primary btn-xs"><i class="fa fa-search"></i></button></a>';
+						echo '			  </td>';
+						echo '		</tr>';
+					}
+				}
+			}
+		}
+		
+	}
+	
+	public function showFmyprojects($id)
+	{
+		$connect = new connection;
+		if($connect->tryconnect())
+		{
+			$connector = $connect->getConnector();
+			$sql = "SELECT projeto.id_prj AS ID, projeto.ts_prj AS TS, projeto.nmp_prj AS NomeProjeto, projeto.id_f AS ID_fase, 
+			ltm.nome_lc AS NomeLiderTestes, 
+			lp.nome_lp AS NomeLiderProjetos, 
+			user.nome_user AS NomeAnalista, 
+			fases.nome_f AS NomeFase,
+			status.nome_status AS NomeStatus,
+			mot_pend.nome_mtp AS NomeMotivo 
+			FROM TAB_projeto AS projeto 
+			INNER JOIN TAB_lider_cliente AS ltm ON ltm.id_lc = projeto.id_lc 
+			INNER JOIN TAB_lider_projeto AS lp ON lp.id_lp = projeto.id_lp 
+			INNER JOIN TAB_user AS user ON user.id_user = projeto.id_inmetrics_user 
+			INNER JOIN TAB_fases AS fases ON fases.id_f = projeto.id_f 
+			INNER JOIN TAB_status AS status ON status.id_status = projeto.id_status 
+			INNER JOIN TAB_mot_pend AS mot_pend ON mot_pend.id_mtp = projeto.id_mtp 
+			WHERE projeto.id_cc=:cc AND projeto.id_inmetrics_user=:user AND projeto.id_f =:id";
+			$query = $connector->prepare($sql);
+			$query->bindParam(':cc', $_SESSION['cc'], PDO::PARAM_STR);
+			$query->bindParam(':user', $_SESSION['id'], PDO::PARAM_STR);
+			$query->bindParam(':user', $id, PDO::PARAM_STR);
+			$query->execute();
+			$rowC = $query->rowCount();
+			if($rowC > 0)
+			{
+				while($result = $query->FETCH(PDO::FETCH_OBJ))
+				{
+					$idprojeto = $result->ID;
+					$id_phase = $result->ID_fase;
+					$ts = $result->TS;
+					$nomeprojeto = $result->NomeProjeto;
+					$ltm = $result->NomeLiderTestes;
+					$lp = $result->NomeLiderProjetos;
+					$analista = $result->NomeAnalista;
+					$fase = $result->NomeFase;
+					$status = $result->NomeStatus;
+					$pendencia = $result->NomeMotivo;
+					echo '		<tr>';
+					echo '			  <td class="numeric">'.$ts.'</td>';
+					echo '			  <td>'.$nomeprojeto.'</td>';
+					echo '			  <td>'.$ltm.'</td>';
+					echo '			  <td>'.$lp.'</td>';
+					echo '			  <td>'.$analista.'</td>';
+					echo '			  <td>'.$fase.'</td>';
+					echo '			  <td>'.$status.'</td>';
+					echo '			  <td>'.$pendencia.'</td>';
+					echo '			  <td>';
+					if(($id_phase != 5) && ($id_phase != 8))
+					{
+						echo '				<a data-toggle="modal" href="myprojects.php#myModal'.$idprojeto.'"><button class="btn btn-primary btn-xs"><i class="fa fa-pencil"></i></button></a>';
+						echo '				<a data-toggle="modal" href="myprojects.php#encerramento'.$idprojeto.'"><button class="btn btn-success btn-xs"><i class=" fa fa-check"></i></button></a>';
+						echo '				<a data-toggle="modal" href="myprojects.php#cancelamento'.$idprojeto.'"><button class="btn btn-danger btn-xs"><i class="fa fa-ban"></i></button></a>';
+					}
+						echo '				<a href="project.php?p='.$idprojeto.'"><button class="btn btn-primary btn-xs"><i class="fa fa-search"></i></button></a>';
+										echo '			  </td>';
+					echo '		</tr>';
+				}
+			}
+		}
+	}
+	
+	
 	// --------------------- INSERT, UPDATE AND DELETE DATA FROM DATABASE --------------------------//
 	public function InsertProject($id, $projectname, $ltm, $lp, $respInmetrics, $phase, $status, $pendency, $doc, $meeting, $mrr, $schedule, $approvement)
 	{
@@ -422,7 +931,7 @@ class projects
 			INNER JOIN TAB_fases AS fases ON fases.id_f = projeto.id_f 
 			INNER JOIN TAB_status AS status ON status.id_status = projeto.id_status 
 			INNER JOIN TAB_mot_pend AS mot_pend ON mot_pend.id_mtp = projeto.id_mtp 
-			WHERE projeto.id_cc=:cc AND projeto.id_inmetrics_user=:user AND projeto.id_f != 5 AND projeto.id_f != 8";
+			WHERE projeto.id_cc=:cc AND projeto.id_inmetrics_user=:user";
 			$query = $connector->prepare($sql);
 			$query->bindParam(':cc', $_SESSION['cc'], PDO::PARAM_STR);
 			$query->bindParam(':user', $id, PDO::PARAM_STR);

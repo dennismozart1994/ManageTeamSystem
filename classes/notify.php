@@ -36,9 +36,9 @@ class notify
 				$message = $text."<br/><br/>".$link.$text2;
 				
 				$subject = "Novo projeto!";
-				$link2 = "project.php?p=".$projectid;
+				$link2 = "http://10.10.5.161/inproject/project.php?p=".$projectid;
 				
-				$mail->sendEmail($user->getUserField($to, 'email_in_user'), $user->getUserField($to, 'nome_user'), $subject, utf8_decode($message), false, '', $link2);
+				$mail->sendEmail($user->getUserField($to, 'email_in_user'), $user->getUserField($to, 'nome_user'), $subject, utf8_decode($message), false, '', $link2, "Projeto Inserido com sucesso!");
 			}
 		}
 	}

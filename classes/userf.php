@@ -1,5 +1,7 @@
 <?php
 require_once('connection.php');
+require_once('PHPMailer/email.php');
+
 class user
 {
 	// ---------------- ACCESSIBILITY FUNCTIONS ------------------------- //
@@ -556,7 +558,7 @@ class user
 			$query->bindParam(':user', $_SESSION['id'], PDO::PARAM_STR);
 			$query->execute();
 			$rowC = $query->FETCH(PDO::FETCH_NUM);
-			echo '<a href="myprojects.php?filter&fase=andamento&id='.$_SESSION['id'].'"><div class="col-md-3 col-sm-3 col-md-offset-1 box0">';
+			echo '<a href="myprojects.php?filter&type=fase&id=andamento&user='.$_SESSION['id'].'"><div class="col-md-3 col-sm-3 col-md-offset-1 box0">';
 			echo '	<div class="box1">';
 			echo '		<span class="li_data"></span>';
 			echo '		<h3>'.reset($rowC).'</h3>';
@@ -579,7 +581,7 @@ class user
 			$query->bindParam(':user', $_SESSION['id'], PDO::PARAM_STR);
 			$query->execute();
 			$rowC = $query->FETCH(PDO::FETCH_NUM);
-			echo '<a href="myprojects.php?filter&mp=2&id='.$_SESSION['id'].'"><div class="col-md-3 col-sm-3 box0">';
+			echo '<a href="myprojects.php?filter&type=pendency&id=2&user='.$_SESSION['id'].'"><div class="col-md-3 col-sm-3 box0">';
 			echo '	<div class="box1">';
 			echo '		<span class="li_news"></span>';
 			echo '		<h3>'.reset($rowC).'</h3>';
@@ -602,7 +604,7 @@ class user
 			$query->bindParam(':user', $_SESSION['id'], PDO::PARAM_STR);
 			$query->execute();
 			$rowC = $query->FETCH(PDO::FETCH_NUM);
-			echo '<a href="myprojects.php?filter&mp=5&id='.$_SESSION['id'].'"><div class="col-md-3 col-sm-3 box0">';
+			echo '<a href="myprojects.php?filter&type=pendency&id=5&user='.$_SESSION['id'].'"><div class="col-md-3 col-sm-3 box0">';
 			echo '	<div class="box1">';
 			echo '		<span class="li_stack"></span>';
 			echo '		<h3>'.reset($rowC).'</h3>';
@@ -627,7 +629,7 @@ class user
 			$query->bindParam(':cc', $_SESSION['cc'], PDO::PARAM_STR);
 			$query->execute();
 			$rowC = $query->FETCH(PDO::FETCH_NUM);
-			echo '<a href="projects.php?filter&fase=andamento"><div class="col-md-3 col-sm-3 col-md-offset-1 box0">';
+			echo '<a href="projects.php?filter&type=fase&id=andamento"><div class="col-md-3 col-sm-3 col-md-offset-1 box0">';
 			echo '	<div class="box1">';
 			echo '		<span class="li_data"></span>';
 			echo '		<h3>'.reset($rowC).'</h3>';
@@ -645,7 +647,7 @@ class user
 			$query->bindParam(':cc', $_SESSION['cc'], PDO::PARAM_STR);
 			$query->execute();
 			$rowC = $query->FETCH(PDO::FETCH_NUM);
-			echo '<a href="projects.php?filter&mp=2"><div class="col-md-3 col-sm-3 box0">';
+			echo '<a href="projects.php?filter&type=pendency&id=2"><div class="col-md-3 col-sm-3 box0">';
 			echo '	<div class="box1">';
 			echo '		<span class="li_news"></span>';
 			echo '		<h3>'.reset($rowC).'</h3>';
@@ -663,7 +665,7 @@ class user
 			$query->bindParam(':cc', $_SESSION['cc'], PDO::PARAM_STR);
 			$query->execute();
 			$rowC = $query->FETCH(PDO::FETCH_NUM);
-			echo '<a href="projects.php?filter&mp=5"><div class="col-md-3 col-sm-3 box0">';
+			echo '<a href="projects.php?filter&type=pendency&id=5"><div class="col-md-3 col-sm-3 box0">';
 			echo '	<div class="box1">';
 			echo '		<span class="li_stack"></span>';
 			echo '		<h3>'.reset($rowC).'</h3>';
@@ -702,7 +704,7 @@ class user
 					{
 						echo '<div class="bar">';
 						echo '<div class="title">'.$nome.'</div>';
-						echo '<a href="myuser.php?id='.$id.'"><div class="value tooltips" data-original-title="'.reset($count).'" data-toggle="tooltip" data-placement="top">'.(reset($count) * 10).'%</div></a>';
+						echo '<a href="myuser.php?tm='.$id.'"><div class="value tooltips" data-original-title="'.reset($count).'" data-toggle="tooltip" data-placement="top">'.(reset($count) * 10).'%</div></a>';
 						echo '</div>';
 					}
 				}
@@ -717,10 +719,10 @@ class user
 		{
 			$connector = $connect->getConnector();
 			
-			$sql = "SELECT user.id_user AS ID, user.nome_user AS Nome, user.email_in_user AS Email, centroc.desc_cc AS CentroCusto, user.funcao_user AS Funcao 
+			$sql = "SELECT user.id_user AS ID, user.nome_user AS Nome, user.email_in_user AS Email, centroc.desc_cc AS CentroCusto, user.funcao_user AS Funcao, user.active_user AS Enabled 
 			FROM TAB_user AS user 
 			INNER JOIN TAB_cc AS centroc ON user.id_cc=centroc.id_cc 
-			WHERE user.id_cc=:cc AND user.id_user != :myuser AND user.active_user = 0";
+			WHERE user.id_cc=:cc AND user.id_user != :myuser";
 			$query = $connector->prepare($sql);
 			$query->bindParam(':cc', $_SESSION['cc'], PDO::PARAM_STR);
 			$query->bindParam(':myuser', $_SESSION['id'], PDO::PARAM_STR);
@@ -735,18 +737,77 @@ class user
 					$email = $result->Email;
 					$centrocusto = $result->CentroCusto;
 					$funcao_user = $result->Funcao;
+					$active = $result->Enabled;
 					
 					echo '<tr>
 							  <td class="numeric">'.$id.'</td>
 							  <td>'.$nome.'</td>
 							  <td>'.$email.'</td>
 							  <td>'.$centrocusto.'</td>
-							  <td>'.$funcao_user.'</td>
-							  <td>
-								<a data-toggle="modal" href="myuser.php?edit='.$id.'"><button class="btn btn-primary btn-xs"><i class="fa fa-pencil"></i></button></a>
+							  <td>'.$funcao_user.'</td>';
+					echo '    <td>';
+					if($active == 1)
+					{
+						echo '  <a href="manageusers.php?reactivate='.$id.'&name='.$nome.'&email='.$email.'"><button class="btn btn-success btn-xs"><i class="fa fa-check"></i></button></a>';
+					}
+					else{
+						echo '  <a data-toggle="modal" href="myuser.php?edit='.$id.'"><button class="btn btn-primary btn-xs"><i class="fa fa-pencil"></i></button></a>
 								<a data-toggle="modal" href="manageusers.php#cancelamento'.$id.'"><button class="btn btn-danger btn-xs"><i class="fa fa-ban"></i></button></a>
 							  </td>
 						  </tr>';
+					}					
+					
+				}
+			}
+		}
+	}
+	// Get user based on the filter applied
+	public function ApplyFilter($name)
+	{
+		$connect = new connection;
+		if($connect->tryconnect())
+		{
+			$connector = $connect->getConnector();
+			
+			$sql = "SELECT user.id_user AS ID, user.nome_user AS Nome, user.email_in_user AS Email, centroc.desc_cc AS CentroCusto, user.funcao_user AS Funcao, user.active_user AS Enabled 
+			FROM TAB_user AS user 
+			INNER JOIN TAB_cc AS centroc ON user.id_cc=centroc.id_cc 
+			WHERE user.id_cc=:cc AND user.id_user != :myuser AND user.nome_user LIKE CONCAT('%',:name,'%')";
+			$query = $connector->prepare($sql);
+			$query->bindParam(':cc', $_SESSION['cc'], PDO::PARAM_STR);
+			$query->bindParam(':myuser', $_SESSION['id'], PDO::PARAM_STR);
+			$query->bindParam(':name', $name, PDO::PARAM_STR);
+			$query->execute();
+			$rowC = $query->rowCount();
+			if($rowC > 0)
+			{
+				while($result = $query->FETCH(PDO::FETCH_OBJ))
+				{
+					$id = $result->ID;
+					$nome = $result->Nome;
+					$email = $result->Email;
+					$centrocusto = $result->CentroCusto;
+					$funcao_user = $result->Funcao;
+					$active = $result->Enabled;
+					
+					echo '<tr>
+							  <td class="numeric">'.$id.'</td>
+							  <td>'.$nome.'</td>
+							  <td>'.$email.'</td>
+							  <td>'.$centrocusto.'</td>
+							  <td>'.$funcao_user.'</td>';
+					echo '    <td>';
+					if($active == 1)
+					{
+						echo '  <a href="manageusers.php?reactivate='.$id.'&name='.$nome.'&email='.$email.'"><button class="btn btn-success btn-xs"><i class="fa fa-check"></i></button></a>';
+					}
+					else{
+						echo '  <a data-toggle="modal" href="myuser.php?edit='.$id.'"><button class="btn btn-primary btn-xs"><i class="fa fa-pencil"></i></button></a>
+								<a data-toggle="modal" href="manageusers.php#cancelamento'.$id.'"><button class="btn btn-danger btn-xs"><i class="fa fa-ban"></i></button></a>
+							  </td>
+						  </tr>';
+					}					
+					
 				}
 			}
 		}
@@ -759,7 +820,7 @@ class user
 		{
 			$connector = $connect->getConnector();
 			
-			$sql = "SELECT user.id_user AS ID FROM TAB_user AS user 
+			$sql = "SELECT user.id_user AS ID, user.email_in_user AS Email, user.nome_user AS Name FROM TAB_user AS user 
 			INNER JOIN TAB_cc AS centroc ON user.id_cc=centroc.id_cc 
 			WHERE user.id_cc=:cc AND user.id_user != :myuser AND user.active_user = 0";
 			$query = $connector->prepare($sql);
@@ -771,7 +832,9 @@ class user
 			{
 				while($result = $query->FETCH(PDO::FETCH_OBJ))
 				{
-					$id = $result->ID;					
+					$id = $result->ID;		
+					$email = $result->Email;
+					$name = $result->Name;
 					echo '<!-- Modal cancelamento-->
 							<div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="cancelamento'.$id.'" class="modal fade">
 								<form method="get" action="">
@@ -781,6 +844,8 @@ class user
 												<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
 												<h4 class="modal-title">Tem certeza que deseja desativar o usuário?</h4>
 												<input id="id" name="id" type="hidden" value="'.$id.'">
+												<input id="email" name="email" type="hidden" value="'.$email.'">
+												<input id="name" name="name" type="hidden" value="'.$name.'">
 											</div>
 											<div class="modal-footer">
 												<button data-dismiss="modal" class="btn btn-default" type="button">Não</button>
@@ -796,12 +861,13 @@ class user
 		}
 	}
 	
-	public function DeleteUser($id)
+	public function DeleteUser($id, $address, $name)
 	{
 		$connect = new connection;
 		if($connect->tryconnect())
 		{
 			$connector = $connect->getConnector();
+			$mail = new email;
 			
 			$sql = "UPDATE TAB_user SET active_user=1 WHERE id_user=:user";
 			$query = $connector->prepare($sql);
@@ -810,7 +876,35 @@ class user
 			$rowC = $query->rowCount();
 			if($rowC>0)
 			{
-				echo '<script>alert("Usuário desativado com sucesso!"); window.location.href = "manageusers.php";</script>';
+				$message = "Seu acesso ao sistema foi revogado!<br/><br/>
+				Att,<br/>Equipe de Suporte - Inproject<br/><br/><b>Este é um email automático encaminhado pelo sistema, por gentileza não responder. Em caso de dúvidas contate o seu Gerente ou Líder de Projeto!</b>";
+				$mail->sendEmail($address, $name, utf8_decode('Exclusão de acesso!'), utf8_decode($message), false, '', 'manageusers.php', 'Usuário desativado com sucesso!');
+			}
+			else
+			{
+				echo '<script>alert("Erro ao desativar usuário!"); window.location.href = "manageusers.php";</script>';
+			}
+		}
+	}
+	
+	public function ReactivateUser($id, $address, $name)
+	{
+		$connect = new connection;
+		if($connect->tryconnect())
+		{
+			$connector = $connect->getConnector();
+			$mail = new email;
+			
+			$sql = "UPDATE TAB_user SET active_user=0 WHERE id_user=:user";
+			$query = $connector->prepare($sql);
+			$query->bindParam(':user', $id, PDO::PARAM_STR);
+			$query->execute();
+			$rowC = $query->rowCount();
+			if($rowC>0)
+			{
+				$message = "Seu acesso ao sistema foi concedido novamente!<br/><br/>Acesse http://10.10.5.161/inproject/ para utilizar o sistema utilizando <strong>este endereço de email!</strong><br/><br/>
+				Att,<br/>Equipe de Suporte - Inproject<br/><br/><b>Este é um email automático encaminhado pelo sistema, por gentileza não responder. Em caso de dúvidas contate o seu Gerente ou Líder de Projeto!</b>";
+				$mail->sendEmail($address, $name, utf8_decode('Reativação de usuário!'), utf8_decode($message), false, '', 'manageusers.php', 'Usuário reativado com sucesso!');
 			}
 			else
 			{
@@ -889,6 +983,8 @@ class user
 	public function SetUserData($id, $cc, $name, $funcao, $tel, $email, $pass1, $new_name_thumb, $type)
 	{
 		$connect = new connection;
+		$mail = new email;
+		
 		if($connect->tryconnect())
 		{
 			$connector = $connect->getConnector();
@@ -908,7 +1004,9 @@ class user
 				$rowC = $query->rowCount();
 				if($rowC>0)
 				{
-					echo '<script>alert("Usuário inserido com sucesso!"); window.location.href = "manageusers.php";</script>';
+					$message = "Seja bem vindo ao Inproject $name! <br/><br/> Acesse o link http://10.10.5.161/inproject/ para logar no sistema utilizando <strong> este seu endereço de e-mail</strong> como login! <br/><br/>
+					Att,<br/>Equipe de Suporte - Inproject<br/><br/><b>Este é um email automático encaminhado pelo sistema, por gentileza não responder. Em caso de dúvidas contate o seu Gerente ou Líder de Projeto!</b>";
+					$mail->sendEmail($email, $name, utf8_decode('Acesso ao sistema Inproject'), utf8_decode($message), false, '', 'manageusers.php', 'Usuário inserido com sucesso!');
 				}
 				else
 				{
@@ -932,7 +1030,9 @@ class user
 				$rowC = $query->rowCount();
 				if($rowC>0)
 				{
-					echo '<script>alert("Usuário alterado com sucesso!"); window.location.href = "manageusers.php";</script>';
+					$message = "Foram realizadas alterações nos dados de seu usuário no sistema, em caso de dúvidas contate o seu Gerente ou Líder de projeto!<br/><br/>
+					Att,<br/>Equipe de Suporte - Inproject<br/><br/><b>Este é um email automático encaminhado pelo sistema, por gentileza não responder. Em caso de dúvidas contate o seu Gerente ou Líder de Projeto!</b>";
+					$mail->sendEmail($email, $name, utf8_decode('Alteração de informações do usuário'), utf8_decode($message), false, '', 'manageusers.php', 'Usuário alterado com sucesso!');
 				}
 				else
 				{
@@ -957,7 +1057,9 @@ class user
 				$rowC = $query->rowCount();
 				if($rowC>0)
 				{
-					echo '<script>alert("Usuário alterado com sucesso!"); window.location.href = "myuser.php";</script>';
+					$message = "Foram realizadas alterações nos dados de seu usuário no sistema, em caso de dúvidas contate o seu Gerente ou Líder de projeto!<br/><br/>
+					Att,<br/>Equipe de Suporte - Inproject<br/><br/><b>Este é um email automático encaminhado pelo sistema, por gentileza não responder. Em caso de dúvidas contate o seu Gerente ou Líder de Projeto!</b>";
+					$mail->sendEmail($email, $name, utf8_decode('Alteração de informações do usuário'), utf8_decode($message), false, '', 'myuser.php', 'Usuário alterado com sucesso!');
 				}
 				else
 				{

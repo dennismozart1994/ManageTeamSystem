@@ -26,7 +26,19 @@ if(isset($_REQUEST['logout']))
 if(isset($_GET['id']) && isset($_REQUEST['delete']))
 {
 	$id = $_GET['id'];
-	$user->DeleteUser($id);
+	$email = $_GET['email'];
+	$name = $_GET['name'];
+	
+	$user->DeleteUser($id, $email, $name);
+}
+
+if(isset($_GET['reactivate']))
+{
+	$id = $_GET['reactivate'];
+	$name = $_GET['name'];
+	$email = $_GET['email'];
+	
+	$user->ReactivateUser($id, $email, $name);
 }
 ?>
 
@@ -82,12 +94,12 @@ if(isset($_GET['id']) && isset($_REQUEST['delete']))
                       <h4><i class="fa fa-angle-right"></i>Filtros</h4>
 						<div class="radio">
 						<!-- Todo Apply Filter -->
-						<form class="form-inline" role="form" action="?filter">
+						<form class="form-inline" role="form" method="post" action="">
                           <div class="form-group">
-                              <label class="sr-only" for="projectname">Nome</label>
-                              <input type="email" class="form-control" id="projectname" placeholder="Nome do usuário">
+                              <label class="sr-only" for="username">Nome</label>
+                              <input type="text" class="form-control" id="username" name="username" placeholder="Nome do usuário">
                           </div>
-                          <button type="submit" class="btn btn-theme fa fa-filter"> Filtrar</button>
+                          <button type="submit" class="btn btn-theme fa fa-filter" name="Filter"> Filtrar</button>
 						</form>
 						<!-- End Todo -->
 						<br/>
@@ -105,7 +117,14 @@ if(isset($_GET['id']) && isset($_REQUEST['delete']))
                               </thead>
                               <tbody>
 								<?php
-									$user->getUsers();
+									if(isset($_POST['Filter']) && strlen(strip_tags($_POST['username'])) > 0)
+									{
+										$user->ApplyFilter(strip_tags($_POST['username']));
+									}
+									else
+									{
+										$user->getUsers();
+									}
 								?>
                               </tbody>
                           </table>

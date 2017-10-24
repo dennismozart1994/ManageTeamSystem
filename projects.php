@@ -117,29 +117,7 @@ require_once('classes/project.php');
                       <div class="content-panel">
                       <h4><i class="fa fa-angle-right"></i>Filtros</h4>
 						<div class="radio">
-						<!-- Todo Apply Filter -->
-						<form class="form-inline" role="form" action="?filter">
-                          <div class="form-group">
-                              <label class="sr-only" for="projectname">Email address</label>
-                              <input type="email" class="form-control" id="projectname" placeholder="Nome do projeto">
-                          </div>
-                          <div class="form-group">
-                              <label>
-								<input type="radio" name="optionsRadios" id="optionsRadios3" value="andamento" checked>
-								Em andamento
-							  </label>
-							  <label>
-								<input type="radio" name="optionsRadios" id="optionsRadios2" value="finalizado">
-								Finalizado
-							  </label>
-							  <label>
-								<input type="radio" name="optionsRadios" id="optionsRadios1" value="cancelado">
-								Cancelado
-							  </label>
-                          </div>
-                          <button type="submit" class="btn btn-theme fa fa-filter"> Filtrar</button>
-						</form>
-						<!-- End Todo -->
+						<?php include('includes/filter.php') ?>
 						<br/>
                           <section id="unseen">
                             <table class="table table-bordered table-striped table-condensed">
@@ -158,7 +136,28 @@ require_once('classes/project.php');
                               </thead>
                               <tbody>
 							  <?php
-									$project->getProjects('none');
+									if(isset($_POST['apply_filter']))
+									{
+										$name = strip_tags($_POST['projectname']);
+										$phase = $_POST['phase'];
+										
+										if(strlen($name) > 0)
+										{
+											$project->ApplyFilter($_SESSION['id'], $phase, $name, 1);
+										}
+										else
+										{
+											$project->getFProjects('fase', $phase, 1);
+										}
+									}
+									else if(isset($_REQUEST['filter']) && isset($_GET['type']))
+									{
+										$project->getFProjects($_GET['type'], $_GET['id'], 1);
+									}
+									else
+									{
+										$project->getProjects('none');
+									}
 							  ?>
                               </tbody>
                           </table>
