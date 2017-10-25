@@ -80,14 +80,29 @@ if(isset($_POST['add_note']))
 			  	<div class="col-lg-12">
                     <div class="content-panel">
 					  <h4><i class="fa fa-history"></i>Histórico do projeto</h4>
-						<!-- Todo Add new event -->
+						<form class="form-inline" role="form" method="post" action="">
+                          <div class="form-group">
+							  <span>&nbsp&nbspDe:&nbsp </span>
+                              <label class="sr-only" for="from">De</label>
+                              <input type="date" max="<?php echo date('Y-m-d', time());?>" class="form-control" id="from" name="from">
+                          </div>
+						  <div class="form-group">
+							  <span>&nbspAté:&nbsp </span>
+                              <label class="sr-only" for="to">Até</label>
+                              <input type="date" max="<?php echo date('Y-m-d', time());?>" class="form-control" id="to" name="to">
+                          </div>
+                          <button type="submit" class="btn btn-theme fa fa-filter" name="Filter"> Filtrar</button>
+						</form>
+						
 						<?php
 							if(($project->getProjectField($_GET['p'], 'id_f') != 5)&&($project->getProjectField($_GET['p'], 'id_f') != 8))
 							{
+								echo "<div style='padding:5px;'>";
 								echo "<a data-toggle='modal' class='btn btn-success btn-sm pull-left' href='history.php?p=".$_GET['p']."#myModal".$_GET['p']."'>Adicionar nota</a>";
+								echo "</div><br/><br/>";
 							}
 						?>
-						<!-- End Todo -->
+						
                         <section id="unseen">
                             <table class="table table-bordered table-striped table-condensed">
                               <thead>
@@ -102,7 +117,17 @@ if(isset($_POST['add_note']))
                               </thead>
                               <tbody>
 							  <?php
-								$project->getHistory($_GET['p']);
+								if(isset($_POST['Filter']))
+								{
+									$from = date('Y-m-d', strtotime($_POST['from']));
+									$to = date('Y-m-d', strtotime($_POST['to']));
+									echo "<script>alert('".$from." - ".$to."');</script>";
+									$project->FilterHistory($_GET['p'], $from, $to);
+								}
+								else
+								{
+									$project->getHistory($_GET['p']);
+								}
 							  ?>
                               </tbody>
                           </table>

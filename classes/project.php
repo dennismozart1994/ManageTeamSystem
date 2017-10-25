@@ -993,7 +993,7 @@ class projects
 				$queryup->bindParam(':phase', $phase, PDO::PARAM_INT);
 				$queryup->bindParam(':prj', $prj, PDO::PARAM_INT);
 				$queryup->execute();
-				echo '<script>alert("Nota adicionada com sucesso!"); window.location.href = "project.php?p='.$prj.'"</script>';
+				echo '<script>alert("Nota adicionada com sucesso!"); window.location.href = "history.php?p='.$prj.'"</script>';
 			}
 		}
 	}
@@ -1049,6 +1049,61 @@ class projects
 			WHERE historico.id_prj=:id ORDER BY historico.data_hst DESC";
 			$query = $connector->prepare($sql);
 			$query->bindParam(':id', $prj, PDO::PARAM_STR);
+			$query->execute();
+			$rowC = $query->rowCount();
+			if($rowC > 0)
+			{
+				while($result = $query->FETCH(PDO::FETCH_OBJ))
+				{
+					if($result->previsto>0)
+					{
+						$previsto = $result->previsto;
+					}
+					else
+					{
+						$previsto = "-";
+					}
+					
+					if($result->realizado>0)
+					{
+						$realizado = $result->realizado;
+					}
+					else
+					{
+						$realizado = "-";
+					}
+					echo '	<tr>
+								<td>'.$result->nomefase.'</td>
+								<td>'.date('d/m/Y', strtotime($result->data)).'</td>
+								<td>'.$previsto.'</td>
+								<td>'.$realizado.'</td>
+								<td>'.$result->nomeuser.'</td>
+								<td>'.$result->descricao.'</td>
+							</tr>';
+				}
+			}
+		}
+	}
+	
+	public function FilterHistory($prj, $from, $to)
+	{
+		$connect = new connection;
+		
+		if($connect->tryconnect())
+		{
+			$connector = $connect->getConnector();
+			
+			$sql = "SELECT historico.data_hst AS data, historico.prvt_hst AS previsto, historico.rlzd_hst AS realizado, historico.desc_hst AS descricao, 
+			user.id_user AS id_user, user.nome_user AS nomeuser, 
+			fases.id_f AS id_fase, fases.nome_f AS nomefase 
+			FROM TAB_historico AS historico 
+			INNER JOIN TAB_fases AS fases ON historico.id_f = fases.id_f 
+			INNER JOIN TAB_user AS user ON historico.id_user = user.id_user 
+			WHERE historico.id_prj=:id AND historico.data_hst BETWEEN :from AND :to ORDER BY historico.data_hst DESC";
+			$query = $connector->prepare($sql);
+			$query->bindParam(':id', $prj, PDO::PARAM_STR);
+			$query->bindParam(':from', $from, PDO::PARAM_STR);
+			$query->bindParam(':to', $to, PDO::PARAM_STR);
 			$query->execute();
 			$rowC = $query->rowCount();
 			if($rowC > 0)

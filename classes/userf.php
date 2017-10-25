@@ -46,6 +46,45 @@ class user
 		header('Location: index.php');
 	}
 	
+	// RESET PASSWORD
+	public function ResetPassword($usermail)
+	{
+		$connect = new connection;
+		$mail = new email;
+		
+		if($connect->tryconnect())
+		{
+			$connector = $connect->getConnector();
+			$sql = "SELECT * FROM TAB_user WHERE email_in_user=:email AND active_user=0";
+			$query = $connector->prepare($sql);
+			$query->bindParam(':email', $usermail, PDO::PARAM_STR);
+			$query->execute();
+			$rowC = $query->rowCount();
+			if($rowC == 1)
+			{
+				while($result = $query->FETCH(PDO::FETCH_OBJ))
+				{
+					$newpass = 'resetinproject'.rand(0,9999);
+					$update = "UPDATE TAB_user SET senha_user=:pass WHERE id_user=:user";
+					$queryup = $connector->prepare($update);
+					$queryup->bindParam(':pass', $newpass, PDO::PARAM_STR);
+					$queryup->bindParam(':user', $result->id_user, PDO::PARAM_INT);
+					$queryup->execute();
+					$message = "Foi solicitado o reset da sua senha!<br/><br/>
+					Sua senha temporária é ".utf8_decode($newpass)."<br/><br/>
+					Lembre-se de alterar a sua senha em <strong> \"Usuários\" >> \"Meu usuário\" </strong> em seu próximo acesso ao sistema!<br/><br/>
+					Att,<br/>Equipe de Suporte - Inproject<br/><br/><b>Este é um email automático encaminhado pelo sistema, por gentileza não responder. Em caso de dúvidas contate o seu Gerente ou Líder de Projeto!</b>";
+
+					$mail->sendEmail($usermail, '', utf8_decode('Recuperação de senha - Sistema Inproject'), utf8_decode($message), false, '', 'index.php', 'Senha resetada com sucesso! Uma senha temporária foi encaminhada ao seu e-mail!');
+				}
+			}
+			else
+			{
+				echo '<script>alert("E-mail não está cadastrado dentro do sistema ou acesso foi revogado. Contate o seu gestor!");</script>';
+			}
+		}
+	}
+	
 	// get any user field
 	public function getUserField($id, $field)
 	{

@@ -93,7 +93,6 @@ if(isset($_GET['reactivate']))
                       <div class="content-panel">
                       <h4><i class="fa fa-angle-right"></i>Filtros</h4>
 						<div class="radio">
-						<!-- Todo Apply Filter -->
 						<form class="form-inline" role="form" method="post" action="">
                           <div class="form-group">
                               <label class="sr-only" for="username">Nome</label>
@@ -101,7 +100,6 @@ if(isset($_GET['reactivate']))
                           </div>
                           <button type="submit" class="btn btn-theme fa fa-filter" name="Filter"> Filtrar</button>
 						</form>
-						<!-- End Todo -->
 						<br/>
                           <section id="unseen">
                             <table class="table table-bordered table-striped table-condensed">

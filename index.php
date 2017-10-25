@@ -2,6 +2,7 @@
 session_start();
 require_once('classes/PHPMailer/email.php');
 $mail = new email;
+
 if(isset($_SESSION['login']))
 {
 	header('Location: home.php');
@@ -19,6 +20,13 @@ else
 			header('Location: home.php?ur='.$_SESSION['id'].'&fc='.$_SESSION['funcao'].'&cc='.$_SESSION['cc']);
 		}
 	}
+}
+
+if(isset($_REQUEST['reset']) && isset($_GET['email']))
+{
+	$email = strip_tags($_GET['email']);
+	$user = new user;
+	$user->ResetPassword($email);
 }
 ?>
 
@@ -62,7 +70,7 @@ else
 		      <form class="form-login" action="?acessar">
 		        <h2 class="form-login-heading">Sign in</h2>
 		        <div class="login-wrap">
-		            <input type="text" name="login" class="form-control" placeholder="Usuário" autofocus>
+		            <input type="email" name="login" class="form-control" placeholder="Usuário" autofocus>
 		            <br>
 		            <input type="password" name="password" class="form-control" placeholder="Senha">
 		            <label class="checkbox">
@@ -77,6 +85,7 @@ else
 		
 		          <!-- Modal -->
 		          <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="myModal" class="modal fade">
+					<form method="post" action="">
 		              <div class="modal-dialog">
 		                  <div class="modal-content">
 		                      <div class="modal-header">
@@ -85,33 +94,15 @@ else
 		                      </div>
 		                      <div class="modal-body">
 		                          <p>Informe seu e-mail cadastrado para reset da senha</p>
-		                          <input type="text" name="email" placeholder="Email" autocomplete="off" class="form-control placeholder-no-fix">
+		                          <input type="email" name="email" placeholder="Email" autocomplete="off" class="form-control placeholder-no-fix">
 		                      </div>
 		                      <div class="modal-footer">
 		                          <button data-dismiss="modal" class="btn btn-default" type="button">Cancelar</button>
-		                          <button data-dismiss="modal" data-toggle="modal" href="index.php#confirmation" class="btn btn-theme" type="button">Resetar Senha</button>
+		                          <button class="btn btn-theme" type="submit" name="reset">Resetar Senha</button>
 		                      </div>
 		                  </div>
 		              </div>
-		          </div>
-		          <!-- modal -->
-				  
-				  <!-- Modal -->
-		          <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="confirmation" class="modal fade">
-		              <div class="modal-dialog">
-		                  <div class="modal-content">
-		                      <div class="modal-header">
-		                          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-		                          <h4 class="modal-title">Confirmação</h4>
-		                      </div>
-		                      <div class="modal-body">
-		                          <p>Sua nova senha foi encaminhada ao seu e-mail de cadastro</p>
-		                      </div>
-							  <div class="modal-footer">
-		                          <button data-dismiss="modal" class="btn btn-theme" type="button">OK</button>
-		                      </div>
-		                  </div>
-		              </div>
+					</form>
 		          </div>
 		          <!-- modal -->
 		
