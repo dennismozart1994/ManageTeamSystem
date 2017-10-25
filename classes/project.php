@@ -635,10 +635,11 @@ class projects
 			INNER JOIN TAB_status AS status ON status.id_status = projeto.id_status 
 			INNER JOIN TAB_mot_pend AS mot_pend ON mot_pend.id_mtp = projeto.id_mtp 
 			INNER JOIN TAB_historico AS historico ON historico.id_prj = projeto.id_prj 
-			WHERE projeto.id_cc=:cc AND projeto.id_prj=:proj AND historico.id_hst = (SELECT MAX(historico.id_hst) from TAB_historico AS historico)"; 
+			WHERE projeto.id_cc=:cc AND projeto.id_prj=:proj AND historico.id_hst = (SELECT MAX(historico.id_hst) from TAB_historico AS historico WHERE id_prj=:idprj)"; 
 			$query = $connector->prepare($sql);
 			$query->bindParam(':cc', $_SESSION['cc'], PDO::PARAM_STR);
 			$query->bindParam(':proj', $id, PDO::PARAM_STR);
+			$query->bindParam(':idprj', $id, PDO::PARAM_STR);
 			$query->execute();
 			$rowC = $query->rowCount();
 			if($rowC == 1)
