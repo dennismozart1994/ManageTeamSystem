@@ -1,3 +1,8 @@
+<?php 
+if (session_status !== PHP_SESSION_ACTIVE) {
+	session_start();
+}
+?>
 <!--header start-->
   <header class="header black-bg">
 		  <div class="sidebar-toggle-box">

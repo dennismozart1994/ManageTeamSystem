@@ -17,7 +17,7 @@ class notify
 		if($connect->tryconnect())
 		{
 			$connector = $connect->getConnector();
-			$sql = "INSERT INTO TAB_notify(id_projeto, id_from_user, id_to_user, status_notify, description_notify) 
+			$sql = "INSERT INTO tab_notify(id_projeto, id_from_user, id_to_user, status_notify, description_notify) 
 			VALUES(:project, :from, :to, :status, :description)";
 			$query = $connector->prepare($sql);
 			$query->bindParam(':project', $projectid, PDO::PARAM_STR);

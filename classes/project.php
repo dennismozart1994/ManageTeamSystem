@@ -31,13 +31,13 @@ class projects
 				fases.nome_f AS NomeFase,
 				status.nome_status AS NomeStatus,
 				mot_pend.nome_mtp AS NomeMotivo 
-				FROM TAB_projeto AS projeto 
-				INNER JOIN TAB_lider_cliente AS ltm ON ltm.id_lc = projeto.id_lc 
-				INNER JOIN TAB_lider_projeto AS lp ON lp.id_lp = projeto.id_lp 
-				INNER JOIN TAB_user AS user ON user.id_user = projeto.id_inmetrics_user 
-				INNER JOIN TAB_fases AS fases ON fases.id_f = projeto.id_f 
-				INNER JOIN TAB_status AS status ON status.id_status = projeto.id_status 
-				INNER JOIN TAB_mot_pend AS mot_pend ON mot_pend.id_mtp = projeto.id_mtp 
+				FROM tab_projeto AS projeto 
+				INNER JOIN tab_lider_cliente AS ltm ON ltm.id_lc = projeto.id_lc 
+				INNER JOIN tab_lider_projeto AS lp ON lp.id_lp = projeto.id_lp 
+				INNER JOIN tab_user AS user ON user.id_user = projeto.id_inmetrics_user 
+				INNER JOIN tab_fases AS fases ON fases.id_f = projeto.id_f 
+				INNER JOIN tab_status AS status ON status.id_status = projeto.id_status 
+				INNER JOIN tab_mot_pend AS mot_pend ON mot_pend.id_mtp = projeto.id_mtp 
 				WHERE projeto.id_cc=:cc AND projeto.id_inmetrics_user=:user AND projeto.id_f=:phase AND nmp_prj LIKE CONCAT('%',:projectname,'%')";
 				$query = $connector->prepare($sql);
 				$query->bindParam(':cc', $_SESSION['cc'], PDO::PARAM_STR);
@@ -91,13 +91,13 @@ class projects
 				fases.nome_f AS NomeFase,
 				status.nome_status AS NomeStatus,
 				mot_pend.nome_mtp AS NomeMotivo 
-				FROM TAB_projeto AS projeto 
-				INNER JOIN TAB_lider_cliente AS ltm ON ltm.id_lc = projeto.id_lc 
-				INNER JOIN TAB_lider_projeto AS lp ON lp.id_lp = projeto.id_lp 
-				INNER JOIN TAB_user AS user ON user.id_user = projeto.id_inmetrics_user 
-				INNER JOIN TAB_fases AS fases ON fases.id_f = projeto.id_f 
-				INNER JOIN TAB_status AS status ON status.id_status = projeto.id_status 
-				INNER JOIN TAB_mot_pend AS mot_pend ON mot_pend.id_mtp = projeto.id_mtp 
+				FROM tab_projeto AS projeto 
+				INNER JOIN tab_lider_cliente AS ltm ON ltm.id_lc = projeto.id_lc 
+				INNER JOIN tab_lider_projeto AS lp ON lp.id_lp = projeto.id_lp 
+				INNER JOIN tab_user AS user ON user.id_user = projeto.id_inmetrics_user 
+				INNER JOIN tab_fases AS fases ON fases.id_f = projeto.id_f 
+				INNER JOIN tab_status AS status ON status.id_status = projeto.id_status 
+				INNER JOIN tab_mot_pend AS mot_pend ON mot_pend.id_mtp = projeto.id_mtp 
 				WHERE projeto.id_cc=:cc AND projeto.id_f=:phase AND nmp_prj LIKE CONCAT('%',:projectname,'%')";
 				$query = $connector->prepare($sql);
 				$query->bindParam(':cc', $_SESSION['cc'], PDO::PARAM_STR);
@@ -165,13 +165,13 @@ class projects
 					fases.nome_f AS NomeFase,
 					status.nome_status AS NomeStatus,
 					mot_pend.nome_mtp AS NomeMotivo 
-					FROM TAB_projeto AS projeto 
-					INNER JOIN TAB_lider_cliente AS ltm ON ltm.id_lc = projeto.id_lc 
-					INNER JOIN TAB_lider_projeto AS lp ON lp.id_lp = projeto.id_lp 
-					INNER JOIN TAB_user AS user ON user.id_user = projeto.id_inmetrics_user 
-					INNER JOIN TAB_fases AS fases ON fases.id_f = projeto.id_f 
-					INNER JOIN TAB_status AS status ON status.id_status = projeto.id_status 
-					INNER JOIN TAB_mot_pend AS mot_pend ON mot_pend.id_mtp = projeto.id_mtp 
+					FROM tab_projeto AS projeto 
+					INNER JOIN tab_lider_cliente AS ltm ON ltm.id_lc = projeto.id_lc 
+					INNER JOIN tab_lider_projeto AS lp ON lp.id_lp = projeto.id_lp 
+					INNER JOIN tab_user AS user ON user.id_user = projeto.id_inmetrics_user 
+					INNER JOIN tab_fases AS fases ON fases.id_f = projeto.id_f 
+					INNER JOIN tab_status AS status ON status.id_status = projeto.id_status 
+					INNER JOIN tab_mot_pend AS mot_pend ON mot_pend.id_mtp = projeto.id_mtp 
 					WHERE projeto.id_cc=:cc AND projeto.id_inmetrics_user=:user AND projeto.id_f !=5 AND projeto.id_f !=8";
 					$query = $connector->prepare($sql);
 					$query->bindParam(':cc', $_SESSION['cc'], PDO::PARAM_STR);
@@ -187,13 +187,13 @@ class projects
 					fases.nome_f AS NomeFase,
 					status.nome_status AS NomeStatus,
 					mot_pend.nome_mtp AS NomeMotivo 
-					FROM TAB_projeto AS projeto 
-					INNER JOIN TAB_lider_cliente AS ltm ON ltm.id_lc = projeto.id_lc 
-					INNER JOIN TAB_lider_projeto AS lp ON lp.id_lp = projeto.id_lp 
-					INNER JOIN TAB_user AS user ON user.id_user = projeto.id_inmetrics_user 
-					INNER JOIN TAB_fases AS fases ON fases.id_f = projeto.id_f 
-					INNER JOIN TAB_status AS status ON status.id_status = projeto.id_status 
-					INNER JOIN TAB_mot_pend AS mot_pend ON mot_pend.id_mtp = projeto.id_mtp 
+					FROM tab_projeto AS projeto 
+					INNER JOIN tab_lider_cliente AS ltm ON ltm.id_lc = projeto.id_lc 
+					INNER JOIN tab_lider_projeto AS lp ON lp.id_lp = projeto.id_lp 
+					INNER JOIN tab_user AS user ON user.id_user = projeto.id_inmetrics_user 
+					INNER JOIN tab_fases AS fases ON fases.id_f = projeto.id_f 
+					INNER JOIN tab_status AS status ON status.id_status = projeto.id_status 
+					INNER JOIN tab_mot_pend AS mot_pend ON mot_pend.id_mtp = projeto.id_mtp 
 					WHERE projeto.id_cc=:cc AND projeto.id_inmetrics_user=:user AND (projeto.id_f = 5 OR projeto.id_f = 8)";
 					$query = $connector->prepare($sql);
 					$query->bindParam(':cc', $_SESSION['cc'], PDO::PARAM_STR);
@@ -209,13 +209,13 @@ class projects
 					fases.nome_f AS NomeFase,
 					status.nome_status AS NomeStatus,
 					mot_pend.nome_mtp AS NomeMotivo 
-					FROM TAB_projeto AS projeto 
-					INNER JOIN TAB_lider_cliente AS ltm ON ltm.id_lc = projeto.id_lc 
-					INNER JOIN TAB_lider_projeto AS lp ON lp.id_lp = projeto.id_lp 
-					INNER JOIN TAB_user AS user ON user.id_user = projeto.id_inmetrics_user 
-					INNER JOIN TAB_fases AS fases ON fases.id_f = projeto.id_f 
-					INNER JOIN TAB_status AS status ON status.id_status = projeto.id_status 
-					INNER JOIN TAB_mot_pend AS mot_pend ON mot_pend.id_mtp = projeto.id_mtp 
+					FROM tab_projeto AS projeto 
+					INNER JOIN tab_lider_cliente AS ltm ON ltm.id_lc = projeto.id_lc 
+					INNER JOIN tab_lider_projeto AS lp ON lp.id_lp = projeto.id_lp 
+					INNER JOIN tab_user AS user ON user.id_user = projeto.id_inmetrics_user 
+					INNER JOIN tab_fases AS fases ON fases.id_f = projeto.id_f 
+					INNER JOIN tab_status AS status ON status.id_status = projeto.id_status 
+					INNER JOIN tab_mot_pend AS mot_pend ON mot_pend.id_mtp = projeto.id_mtp 
 					WHERE projeto.id_cc=:cc AND projeto.id_inmetrics_user=:user AND projeto.id_f=:phase";
 					$query = $connector->prepare($sql);
 					$query->bindParam(':cc', $_SESSION['cc'], PDO::PARAM_STR);
@@ -232,13 +232,13 @@ class projects
 					fases.nome_f AS NomeFase,
 					status.nome_status AS NomeStatus,
 					mot_pend.nome_mtp AS NomeMotivo 
-					FROM TAB_projeto AS projeto 
-					INNER JOIN TAB_lider_cliente AS ltm ON ltm.id_lc = projeto.id_lc 
-					INNER JOIN TAB_lider_projeto AS lp ON lp.id_lp = projeto.id_lp 
-					INNER JOIN TAB_user AS user ON user.id_user = projeto.id_inmetrics_user 
-					INNER JOIN TAB_fases AS fases ON fases.id_f = projeto.id_f 
-					INNER JOIN TAB_status AS status ON status.id_status = projeto.id_status 
-					INNER JOIN TAB_mot_pend AS mot_pend ON mot_pend.id_mtp = projeto.id_mtp 
+					FROM tab_projeto AS projeto 
+					INNER JOIN tab_lider_cliente AS ltm ON ltm.id_lc = projeto.id_lc 
+					INNER JOIN tab_lider_projeto AS lp ON lp.id_lp = projeto.id_lp 
+					INNER JOIN tab_user AS user ON user.id_user = projeto.id_inmetrics_user 
+					INNER JOIN tab_fases AS fases ON fases.id_f = projeto.id_f 
+					INNER JOIN tab_status AS status ON status.id_status = projeto.id_status 
+					INNER JOIN tab_mot_pend AS mot_pend ON mot_pend.id_mtp = projeto.id_mtp 
 					WHERE projeto.id_cc=:cc AND projeto.id_inmetrics_user=:user AND projeto.id_status=:status";
 					$query = $connector->prepare($sql);
 					$query->bindParam(':cc', $_SESSION['cc'], PDO::PARAM_STR);
@@ -255,13 +255,13 @@ class projects
 					fases.nome_f AS NomeFase,
 					status.nome_status AS NomeStatus,
 					mot_pend.nome_mtp AS NomeMotivo 
-					FROM TAB_projeto AS projeto 
-					INNER JOIN TAB_lider_cliente AS ltm ON ltm.id_lc = projeto.id_lc 
-					INNER JOIN TAB_lider_projeto AS lp ON lp.id_lp = projeto.id_lp 
-					INNER JOIN TAB_user AS user ON user.id_user = projeto.id_inmetrics_user 
-					INNER JOIN TAB_fases AS fases ON fases.id_f = projeto.id_f 
-					INNER JOIN TAB_status AS status ON status.id_status = projeto.id_status 
-					INNER JOIN TAB_mot_pend AS mot_pend ON mot_pend.id_mtp = projeto.id_mtp 
+					FROM tab_projeto AS projeto 
+					INNER JOIN tab_lider_cliente AS ltm ON ltm.id_lc = projeto.id_lc 
+					INNER JOIN tab_lider_projeto AS lp ON lp.id_lp = projeto.id_lp 
+					INNER JOIN tab_user AS user ON user.id_user = projeto.id_inmetrics_user 
+					INNER JOIN tab_fases AS fases ON fases.id_f = projeto.id_f 
+					INNER JOIN tab_status AS status ON status.id_status = projeto.id_status 
+					INNER JOIN tab_mot_pend AS mot_pend ON mot_pend.id_mtp = projeto.id_mtp 
 					WHERE projeto.id_cc=:cc AND projeto.id_inmetrics_user=:user AND projeto.id_mtp=:pendency";
 					$query = $connector->prepare($sql);
 					$query->bindParam(':cc', $_SESSION['cc'], PDO::PARAM_STR);
@@ -319,13 +319,13 @@ class projects
 					fases.nome_f AS NomeFase,
 					status.nome_status AS NomeStatus,
 					mot_pend.nome_mtp AS NomeMotivo 
-					FROM TAB_projeto AS projeto 
-					INNER JOIN TAB_lider_cliente AS ltm ON ltm.id_lc = projeto.id_lc 
-					INNER JOIN TAB_lider_projeto AS lp ON lp.id_lp = projeto.id_lp 
-					INNER JOIN TAB_user AS user ON user.id_user = projeto.id_inmetrics_user 
-					INNER JOIN TAB_fases AS fases ON fases.id_f = projeto.id_f 
-					INNER JOIN TAB_status AS status ON status.id_status = projeto.id_status 
-					INNER JOIN TAB_mot_pend AS mot_pend ON mot_pend.id_mtp = projeto.id_mtp 
+					FROM tab_projeto AS projeto 
+					INNER JOIN tab_lider_cliente AS ltm ON ltm.id_lc = projeto.id_lc 
+					INNER JOIN tab_lider_projeto AS lp ON lp.id_lp = projeto.id_lp 
+					INNER JOIN tab_user AS user ON user.id_user = projeto.id_inmetrics_user 
+					INNER JOIN tab_fases AS fases ON fases.id_f = projeto.id_f 
+					INNER JOIN tab_status AS status ON status.id_status = projeto.id_status 
+					INNER JOIN tab_mot_pend AS mot_pend ON mot_pend.id_mtp = projeto.id_mtp 
 					WHERE projeto.id_cc=:cc AND projeto.id_f !=5 AND projeto.id_f !=8";
 					$query = $connector->prepare($sql);
 					$query->bindParam(':cc', $_SESSION['cc'], PDO::PARAM_STR);
@@ -340,13 +340,13 @@ class projects
 					fases.nome_f AS NomeFase,
 					status.nome_status AS NomeStatus,
 					mot_pend.nome_mtp AS NomeMotivo 
-					FROM TAB_projeto AS projeto 
-					INNER JOIN TAB_lider_cliente AS ltm ON ltm.id_lc = projeto.id_lc 
-					INNER JOIN TAB_lider_projeto AS lp ON lp.id_lp = projeto.id_lp 
-					INNER JOIN TAB_user AS user ON user.id_user = projeto.id_inmetrics_user 
-					INNER JOIN TAB_fases AS fases ON fases.id_f = projeto.id_f 
-					INNER JOIN TAB_status AS status ON status.id_status = projeto.id_status 
-					INNER JOIN TAB_mot_pend AS mot_pend ON mot_pend.id_mtp = projeto.id_mtp 
+					FROM tab_projeto AS projeto 
+					INNER JOIN tab_lider_cliente AS ltm ON ltm.id_lc = projeto.id_lc 
+					INNER JOIN tab_lider_projeto AS lp ON lp.id_lp = projeto.id_lp 
+					INNER JOIN tab_user AS user ON user.id_user = projeto.id_inmetrics_user 
+					INNER JOIN tab_fases AS fases ON fases.id_f = projeto.id_f 
+					INNER JOIN tab_status AS status ON status.id_status = projeto.id_status 
+					INNER JOIN tab_mot_pend AS mot_pend ON mot_pend.id_mtp = projeto.id_mtp 
 					WHERE projeto.id_cc=:cc AND (projeto.id_f = 5 OR projeto.id_f = 8)";
 					$query = $connector->prepare($sql);
 					$query->bindParam(':cc', $_SESSION['cc'], PDO::PARAM_STR);
@@ -361,13 +361,13 @@ class projects
 					fases.nome_f AS NomeFase,
 					status.nome_status AS NomeStatus,
 					mot_pend.nome_mtp AS NomeMotivo 
-					FROM TAB_projeto AS projeto 
-					INNER JOIN TAB_lider_cliente AS ltm ON ltm.id_lc = projeto.id_lc 
-					INNER JOIN TAB_lider_projeto AS lp ON lp.id_lp = projeto.id_lp 
-					INNER JOIN TAB_user AS user ON user.id_user = projeto.id_inmetrics_user 
-					INNER JOIN TAB_fases AS fases ON fases.id_f = projeto.id_f 
-					INNER JOIN TAB_status AS status ON status.id_status = projeto.id_status 
-					INNER JOIN TAB_mot_pend AS mot_pend ON mot_pend.id_mtp = projeto.id_mtp 
+					FROM tab_projeto AS projeto 
+					INNER JOIN tab_lider_cliente AS ltm ON ltm.id_lc = projeto.id_lc 
+					INNER JOIN tab_lider_projeto AS lp ON lp.id_lp = projeto.id_lp 
+					INNER JOIN tab_user AS user ON user.id_user = projeto.id_inmetrics_user 
+					INNER JOIN tab_fases AS fases ON fases.id_f = projeto.id_f 
+					INNER JOIN tab_status AS status ON status.id_status = projeto.id_status 
+					INNER JOIN tab_mot_pend AS mot_pend ON mot_pend.id_mtp = projeto.id_mtp 
 					WHERE projeto.id_cc=:cc AND projeto.id_f=:phase";
 					$query = $connector->prepare($sql);
 					$query->bindParam(':cc', $_SESSION['cc'], PDO::PARAM_STR);
@@ -383,13 +383,13 @@ class projects
 					fases.nome_f AS NomeFase,
 					status.nome_status AS NomeStatus,
 					mot_pend.nome_mtp AS NomeMotivo 
-					FROM TAB_projeto AS projeto 
-					INNER JOIN TAB_lider_cliente AS ltm ON ltm.id_lc = projeto.id_lc 
-					INNER JOIN TAB_lider_projeto AS lp ON lp.id_lp = projeto.id_lp 
-					INNER JOIN TAB_user AS user ON user.id_user = projeto.id_inmetrics_user 
-					INNER JOIN TAB_fases AS fases ON fases.id_f = projeto.id_f 
-					INNER JOIN TAB_status AS status ON status.id_status = projeto.id_status 
-					INNER JOIN TAB_mot_pend AS mot_pend ON mot_pend.id_mtp = projeto.id_mtp 
+					FROM tab_projeto AS projeto 
+					INNER JOIN tab_lider_cliente AS ltm ON ltm.id_lc = projeto.id_lc 
+					INNER JOIN tab_lider_projeto AS lp ON lp.id_lp = projeto.id_lp 
+					INNER JOIN tab_user AS user ON user.id_user = projeto.id_inmetrics_user 
+					INNER JOIN tab_fases AS fases ON fases.id_f = projeto.id_f 
+					INNER JOIN tab_status AS status ON status.id_status = projeto.id_status 
+					INNER JOIN tab_mot_pend AS mot_pend ON mot_pend.id_mtp = projeto.id_mtp 
 					WHERE projeto.id_cc=:cc AND projeto.id_status=:status";
 					$query = $connector->prepare($sql);
 					$query->bindParam(':cc', $_SESSION['cc'], PDO::PARAM_STR);
@@ -405,13 +405,13 @@ class projects
 					fases.nome_f AS NomeFase,
 					status.nome_status AS NomeStatus,
 					mot_pend.nome_mtp AS NomeMotivo 
-					FROM TAB_projeto AS projeto 
-					INNER JOIN TAB_lider_cliente AS ltm ON ltm.id_lc = projeto.id_lc 
-					INNER JOIN TAB_lider_projeto AS lp ON lp.id_lp = projeto.id_lp 
-					INNER JOIN TAB_user AS user ON user.id_user = projeto.id_inmetrics_user 
-					INNER JOIN TAB_fases AS fases ON fases.id_f = projeto.id_f 
-					INNER JOIN TAB_status AS status ON status.id_status = projeto.id_status 
-					INNER JOIN TAB_mot_pend AS mot_pend ON mot_pend.id_mtp = projeto.id_mtp 
+					FROM tab_projeto AS projeto 
+					INNER JOIN tab_lider_cliente AS ltm ON ltm.id_lc = projeto.id_lc 
+					INNER JOIN tab_lider_projeto AS lp ON lp.id_lp = projeto.id_lp 
+					INNER JOIN tab_user AS user ON user.id_user = projeto.id_inmetrics_user 
+					INNER JOIN tab_fases AS fases ON fases.id_f = projeto.id_f 
+					INNER JOIN tab_status AS status ON status.id_status = projeto.id_status 
+					INNER JOIN tab_mot_pend AS mot_pend ON mot_pend.id_mtp = projeto.id_mtp 
 					WHERE projeto.id_cc=:cc AND projeto.id_mtp=:pendency";
 					$query = $connector->prepare($sql);
 					$query->bindParam(':cc', $_SESSION['cc'], PDO::PARAM_STR);
@@ -472,13 +472,13 @@ class projects
 			fases.nome_f AS NomeFase,
 			status.nome_status AS NomeStatus,
 			mot_pend.nome_mtp AS NomeMotivo 
-			FROM TAB_projeto AS projeto 
-			INNER JOIN TAB_lider_cliente AS ltm ON ltm.id_lc = projeto.id_lc 
-			INNER JOIN TAB_lider_projeto AS lp ON lp.id_lp = projeto.id_lp 
-			INNER JOIN TAB_user AS user ON user.id_user = projeto.id_inmetrics_user 
-			INNER JOIN TAB_fases AS fases ON fases.id_f = projeto.id_f 
-			INNER JOIN TAB_status AS status ON status.id_status = projeto.id_status 
-			INNER JOIN TAB_mot_pend AS mot_pend ON mot_pend.id_mtp = projeto.id_mtp 
+			FROM tab_projeto AS projeto 
+			INNER JOIN tab_lider_cliente AS ltm ON ltm.id_lc = projeto.id_lc 
+			INNER JOIN tab_lider_projeto AS lp ON lp.id_lp = projeto.id_lp 
+			INNER JOIN tab_user AS user ON user.id_user = projeto.id_inmetrics_user 
+			INNER JOIN tab_fases AS fases ON fases.id_f = projeto.id_f 
+			INNER JOIN tab_status AS status ON status.id_status = projeto.id_status 
+			INNER JOIN tab_mot_pend AS mot_pend ON mot_pend.id_mtp = projeto.id_mtp 
 			WHERE projeto.id_cc=:cc AND projeto.id_inmetrics_user=:user AND projeto.id_f =:id";
 			$query = $connector->prepare($sql);
 			$query->bindParam(':cc', $_SESSION['cc'], PDO::PARAM_STR);
@@ -535,7 +535,7 @@ class projects
 		{
 			$connector = $connect->getConnector();
 			$sql = "INSERT INTO 
-			TAB_projeto(ts_prj, nmp_prj, id_cc, id_lc, id_lp, id_user, id_inmetrics_user, id_f, id_status, id_mtp, doc_prj, reu_prj, mrr_prj, crono_prj, aprv_prj) 
+			tab_projeto(ts_prj, nmp_prj, id_cc, id_lc, id_lp, id_user, id_inmetrics_user, id_f, id_status, id_mtp, doc_prj, reu_prj, mrr_prj, crono_prj, aprv_prj) 
 			VALUES(:ts, :name, :client, :ltm, :lp, :user, :responsable, :phase, :status, :pendency, :doc, :meeting, :mrr, :schedule, :approvement)";
 			$query = $connector->prepare($sql);
 			$query->bindParam(':ts', $id, PDO::PARAM_STR);
@@ -561,7 +561,7 @@ class projects
 				$status = "Novo projeto!";
 				$message = "Você possui um novo projeto sob sua responsabilidade!";
 				
-				$historyinsert = "INSERT INTO TAB_historico(data_hst, id_f, prvt_hst, rlzd_hst, desc_hst, id_prj, id_user) 
+				$historyinsert = "INSERT INTO tab_historico(data_hst, id_f, prvt_hst, rlzd_hst, desc_hst, id_prj, id_user) 
 				VALUES(NOW(), :phase, 100, 0, 'Projeto recebido para estimativa de custos', :project, :user)";
 				$queryhst = $connector->prepare($historyinsert);
 				$queryhst->bindParam(':phase', $phase, PDO::PARAM_STR);
@@ -586,7 +586,7 @@ class projects
 		{
 			$connector = $connect->getConnector();
 			
-			$sql = "UPDATE TAB_projeto SET id_lc=:ltm, id_lp=:lp, id_inmetrics_user=:analyst, id_f=:phase, id_status=:status, id_mtp=:pendency, doc_prj=:doc, reu_prj=:meeting, 
+			$sql = "UPDATE tab_projeto SET id_lc=:ltm, id_lp=:lp, id_inmetrics_user=:analyst, id_f=:phase, id_status=:status, id_mtp=:pendency, doc_prj=:doc, reu_prj=:meeting, 
 			mrr_prj=:mrr, crono_prj=:schedule, aprv_prj=:approvement WHERE id_prj=:prjid";
 			$query = $connector->prepare($sql);
 			$query->bindParam(':ltm', $ltm, PDO::PARAM_INT);
@@ -627,15 +627,15 @@ class projects
 			status.id_status AS ID_Status, status.nome_status AS NomeStatus, 
 			mot_pend.id_mtp AS ID_Pendencia, mot_pend.nome_mtp AS NomeMotivo,  
 			historico.prvt_hst AS Previsto, historico.rlzd_hst AS Realizado 
-			FROM TAB_projeto AS projeto 
-			INNER JOIN TAB_lider_cliente AS ltm ON ltm.id_lc = projeto.id_lc 
-			INNER JOIN TAB_lider_projeto AS lp ON lp.id_lp = projeto.id_lp 
-			INNER JOIN TAB_user AS user ON user.id_user = projeto.id_inmetrics_user 
-			INNER JOIN TAB_fases AS fases ON fases.id_f = projeto.id_f 
-			INNER JOIN TAB_status AS status ON status.id_status = projeto.id_status 
-			INNER JOIN TAB_mot_pend AS mot_pend ON mot_pend.id_mtp = projeto.id_mtp 
-			INNER JOIN TAB_historico AS historico ON historico.id_prj = projeto.id_prj 
-			WHERE projeto.id_cc=:cc AND projeto.id_prj=:proj AND historico.id_hst = (SELECT MAX(historico.id_hst) from TAB_historico AS historico WHERE id_prj=:idprj)"; 
+			FROM tab_projeto AS projeto 
+			INNER JOIN tab_lider_cliente AS ltm ON ltm.id_lc = projeto.id_lc 
+			INNER JOIN tab_lider_projeto AS lp ON lp.id_lp = projeto.id_lp 
+			INNER JOIN tab_user AS user ON user.id_user = projeto.id_inmetrics_user 
+			INNER JOIN tab_fases AS fases ON fases.id_f = projeto.id_f 
+			INNER JOIN tab_status AS status ON status.id_status = projeto.id_status 
+			INNER JOIN tab_mot_pend AS mot_pend ON mot_pend.id_mtp = projeto.id_mtp 
+			INNER JOIN tab_historico AS historico ON historico.id_prj = projeto.id_prj 
+			WHERE projeto.id_cc=:cc AND projeto.id_prj=:proj AND historico.id_hst = (SELECT MAX(historico.id_hst) from tab_historico AS historico WHERE id_prj=:idprj)"; 
 			$query = $connector->prepare($sql);
 			$query->bindParam(':cc', $_SESSION['cc'], PDO::PARAM_STR);
 			$query->bindParam(':proj', $id, PDO::PARAM_STR);
@@ -861,13 +861,13 @@ class projects
 			fases.nome_f AS NomeFase,
 			status.nome_status AS NomeStatus,
 			mot_pend.nome_mtp AS NomeMotivo 
-			FROM TAB_projeto AS projeto 
-			INNER JOIN TAB_lider_cliente AS ltm ON ltm.id_lc = projeto.id_lc 
-			INNER JOIN TAB_lider_projeto AS lp ON lp.id_lp = projeto.id_lp 
-			INNER JOIN TAB_user AS user ON user.id_user = projeto.id_inmetrics_user 
-			INNER JOIN TAB_fases AS fases ON fases.id_f = projeto.id_f 
-			INNER JOIN TAB_status AS status ON status.id_status = projeto.id_status 
-			INNER JOIN TAB_mot_pend AS mot_pend ON mot_pend.id_mtp = projeto.id_mtp 
+			FROM tab_projeto AS projeto 
+			INNER JOIN tab_lider_cliente AS ltm ON ltm.id_lc = projeto.id_lc 
+			INNER JOIN tab_lider_projeto AS lp ON lp.id_lp = projeto.id_lp 
+			INNER JOIN tab_user AS user ON user.id_user = projeto.id_inmetrics_user 
+			INNER JOIN tab_fases AS fases ON fases.id_f = projeto.id_f 
+			INNER JOIN tab_status AS status ON status.id_status = projeto.id_status 
+			INNER JOIN tab_mot_pend AS mot_pend ON mot_pend.id_mtp = projeto.id_mtp 
 			WHERE projeto.id_cc=:cc AND projeto.id_inmetrics_user=:user";
 			$query = $connector->prepare($sql);
 			$query->bindParam(':cc', $_SESSION['cc'], PDO::PARAM_STR);
@@ -925,13 +925,13 @@ class projects
 			fases.nome_f AS NomeFase,
 			status.nome_status AS NomeStatus,
 			mot_pend.nome_mtp AS NomeMotivo 
-			FROM TAB_projeto AS projeto 
-			INNER JOIN TAB_lider_cliente AS ltm ON ltm.id_lc = projeto.id_lc 
-			INNER JOIN TAB_lider_projeto AS lp ON lp.id_lp = projeto.id_lp 
-			INNER JOIN TAB_user AS user ON user.id_user = projeto.id_inmetrics_user 
-			INNER JOIN TAB_fases AS fases ON fases.id_f = projeto.id_f 
-			INNER JOIN TAB_status AS status ON status.id_status = projeto.id_status 
-			INNER JOIN TAB_mot_pend AS mot_pend ON mot_pend.id_mtp = projeto.id_mtp 
+			FROM tab_projeto AS projeto 
+			INNER JOIN tab_lider_cliente AS ltm ON ltm.id_lc = projeto.id_lc 
+			INNER JOIN tab_lider_projeto AS lp ON lp.id_lp = projeto.id_lp 
+			INNER JOIN tab_user AS user ON user.id_user = projeto.id_inmetrics_user 
+			INNER JOIN tab_fases AS fases ON fases.id_f = projeto.id_f 
+			INNER JOIN tab_status AS status ON status.id_status = projeto.id_status 
+			INNER JOIN tab_mot_pend AS mot_pend ON mot_pend.id_mtp = projeto.id_mtp 
 			WHERE projeto.id_cc=:cc AND projeto.id_inmetrics_user=:user";
 			$query = $connector->prepare($sql);
 			$query->bindParam(':cc', $_SESSION['cc'], PDO::PARAM_STR);
@@ -975,7 +975,7 @@ class projects
 		if($connect->tryconnect())
 		{
 			$connector = $connect->getConnector();
-			$sql = "INSERT INTO TAB_historico(data_hst, id_f, prvt_hst, rlzd_hst, desc_hst, id_prj, id_user) 
+			$sql = "INSERT INTO tab_historico(data_hst, id_f, prvt_hst, rlzd_hst, desc_hst, id_prj, id_user) 
 			VALUES(:date, :phase, :predicted, :acomplished, :note, :prj, :user)";
 			$query = $connector->prepare($sql);
 			$query->bindParam(':date', $date, PDO::PARAM_STR);
@@ -989,7 +989,7 @@ class projects
 			$rowC = $query->rowCount();
 			if($rowC>0)
 			{
-				$updatephase = "UPDATE TAB_projeto SET id_f=:phase WHERE id_prj=:prj";
+				$updatephase = "UPDATE tab_projeto SET id_f=:phase WHERE id_prj=:prj";
 				$queryup = $connector->prepare($updatephase);
 				$queryup->bindParam(':phase', $phase, PDO::PARAM_INT);
 				$queryup->bindParam(':prj', $prj, PDO::PARAM_INT);
@@ -1005,7 +1005,7 @@ class projects
 		if($connect->tryconnect())
 		{
 			$connector = $connect->getConnector();
-			$sql = "INSERT INTO TAB_historico(data_hst, id_f, desc_hst, id_prj, id_user) 
+			$sql = "INSERT INTO tab_historico(data_hst, id_f, desc_hst, id_prj, id_user) 
 			VALUES(NOW(), :phase, :note, :prj, :user)";
 			$query = $connector->prepare($sql);
 			$query->bindParam(':phase', $phase, PDO::PARAM_INT);
@@ -1016,7 +1016,7 @@ class projects
 			$rowC = $query->rowCount();
 			if($rowC>0)
 			{
-				$updatephase = "UPDATE TAB_projeto SET id_f=:phase WHERE id_prj=:prj";
+				$updatephase = "UPDATE tab_projeto SET id_f=:phase WHERE id_prj=:prj";
 				$queryup = $connector->prepare($updatephase);
 				$queryup->bindParam(':phase', $phase, PDO::PARAM_INT);
 				$queryup->bindParam(':prj', $prj, PDO::PARAM_INT);
@@ -1044,9 +1044,9 @@ class projects
 			$sql = "SELECT historico.data_hst AS data, historico.prvt_hst AS previsto, historico.rlzd_hst AS realizado, historico.desc_hst AS descricao, 
 			user.id_user AS id_user, user.nome_user AS nomeuser, 
 			fases.id_f AS id_fase, fases.nome_f AS nomefase 
-			FROM TAB_historico AS historico 
-			INNER JOIN TAB_fases AS fases ON historico.id_f = fases.id_f 
-			INNER JOIN TAB_user AS user ON historico.id_user = user.id_user 
+			FROM tab_historico AS historico 
+			INNER JOIN tab_fases AS fases ON historico.id_f = fases.id_f 
+			INNER JOIN tab_user AS user ON historico.id_user = user.id_user 
 			WHERE historico.id_prj=:id ORDER BY historico.data_hst DESC";
 			$query = $connector->prepare($sql);
 			$query->bindParam(':id', $prj, PDO::PARAM_STR);
@@ -1097,9 +1097,9 @@ class projects
 			$sql = "SELECT historico.data_hst AS data, historico.prvt_hst AS previsto, historico.rlzd_hst AS realizado, historico.desc_hst AS descricao, 
 			user.id_user AS id_user, user.nome_user AS nomeuser, 
 			fases.id_f AS id_fase, fases.nome_f AS nomefase 
-			FROM TAB_historico AS historico 
-			INNER JOIN TAB_fases AS fases ON historico.id_f = fases.id_f 
-			INNER JOIN TAB_user AS user ON historico.id_user = user.id_user 
+			FROM tab_historico AS historico 
+			INNER JOIN tab_fases AS fases ON historico.id_f = fases.id_f 
+			INNER JOIN tab_user AS user ON historico.id_user = user.id_user 
 			WHERE historico.id_prj=:id AND historico.data_hst BETWEEN :from AND :to ORDER BY historico.data_hst DESC";
 			$query = $connector->prepare($sql);
 			$query->bindParam(':id', $prj, PDO::PARAM_STR);
@@ -1156,13 +1156,13 @@ class projects
 			fases.nome_f AS NomeFase,
 			status.nome_status AS NomeStatus,
 			mot_pend.nome_mtp AS NomeMotivo 
-			FROM TAB_projeto AS projeto 
-			INNER JOIN TAB_lider_cliente AS ltm ON ltm.id_lc = projeto.id_lc 
-			INNER JOIN TAB_lider_projeto AS lp ON lp.id_lp = projeto.id_lp 
-			INNER JOIN TAB_user AS user ON user.id_user = projeto.id_inmetrics_user 
-			INNER JOIN TAB_fases AS fases ON fases.id_f = projeto.id_f 
-			INNER JOIN TAB_status AS status ON status.id_status = projeto.id_status 
-			INNER JOIN TAB_mot_pend AS mot_pend ON mot_pend.id_mtp = projeto.id_mtp 
+			FROM tab_projeto AS projeto 
+			INNER JOIN tab_lider_cliente AS ltm ON ltm.id_lc = projeto.id_lc 
+			INNER JOIN tab_lider_projeto AS lp ON lp.id_lp = projeto.id_lp 
+			INNER JOIN tab_user AS user ON user.id_user = projeto.id_inmetrics_user 
+			INNER JOIN tab_fases AS fases ON fases.id_f = projeto.id_f 
+			INNER JOIN tab_status AS status ON status.id_status = projeto.id_status 
+			INNER JOIN tab_mot_pend AS mot_pend ON mot_pend.id_mtp = projeto.id_mtp 
 			WHERE projeto.id_cc=:cc";
 			$query = $connector->prepare($sql);
 			$query->bindParam(':cc', $_SESSION['cc'], PDO::PARAM_STR);
@@ -1293,13 +1293,13 @@ class projects
 			fases.nome_f AS NomeFase,
 			status.nome_status AS NomeStatus,
 			mot_pend.nome_mtp AS NomeMotivo 
-			FROM TAB_projeto AS projeto 
-			INNER JOIN TAB_lider_cliente AS ltm ON ltm.id_lc = projeto.id_lc 
-			INNER JOIN TAB_lider_projeto AS lp ON lp.id_lp = projeto.id_lp 
-			INNER JOIN TAB_user AS user ON user.id_user = projeto.id_inmetrics_user 
-			INNER JOIN TAB_fases AS fases ON fases.id_f = projeto.id_f 
-			INNER JOIN TAB_status AS status ON status.id_status = projeto.id_status 
-			INNER JOIN TAB_mot_pend AS mot_pend ON mot_pend.id_mtp = projeto.id_mtp 
+			FROM tab_projeto AS projeto 
+			INNER JOIN tab_lider_cliente AS ltm ON ltm.id_lc = projeto.id_lc 
+			INNER JOIN tab_lider_projeto AS lp ON lp.id_lp = projeto.id_lp 
+			INNER JOIN tab_user AS user ON user.id_user = projeto.id_inmetrics_user 
+			INNER JOIN tab_fases AS fases ON fases.id_f = projeto.id_f 
+			INNER JOIN tab_status AS status ON status.id_status = projeto.id_status 
+			INNER JOIN tab_mot_pend AS mot_pend ON mot_pend.id_mtp = projeto.id_mtp 
 			WHERE projeto.id_cc=:cc AND projeto.id_inmetrics_user=:user AND projeto.id_f != 5 AND projeto.id_f != 8";
 			$query = $connector->prepare($sql);
 			$query->bindParam(':cc', $_SESSION['cc'], PDO::PARAM_STR);
@@ -1429,9 +1429,9 @@ class projects
 			$sql = "SELECT historico.data_hst AS data, historico.prvt_hst AS previsto, historico.rlzd_hst AS realizado, historico.desc_hst AS descricao, 
 			user.id_user AS id_user, user.nome_user AS nomeuser, 
 			fases.id_f AS id_fase, fases.nome_f AS nomefase 
-			FROM TAB_historico AS historico 
-			INNER JOIN TAB_fases AS fases ON historico.id_f = fases.id_f 
-			INNER JOIN TAB_user AS user ON historico.id_user = user.id_user 
+			FROM tab_historico AS historico 
+			INNER JOIN tab_fases AS fases ON historico.id_f = fases.id_f 
+			INNER JOIN tab_user AS user ON historico.id_user = user.id_user 
 			WHERE historico.id_prj=:id ORDER BY historico.data_hst DESC";
 			$query = $connector->prepare($sql);
 			$query->bindParam(':id', $prj, PDO::PARAM_STR);
@@ -1496,13 +1496,13 @@ class projects
 			fases.nome_f AS NomeFase,
 			status.nome_status AS NomeStatus,
 			mot_pend.nome_mtp AS NomeMotivo 
-			FROM TAB_projeto AS projeto 
-			INNER JOIN TAB_lider_cliente AS ltm ON ltm.id_lc = projeto.id_lc 
-			INNER JOIN TAB_lider_projeto AS lp ON lp.id_lp = projeto.id_lp 
-			INNER JOIN TAB_user AS user ON user.id_user = projeto.id_inmetrics_user 
-			INNER JOIN TAB_fases AS fases ON fases.id_f = projeto.id_f 
-			INNER JOIN TAB_status AS status ON status.id_status = projeto.id_status 
-			INNER JOIN TAB_mot_pend AS mot_pend ON mot_pend.id_mtp = projeto.id_mtp 
+			FROM tab_projeto AS projeto 
+			INNER JOIN tab_lider_cliente AS ltm ON ltm.id_lc = projeto.id_lc 
+			INNER JOIN tab_lider_projeto AS lp ON lp.id_lp = projeto.id_lp 
+			INNER JOIN tab_user AS user ON user.id_user = projeto.id_inmetrics_user 
+			INNER JOIN tab_fases AS fases ON fases.id_f = projeto.id_f 
+			INNER JOIN tab_status AS status ON status.id_status = projeto.id_status 
+			INNER JOIN tab_mot_pend AS mot_pend ON mot_pend.id_mtp = projeto.id_mtp 
 			WHERE projeto.id_cc=:cc";
 			$query = $connector->prepare($sql);
 			$query->bindParam(':cc', $_SESSION['cc'], PDO::PARAM_STR);
@@ -1555,7 +1555,7 @@ class projects
 		if($connect->tryconnect())
 		{
 			$connector = $connect->getConnector();
-			$sql = "SELECT $field FROM TAB_projeto WHERE id_prj=:u";
+			$sql = "SELECT $field FROM tab_projeto WHERE id_prj=:u";
 			$query = $connector->prepare($sql);
 			$query->bindParam(':u', $id, PDO::PARAM_STR);
 			$query->execute();

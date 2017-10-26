@@ -18,16 +18,27 @@ class user
 			$query->bindParam(':p', $pass, PDO::PARAM_STR);
 			$query->execute();
 			$rowC = $query->rowCount();
-			while($result=$query->FETCH(PDO::FETCH_OBJ))
+			if($rowC > 0)
 			{
-				$_SESSION['id'] = $result->id_user;
-				$_SESSION['tel'] = $result->tel_user;
-				$_SESSION['cc'] = $result->id_cc;
-				$_SESSION['nome'] = $result->nome_user;
-				$_SESSION['funcao'] = $result->funcao_user;
-				$_SESSION['image'] = $result->thumbnail_user;
+				while($result=$query->FETCH(PDO::FETCH_OBJ))
+				{
+					$id = $result->id_user;
+					$tel = $result->tel_user;
+					$cc = $result->id_cc;
+					$name = $result->nome_user;
+					$funcao = $result->funcao_user;
+					$image = $result->thumbnail_user;
+				}
+					$_SESSION['id'] = $id;
+					$_SESSION['login'] = $user;
+					$_SESSION['password'] = $pass;
+					$_SESSION['tel'] = $tel;
+					$_SESSION['cc'] = $cc;
+					$_SESSION['nome'] = $name;
+					$_SESSION['funcao'] = $funcao;
+					$_SESSION['image'] = $image;
+					header('Location: home.php?ur='.$_SESSION['id'].'&fc='.$_SESSION['funcao'].'&cc='.$_SESSION['cc']);
 			}
-			return $rowC;
 		}
 	}
 	
@@ -55,7 +66,7 @@ class user
 		if($connect->tryconnect())
 		{
 			$connector = $connect->getConnector();
-			$sql = "SELECT * FROM TAB_user WHERE email_in_user=:email AND active_user=0";
+			$sql = "SELECT * FROM tab_user WHERE email_in_user=:email AND active_user=0";
 			$query = $connector->prepare($sql);
 			$query->bindParam(':email', $usermail, PDO::PARAM_STR);
 			$query->execute();
@@ -65,7 +76,7 @@ class user
 				while($result = $query->FETCH(PDO::FETCH_OBJ))
 				{
 					$newpass = 'resetinproject'.rand(0,9999);
-					$update = "UPDATE TAB_user SET senha_user=:pass WHERE id_user=:user";
+					$update = "UPDATE tab_user SET senha_user=:pass WHERE id_user=:user";
 					$queryup = $connector->prepare($update);
 					$queryup->bindParam(':pass', $newpass, PDO::PARAM_STR);
 					$queryup->bindParam(':user', $result->id_user, PDO::PARAM_INT);
@@ -114,7 +125,7 @@ class user
 		{
 			$connector = $connect->getConnector();
 			
-			$sql = "SELECT * from TAB_user AS user WHERE user.id_cc=:cc AND active_user = 0";
+			$sql = "SELECT * from tab_user AS user WHERE user.id_cc=:cc AND active_user = 0";
 			$query = $connector->prepare($sql);
 			$query->bindParam(':cc', $_SESSION['cc'], PDO::PARAM_STR);
 			$query->execute();
@@ -132,7 +143,7 @@ class user
 					{
 						// NORMAL USER
 						// CHECK IF IT IS AVAILABLE
-						$sqlav = "SELECT COUNT(*) FROM TAB_projeto AS projeto WHERE projeto.id_inmetrics_user=:user AND projeto.id_f != 5 AND projeto.id_f != 8 AND projeto.id_cc=:cc";
+						$sqlav = "SELECT COUNT(*) FROM tab_projeto AS projeto WHERE projeto.id_inmetrics_user=:user AND projeto.id_f != 5 AND projeto.id_f != 8 AND projeto.id_cc=:cc";
 						$queryav = $connector->prepare($sqlav);
 						$queryav->bindParam(':user', $id, PDO::PARAM_STR);
 						$queryav->bindParam(':cc', $_SESSION['cc'], PDO::PARAM_STR);
@@ -193,7 +204,7 @@ class user
 		{
 			$connector = $connect->getConnector();
 			
-			$sql = "SELECT * FROM TAB_notify WHERE id_to_user=:cc";
+			$sql = "SELECT * FROM tab_notify WHERE id_to_user=:cc";
 			$query = $connector->prepare($sql);
 			$query->bindParam(':cc', $_SESSION['id'], PDO::PARAM_STR);
 			$query->execute();
@@ -266,7 +277,7 @@ class user
 		if($connect->tryconnect())
 		{
 			$connector = $connect->getConnector();
-			$queryphases = "SELECT * from TAB_fases AS fases";
+			$queryphases = "SELECT * from tab_fases AS fases";
 			$queryphases = $connector->prepare($queryphases);
 			$queryphases->execute();
 			$rowC = $queryphases->rowCount();
@@ -277,7 +288,7 @@ class user
 				{
 					$fase = $result->id_f;
 					$nome = $result->nome_f;
-					$sqlproject = "SELECT COUNT(*) FROM TAB_projeto AS projeto INNER JOIN TAB_cc AS cliente ON projeto.id_cc = cliente.id_cc 
+					$sqlproject = "SELECT COUNT(*) FROM tab_projeto AS projeto INNER JOIN tab_cc AS cliente ON projeto.id_cc = cliente.id_cc 
 					WHERE projeto.id_f != 5 AND projeto.id_f != 8 AND projeto.id_f=:f AND projeto.id_cc=:cc";
 					$queryproject = $connector->prepare($sqlproject);
 					$queryproject->bindParam(':f', $fase, PDO::PARAM_STR);
@@ -306,7 +317,7 @@ class user
 		if($connect->tryconnect())
 		{
 			$connector = $connect->getConnector();
-			$queryphases = "SELECT * from TAB_fases AS fases";
+			$queryphases = "SELECT * from tab_fases AS fases";
 			$queryphases = $connector->prepare($queryphases);
 			$queryphases->execute();
 			$rowC = $queryphases->rowCount();
@@ -317,7 +328,7 @@ class user
 				{
 					$fase = $result->id_f;
 					$nome = $result->nome_f;
-					$sqlproject = "SELECT COUNT(*) FROM TAB_projeto AS projeto INNER JOIN TAB_cc AS cliente ON projeto.id_cc = cliente.id_cc 
+					$sqlproject = "SELECT COUNT(*) FROM tab_projeto AS projeto INNER JOIN tab_cc AS cliente ON projeto.id_cc = cliente.id_cc 
 					WHERE projeto.id_f != 5 AND projeto.id_f != 8 AND projeto.id_f=:f AND projeto.id_cc=:cc AND projeto.id_inmetrics_user=:user";
 					$queryproject = $connector->prepare($sqlproject);
 					$queryproject->bindParam(':f', $fase, PDO::PARAM_STR);
@@ -351,21 +362,21 @@ class user
 			$connector = $connect->getConnector();
 			
 			// TOTAL AMOUNT OF PROJECTS
-			$totalsql = "SELECT COUNT(*) FROM TAB_projeto AS projeto INNER JOIN TAB_cc AS cliente ON projeto.id_cc = cliente.id_cc 
+			$totalsql = "SELECT COUNT(*) FROM tab_projeto AS projeto INNER JOIN tab_cc AS cliente ON projeto.id_cc = cliente.id_cc 
 			WHERE projeto.id_cc=:cc AND (projeto.id_f = 5 OR projeto.id_f = 8)";
 			$totalquery = $connector->prepare($totalsql);
 			$totalquery->bindParam(':cc', $_SESSION['cc'], PDO::PARAM_STR);
 			$totalquery->execute();
 			$totalcount = $totalquery->FETCH(PDO::FETCH_NUM);
 			//CANCELLED AMOUNT OF PROJECTS
-			$cancelsql = "SELECT COUNT(*) FROM TAB_projeto AS projeto INNER JOIN TAB_cc AS cliente ON projeto.id_cc = cliente.id_cc 
+			$cancelsql = "SELECT COUNT(*) FROM tab_projeto AS projeto INNER JOIN tab_cc AS cliente ON projeto.id_cc = cliente.id_cc 
 			WHERE projeto.id_cc=:cc AND projeto.id_f = 8";
 			$cancelquery = $connector->prepare($cancelsql);
 			$cancelquery->bindParam(':cc', $_SESSION['cc'], PDO::PARAM_STR);
 			$cancelquery->execute();
 			$cancelcount = $cancelquery->FETCH(PDO::FETCH_NUM);
 			//FINISHED AMOUNT OF PROJECTS
-			$finishsql = "SELECT COUNT(*) FROM TAB_projeto AS projeto INNER JOIN TAB_cc AS cliente ON projeto.id_cc = cliente.id_cc 
+			$finishsql = "SELECT COUNT(*) FROM tab_projeto AS projeto INNER JOIN tab_cc AS cliente ON projeto.id_cc = cliente.id_cc 
 			WHERE projeto.id_cc=:cc AND projeto.id_f = 5";
 			$finishquery = $connector->prepare($finishsql);
 			$finishquery->bindParam(':cc', $_SESSION['cc'], PDO::PARAM_STR);
@@ -415,7 +426,7 @@ class user
 			$connector = $connect->getConnector();
 			
 			// TOTAL AMOUNT OF PROJECTS
-			$totalsql = "SELECT COUNT(*) FROM TAB_projeto AS projeto INNER JOIN TAB_cc AS cliente ON projeto.id_cc = cliente.id_cc 
+			$totalsql = "SELECT COUNT(*) FROM tab_projeto AS projeto INNER JOIN tab_cc AS cliente ON projeto.id_cc = cliente.id_cc 
 			WHERE projeto.id_cc=:cc AND (projeto.id_f = 5 OR projeto.id_f = 8) AND projeto.id_inmetrics_user=:user";
 			$totalquery = $connector->prepare($totalsql);
 			$totalquery->bindParam(':cc', $_SESSION['cc'], PDO::PARAM_STR);
@@ -423,7 +434,7 @@ class user
 			$totalquery->execute();
 			$totalcount = $totalquery->FETCH(PDO::FETCH_NUM);
 			//CANCELLED AMOUNT OF PROJECTS
-			$cancelsql = "SELECT COUNT(*) FROM TAB_projeto AS projeto INNER JOIN TAB_cc AS cliente ON projeto.id_cc = cliente.id_cc 
+			$cancelsql = "SELECT COUNT(*) FROM tab_projeto AS projeto INNER JOIN tab_cc AS cliente ON projeto.id_cc = cliente.id_cc 
 			WHERE projeto.id_cc=:cc AND projeto.id_f = 8 AND projeto.id_inmetrics_user=:user";
 			$cancelquery = $connector->prepare($cancelsql);
 			$cancelquery->bindParam(':cc', $_SESSION['cc'], PDO::PARAM_STR);
@@ -431,7 +442,7 @@ class user
 			$cancelquery->execute();
 			$cancelcount = $cancelquery->FETCH(PDO::FETCH_NUM);
 			//FINISHED AMOUNT OF PROJECTS
-			$finishsql = "SELECT COUNT(*) FROM TAB_projeto AS projeto INNER JOIN TAB_cc AS cliente ON projeto.id_cc = cliente.id_cc 
+			$finishsql = "SELECT COUNT(*) FROM tab_projeto AS projeto INNER JOIN tab_cc AS cliente ON projeto.id_cc = cliente.id_cc 
 			WHERE projeto.id_cc=:cc AND projeto.id_f = 5 AND projeto.id_inmetrics_user=:user";
 			$finishquery = $connector->prepare($finishsql);
 			$finishquery->bindParam(':cc', $_SESSION['cc'], PDO::PARAM_STR);
@@ -483,7 +494,7 @@ class user
 		{
 			$connector = $connect->getConnector();
 			
-			$sqlstatus = "SELECT * from TAB_status";
+			$sqlstatus = "SELECT * from tab_status";
 			$querystatus = $connector->prepare($sqlstatus);
 			$querystatus->execute();
 			$rowC = $querystatus->rowCount();
@@ -496,7 +507,7 @@ class user
 					$nome = $resultstatus->nome_status;
 					
 					// QUERY TO COUNT BY STATUS
-					$sqlproject = "SELECT COUNT(*) FROM TAB_projeto AS projeto INNER JOIN TAB_status AS status ON projeto.id_status = status.id_status 
+					$sqlproject = "SELECT COUNT(*) FROM tab_projeto AS projeto INNER JOIN tab_status AS status ON projeto.id_status = status.id_status 
 					WHERE projeto.id_cc=:cc AND projeto.id_status=:amt AND projeto.id_f != 5 AND projeto.id_f != 8";
 					$queryproject = $connector->prepare($sqlproject);
 					$queryproject->bindParam(':cc', $_SESSION['cc'], PDO::PARAM_STR);
@@ -526,7 +537,7 @@ class user
 		{
 			$connector = $connect->getConnector();
 			
-			$sqlstatus = "SELECT * from TAB_status";
+			$sqlstatus = "SELECT * from tab_status";
 			$querystatus = $connector->prepare($sqlstatus);
 			$querystatus->execute();
 			$rowC = $querystatus->rowCount();
@@ -539,7 +550,7 @@ class user
 					$nome = $resultstatus->nome_status;
 					
 					// QUERY TO COUNT BY STATUS
-					$sqlproject = "SELECT COUNT(*) FROM TAB_projeto AS projeto INNER JOIN TAB_status AS status ON projeto.id_status = status.id_status 
+					$sqlproject = "SELECT COUNT(*) FROM tab_projeto AS projeto INNER JOIN tab_status AS status ON projeto.id_status = status.id_status 
 					WHERE projeto.id_cc=:cc AND projeto.id_status=:amt AND projeto.id_inmetrics_user=:user AND projeto.id_f != 5 AND projeto.id_f != 8";
 					$queryproject = $connector->prepare($sqlproject);
 					$queryproject->bindParam(':cc', $_SESSION['cc'], PDO::PARAM_STR);
@@ -590,7 +601,7 @@ class user
 		{
 			$connector = $connection->getConnector();
 			
-			$sql = "SELECT COUNT(*) from TAB_projeto AS projeto INNER JOIN TAB_user AS user ON projeto.id_cc = user.id_cc
+			$sql = "SELECT COUNT(*) from tab_projeto AS projeto INNER JOIN tab_user AS user ON projeto.id_cc = user.id_cc
 					WHERE projeto.id_inmetrics_user=:user AND (projeto.id_inmetrics_user = user.id_user) AND projeto.id_f != 5 AND projeto.id_f != 8 AND user.active_user = 0";
 			
 			$query = $connector->prepare($sql);
@@ -613,7 +624,7 @@ class user
 		if($connection->tryconnect())
 		{
 			$connector = $connection->getConnector();
-			$sql = "SELECT COUNT(*) from TAB_projeto AS projeto INNER JOIN TAB_user AS user ON projeto.id_cc = user.id_cc
+			$sql = "SELECT COUNT(*) from tab_projeto AS projeto INNER JOIN tab_user AS user ON projeto.id_cc = user.id_cc
 					WHERE projeto.id_inmetrics_user=:user AND (projeto.id_inmetrics_user = user.id_user) AND projeto.id_mtp = 2 AND projeto.id_f != 5 AND projeto.id_f != 8 AND user.active_user = 0";
 			
 			$query = $connector->prepare($sql);
@@ -636,7 +647,7 @@ class user
 		if($connection->tryconnect())
 		{
 			$connector = $connection->getConnector();
-			$sql = "SELECT COUNT(*) from TAB_projeto AS projeto INNER JOIN TAB_user AS user ON projeto.id_cc = user.id_cc
+			$sql = "SELECT COUNT(*) from tab_projeto AS projeto INNER JOIN tab_user AS user ON projeto.id_cc = user.id_cc
 					WHERE projeto.id_inmetrics_user=:user AND (projeto.id_inmetrics_user = user.id_user) AND projeto.id_mtp = 5 AND projeto.id_f != 5 AND projeto.id_f != 8 AND user.active_user = 0";
 			
 			$query = $connector->prepare($sql);
@@ -662,7 +673,7 @@ class user
 		{
 			$connector = $connection->getConnector();
 			
-			$sql = "SELECT COUNT(*) from TAB_projeto AS projeto	WHERE projeto.id_f != 5 AND projeto.id_f != 8 AND projeto.id_cc=:cc";
+			$sql = "SELECT COUNT(*) from tab_projeto AS projeto	WHERE projeto.id_f != 5 AND projeto.id_f != 8 AND projeto.id_cc=:cc";
 			
 			$query = $connector->prepare($sql);
 			$query->bindParam(':cc', $_SESSION['cc'], PDO::PARAM_STR);
@@ -680,7 +691,7 @@ class user
 		if($connection->tryconnect())
 		{
 			$connector = $connection->getConnector();
-			$sql = "SELECT COUNT(*) from TAB_projeto AS projeto	WHERE projeto.id_mtp = 2 AND projeto.id_cc=:cc AND projeto.id_f != 5 AND projeto.id_f != 8";
+			$sql = "SELECT COUNT(*) from tab_projeto AS projeto	WHERE projeto.id_mtp = 2 AND projeto.id_cc=:cc AND projeto.id_f != 5 AND projeto.id_f != 8";
 			
 			$query = $connector->prepare($sql);
 			$query->bindParam(':cc', $_SESSION['cc'], PDO::PARAM_STR);
@@ -698,7 +709,7 @@ class user
 		if($connection->tryconnect())
 		{
 			$connector = $connection->getConnector();
-			$sql = "SELECT COUNT(*) from TAB_projeto AS projeto WHERE projeto.id_mtp = 5 AND projeto.id_cc=:cc AND projeto.id_f != 5 AND projeto.id_f != 8";
+			$sql = "SELECT COUNT(*) from tab_projeto AS projeto WHERE projeto.id_mtp = 5 AND projeto.id_cc=:cc AND projeto.id_f != 5 AND projeto.id_f != 8";
 			
 			$query = $connector->prepare($sql);
 			$query->bindParam(':cc', $_SESSION['cc'], PDO::PARAM_STR);
@@ -722,7 +733,7 @@ class user
 		{
 			$connector = $connection->getConnector();
 			
-			$sqlusers = "SELECT * FROM TAB_user WHERE id_cc=:cc";
+			$sqlusers = "SELECT * FROM tab_user WHERE id_cc=:cc";
 			$queryusers = $connector->prepare($sqlusers);
 			$queryusers->bindParam(':cc', $_SESSION['cc'], PDO::PARAM_STR);
 			$queryusers->execute();
@@ -733,7 +744,7 @@ class user
 				{
 					$id = $return_users->id_user;
 					$nome = $return_users->nome_user;
-					$sqlproject = "SELECT COUNT(*) from TAB_projeto AS projeto INNER JOIN TAB_user AS user ON projeto.id_cc = user.id_cc
+					$sqlproject = "SELECT COUNT(*) from tab_projeto AS projeto INNER JOIN tab_user AS user ON projeto.id_cc = user.id_cc
 					WHERE projeto.id_inmetrics_user=:user AND (projeto.id_inmetrics_user = user.id_user) AND projeto.id_f != 5 AND projeto.id_f != 8 AND user.active_user = 0";
 					$queryproject = $connector->prepare($sqlproject);
 					$queryproject->bindParam(':user', $id, PDO::PARAM_STR);
@@ -759,8 +770,8 @@ class user
 			$connector = $connect->getConnector();
 			
 			$sql = "SELECT user.id_user AS ID, user.nome_user AS Nome, user.email_in_user AS Email, centroc.desc_cc AS CentroCusto, user.funcao_user AS Funcao, user.active_user AS Enabled 
-			FROM TAB_user AS user 
-			INNER JOIN TAB_cc AS centroc ON user.id_cc=centroc.id_cc 
+			FROM tab_user AS user 
+			INNER JOIN tab_cc AS centroc ON user.id_cc=centroc.id_cc 
 			WHERE user.id_cc=:cc AND user.id_user != :myuser";
 			$query = $connector->prepare($sql);
 			$query->bindParam(':cc', $_SESSION['cc'], PDO::PARAM_STR);
@@ -809,8 +820,8 @@ class user
 			$connector = $connect->getConnector();
 			
 			$sql = "SELECT user.id_user AS ID, user.nome_user AS Nome, user.email_in_user AS Email, centroc.desc_cc AS CentroCusto, user.funcao_user AS Funcao, user.active_user AS Enabled 
-			FROM TAB_user AS user 
-			INNER JOIN TAB_cc AS centroc ON user.id_cc=centroc.id_cc 
+			FROM tab_user AS user 
+			INNER JOIN tab_cc AS centroc ON user.id_cc=centroc.id_cc 
 			WHERE user.id_cc=:cc AND user.id_user != :myuser AND user.nome_user LIKE CONCAT('%',:name,'%')";
 			$query = $connector->prepare($sql);
 			$query->bindParam(':cc', $_SESSION['cc'], PDO::PARAM_STR);
@@ -859,8 +870,8 @@ class user
 		{
 			$connector = $connect->getConnector();
 			
-			$sql = "SELECT user.id_user AS ID, user.email_in_user AS Email, user.nome_user AS Name FROM TAB_user AS user 
-			INNER JOIN TAB_cc AS centroc ON user.id_cc=centroc.id_cc 
+			$sql = "SELECT user.id_user AS ID, user.email_in_user AS Email, user.nome_user AS Name FROM tab_user AS user 
+			INNER JOIN tab_cc AS centroc ON user.id_cc=centroc.id_cc 
 			WHERE user.id_cc=:cc AND user.id_user != :myuser AND user.active_user = 0";
 			$query = $connector->prepare($sql);
 			$query->bindParam(':cc', $_SESSION['cc'], PDO::PARAM_STR);
@@ -908,7 +919,7 @@ class user
 			$connector = $connect->getConnector();
 			$mail = new email;
 			
-			$sql = "UPDATE TAB_user SET active_user=1 WHERE id_user=:user";
+			$sql = "UPDATE tab_user SET active_user=1 WHERE id_user=:user";
 			$query = $connector->prepare($sql);
 			$query->bindParam(':user', $id, PDO::PARAM_STR);
 			$query->execute();
@@ -934,7 +945,7 @@ class user
 			$connector = $connect->getConnector();
 			$mail = new email;
 			
-			$sql = "UPDATE TAB_user SET active_user=0 WHERE id_user=:user";
+			$sql = "UPDATE tab_user SET active_user=0 WHERE id_user=:user";
 			$query = $connector->prepare($sql);
 			$query->bindParam(':user', $id, PDO::PARAM_STR);
 			$query->execute();
@@ -975,7 +986,7 @@ class user
 			// UPDATE IMAGE USER || DELETE THE OLDER VERSION BEFORE SEND THE NEW ONE
 			else
 			{
-				$sql = "SELECT thumbnail_user AS Thumbnail FROM TAB_user WHERE id_user=:user";
+				$sql = "SELECT thumbnail_user AS Thumbnail FROM tab_user WHERE id_user=:user";
 				$query = $connector->prepare($sql);
 				$query->bindParam('user', $id, PDO::PARAM_STR);
 				$query->execute();
@@ -1030,7 +1041,7 @@ class user
 			// IF INSERT
 			if($type == 0)
 			{
-				$sql = "INSERT INTO TAB_user(id_cc, nome_user, funcao_user, tel_user, email_in_user, senha_user, thumbnail_user) VALUES(:cc, :name, :funcao, :tel, :mail, :pass, :thumb)";
+				$sql = "INSERT INTO tab_user(id_cc, nome_user, funcao_user, tel_user, email_in_user, senha_user, thumbnail_user) VALUES(:cc, :name, :funcao, :tel, :mail, :pass, :thumb)";
 				$query = $connector->prepare($sql);
 				$query->bindParam(':cc', $cc, PDO::PARAM_STR);
 				$query->bindParam(':name', $name, PDO::PARAM_STR);
@@ -1055,7 +1066,7 @@ class user
 			// IF UPDATE OTHER USER
 			else if($type == 1)
 			{
-				$sql = "UPDATE TAB_user SET id_cc=:cc, nome_user=:user, funcao_user=:funcao, tel_user=:tel, email_in_user=:mail, senha_user=:pass, thumbnail_user=:thumb WHERE id_user=:id";
+				$sql = "UPDATE tab_user SET id_cc=:cc, nome_user=:user, funcao_user=:funcao, tel_user=:tel, email_in_user=:mail, senha_user=:pass, thumbnail_user=:thumb WHERE id_user=:id";
 				$query = $connector->prepare($sql);
 				$query->bindParam(':cc', $cc, PDO::PARAM_STR);
 				$query->bindParam(':user', $name, PDO::PARAM_STR);
@@ -1082,7 +1093,7 @@ class user
 			{
 				// IF UPDATE MY OWN USER
 				
-				$sql = "UPDATE TAB_user SET id_cc=:cc, nome_user=:user, funcao_user=:funcao, tel_user=:tel, email_in_user=:mail, senha_user=:pass, thumbnail_user=:thumb WHERE id_user=:id";
+				$sql = "UPDATE tab_user SET id_cc=:cc, nome_user=:user, funcao_user=:funcao, tel_user=:tel, email_in_user=:mail, senha_user=:pass, thumbnail_user=:thumb WHERE id_user=:id";
 				$query = $connector->prepare($sql);
 				$query->bindParam(':cc', $cc, PDO::PARAM_STR);
 				$query->bindParam(':user', $name, PDO::PARAM_STR);

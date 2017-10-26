@@ -1,3 +1,8 @@
+<?php 
+if (session_status !== PHP_SESSION_ACTIVE) {
+	session_start();
+}
+?>
  <!--sidebar start-->
       <aside>
           <div id="sidebar"  class="nav-collapse ">

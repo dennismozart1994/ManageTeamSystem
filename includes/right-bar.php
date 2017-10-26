@@ -1,3 +1,8 @@
+<?php 
+if (session_status !== PHP_SESSION_ACTIVE) {
+	session_start();
+}
+?>
 <div class="col-lg-3 ds">
                     <!--COMPLETED ACTIONS DONUTS CHART-->
 						<h3>NOTIFICAÇÕES</h3>

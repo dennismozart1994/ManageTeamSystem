@@ -14,7 +14,7 @@ class parameters
 			if($type == 1)
 			{
 				$connector = $connect->getConnector();
-				$sql = "UPDATE TAB_lider_cliente SET active_lc=1 WHERE id_lc=:id";
+				$sql = "UPDATE tab_lider_cliente SET active_lc=1 WHERE id_lc=:id";
 				$query = $connector->prepare($sql);
 				$query->bindParam(':id', $id, PDO::PARAM_STR);
 				$query->execute();
@@ -31,7 +31,7 @@ class parameters
 			else
 			{
 				$connector = $connect->getConnector();
-				$sql = "UPDATE TAB_lider_projeto SET active_lp=1 WHERE id_lp=:id";
+				$sql = "UPDATE tab_lider_projeto SET active_lp=1 WHERE id_lp=:id";
 				$query = $connector->prepare($sql);
 				$query->bindParam(':id', $id, PDO::PARAM_STR);
 				$query->execute();
@@ -61,7 +61,7 @@ class parameters
 			
 			if($type == 1)
 			{
-				$sql = "UPDATE TAB_lider_cliente SET nome_lc=?, email_lc=?, id_user=? WHERE id_lc=?";
+				$sql = "UPDATE tab_lider_cliente SET nome_lc=?, email_lc=?, id_user=? WHERE id_lc=?";
 				$query=$connector->prepare($sql);
 				$query->bindParam(1, $name, PDO::PARAM_STR);
 				$query->bindParam(2, $email, PDO::PARAM_STR);
@@ -80,7 +80,7 @@ class parameters
 			}
 			else
 			{
-				$sql = "UPDATE TAB_lider_projeto SET nome_lp=?, email_lp=?, id_user=? WHERE id_lp=?";
+				$sql = "UPDATE tab_lider_projeto SET nome_lp=?, email_lp=?, id_user=? WHERE id_lp=?";
 				$query=$connector->prepare($sql);
 				$query->bindParam(1, $name, PDO::PARAM_STR);
 				$query->bindParam(2, $email, PDO::PARAM_STR);
@@ -115,7 +115,7 @@ class parameters
 			$connector = $connect->getConnector();
 			if($type == 1)
 			{
-				$getclient="SELECT id_clt FROM TAB_cc WHERE id_cc=:cc";
+				$getclient="SELECT id_clt FROM tab_cc WHERE id_cc=:cc";
 				$query_get_client = $connector->prepare($getclient);
 				$query_get_client->bindParam(':cc', $_SESSION['cc'], PDO::PARAM_STR);
 				$query_get_client->execute();
@@ -126,7 +126,7 @@ class parameters
 					{
 						self::$client = $result->id_clt;
 						$client = self::$client;
-						$sql = "INSERT INTO TAB_lider_cliente(id_clt, nome_lc, email_lc, id_user) VALUES (?, ?, ?, ?)";
+						$sql = "INSERT INTO tab_lider_cliente(id_clt, nome_lc, email_lc, id_user) VALUES (?, ?, ?, ?)";
 						$query = $connector->prepare($sql);
 						$query->bindParam(1, self::$client, PDO::PARAM_STR);
 						$query->bindParam(2, $name, PDO::PARAM_STR);
@@ -151,7 +151,7 @@ class parameters
 			}
 			else
 			{
-				$getclient="SELECT id_clt FROM TAB_cc WHERE id_cc=:cc";
+				$getclient="SELECT id_clt FROM tab_cc WHERE id_cc=:cc";
 				$query_get_client = $connector->prepare($getclient);
 				$query_get_client->bindParam(':cc', $_SESSION['cc'], PDO::PARAM_STR);
 				$query_get_client->execute();
@@ -162,7 +162,7 @@ class parameters
 					{
 						self::$client = $result->id_clt;
 						$client = self::$client;
-						$sql = "INSERT INTO TAB_lider_projeto(id_clt, nome_lp, email_lp, id_user) VALUES (?, ?, ?, ?)";
+						$sql = "INSERT INTO tab_lider_projeto(id_clt, nome_lp, email_lp, id_user) VALUES (?, ?, ?, ?)";
 						$query = $connector->prepare($sql);
 						$query->bindParam(1, self::$client, PDO::PARAM_STR);
 						$query->bindParam(2, $name, PDO::PARAM_STR);
@@ -201,9 +201,9 @@ class parameters
 			$connector = $connect->getConnector();
 			$sql = "SELECT LP.id_lp AS ID, LP.nome_lp AS Nome, LP.email_lp AS Email, 
 			CLT.nome_clt AS NomeCliente
-			FROM TAB_lider_projeto AS LP 
-			INNER JOIN TAB_cliente AS CLT ON LP.id_clt = CLT.id_clt 
-			WHERE LP.id_clt = (SELECT id_clt FROM TAB_cc WHERE id_cc=:cc) AND LP.active_lp = 0";
+			FROM tab_lider_projeto AS LP 
+			INNER JOIN tab_cliente AS CLT ON LP.id_clt = CLT.id_clt 
+			WHERE LP.id_clt = (SELECT id_clt FROM tab_cc WHERE id_cc=:cc) AND LP.active_lp = 0";
 			$query = $connector->prepare($sql);
 			$query->bindParam(':cc', $_SESSION['cc'], PDO::PARAM_STR);
 			$query->execute();
@@ -249,9 +249,9 @@ class parameters
 			$connector = $connect->getConnector();
 			$sql = "SELECT LC.id_lc AS ID, LC.nome_lc AS Nome, LC.email_lc AS Email, 
 			CLT.nome_clt AS NomeCliente
-			FROM TAB_lider_cliente AS LC 
-			INNER JOIN TAB_cliente AS CLT ON LC.id_clt = CLT.id_clt 
-			WHERE LC.id_clt = (SELECT id_clt FROM TAB_cc WHERE id_cc=:cc) AND LC.active_lc = 0";
+			FROM tab_lider_cliente AS LC 
+			INNER JOIN tab_cliente AS CLT ON LC.id_clt = CLT.id_clt 
+			WHERE LC.id_clt = (SELECT id_clt FROM tab_cc WHERE id_cc=:cc) AND LC.active_lc = 0";
 			$query = $connector->prepare($sql);
 			$query->bindParam(':cc', $_SESSION['cc'], PDO::PARAM_STR);
 			$query->execute();
@@ -300,9 +300,9 @@ class parameters
 				$connector = $connect->getConnector();
 				$sql = "SELECT LC.id_lc AS ID, LC.nome_lc AS Nome, LC.email_lc AS Email, 
 				CLT.nome_clt AS NomeCliente
-				FROM TAB_lider_cliente AS LC 
-				INNER JOIN TAB_cliente AS CLT ON LC.id_clt = CLT.id_clt 
-				WHERE LC.id_clt = (SELECT id_clt FROM TAB_cc WHERE id_cc=:cc) AND LC.active_lc = 0";
+				FROM tab_lider_cliente AS LC 
+				INNER JOIN tab_cliente AS CLT ON LC.id_clt = CLT.id_clt 
+				WHERE LC.id_clt = (SELECT id_clt FROM tab_cc WHERE id_cc=:cc) AND LC.active_lc = 0";
 				$query = $connector->prepare($sql);
 				$query->bindParam(':cc', $_SESSION['cc'], PDO::PARAM_STR);
 				$query->execute();
@@ -349,9 +349,9 @@ class parameters
 				$connector = $connect->getConnector();
 				$sql = "SELECT LP.id_lp AS ID, LP.nome_lp AS Nome, LP.email_lp AS Email, 
 				CLT.nome_clt AS NomeCliente
-				FROM TAB_lider_projeto AS LP 
-				INNER JOIN TAB_cliente AS CLT ON LP.id_clt = CLT.id_clt 
-				WHERE LP.id_clt = (SELECT id_clt FROM TAB_cc WHERE id_cc=:cc)  AND LP.active_lp = 0";
+				FROM tab_lider_projeto AS LP 
+				INNER JOIN tab_cliente AS CLT ON LP.id_clt = CLT.id_clt 
+				WHERE LP.id_clt = (SELECT id_clt FROM tab_cc WHERE id_cc=:cc)  AND LP.active_lp = 0";
 				$query = $connector->prepare($sql);
 				$query->bindParam(':cc', $_SESSION['cc'], PDO::PARAM_STR);
 				$query->execute();
@@ -407,9 +407,9 @@ class parameters
 				$connector = $connect->getConnector();
 				$sql = "SELECT LC.id_lc AS ID, LC.nome_lc AS Nome, LC.email_lc AS Email, 
 				CLT.nome_clt AS NomeCliente
-				FROM TAB_lider_cliente AS LC 
-				INNER JOIN TAB_cliente AS CLT ON LC.id_clt = CLT.id_clt 
-				WHERE LC.id_clt = (SELECT id_clt FROM TAB_cc WHERE id_cc=:cc) AND LC.active_lc = 0";
+				FROM tab_lider_cliente AS LC 
+				INNER JOIN tab_cliente AS CLT ON LC.id_clt = CLT.id_clt 
+				WHERE LC.id_clt = (SELECT id_clt FROM tab_cc WHERE id_cc=:cc) AND LC.active_lc = 0";
 				$query = $connector->prepare($sql);
 				$query->bindParam(':cc', $_SESSION['cc'], PDO::PARAM_STR);
 				$query->execute();
@@ -448,9 +448,9 @@ class parameters
 				$connector = $connect->getConnector();
 				$sql = "SELECT LP.id_lp AS ID, LP.nome_lp AS Nome, LP.email_lp AS Email, 
 				CLT.nome_clt AS NomeCliente
-				FROM TAB_lider_projeto AS LP 
-				INNER JOIN TAB_cliente AS CLT ON LP.id_clt = CLT.id_clt 
-				WHERE LP.id_clt = (SELECT id_clt FROM TAB_cc WHERE id_cc=:cc) AND LP.active_lp = 0";
+				FROM tab_lider_projeto AS LP 
+				INNER JOIN tab_cliente AS CLT ON LP.id_clt = CLT.id_clt 
+				WHERE LP.id_clt = (SELECT id_clt FROM tab_cc WHERE id_cc=:cc) AND LP.active_lp = 0";
 				$query = $connector->prepare($sql);
 				$query->bindParam(':cc', $_SESSION['cc'], PDO::PARAM_STR);
 				$query->execute();
@@ -496,8 +496,8 @@ class parameters
 			$connector = $connect->getConnector();
 			$sql = "SELECT user.id_user AS ID, user.nome_user AS Nome, user.email_in_user AS Email, user.funcao_user AS Funcao, 
 			CC.desc_cc AS CentroDeCusto
-			FROM TAB_user AS user 
-			INNER JOIN TAB_cc AS CC ON user.id_cc = CC.id_cc 
+			FROM tab_user AS user 
+			INNER JOIN tab_cc AS CC ON user.id_cc = CC.id_cc 
 			WHERE user.id_CC =:cc AND user.active_user = 0";
 			$query = $connector->prepare($sql);
 			$query->bindParam(':cc', $_SESSION['cc'], PDO::PARAM_STR);
@@ -545,7 +545,7 @@ class parameters
 		{
 			$connector = $connect->getConnector();
 			$sql = "SELECT fases.id_f AS ID, fases.nome_f AS Nome, fases.desc_f AS Descricao
-			FROM TAB_fases AS fases";
+			FROM tab_fases AS fases";
 			$query = $connector->prepare($sql);
 			$query->execute();
 			$rowC = $query->rowCount();
@@ -587,7 +587,7 @@ class parameters
 		{
 			$connector = $connect->getConnector();
 			$sql = "SELECT fases.id_f AS ID, fases.nome_f AS Nome, fases.desc_f AS Descricao
-			FROM TAB_fases AS fases WHERE fases.id_f=:phase";
+			FROM tab_fases AS fases WHERE fases.id_f=:phase";
 			$query = $connector->prepare($sql);
 			$query->bindParam(':phase', $phaseid, PDO::PARAM_INT);
 			$query->execute();
@@ -612,7 +612,7 @@ class parameters
 		{
 			$connector = $connect->getConnector();
 			$sql = "SELECT status.id_status AS ID, status.nome_status AS Nome, status.desc_status AS Descricao
-			FROM TAB_status AS status";
+			FROM tab_status AS status";
 			$query = $connector->prepare($sql);
 			$query->execute();
 			$rowC = $query->rowCount();
@@ -654,7 +654,7 @@ class parameters
 		{
 			$connector = $connect->getConnector();
 			$sql = "SELECT Pendencia.id_mtp AS ID, Pendencia.nome_mtp AS Nome, Pendencia.desc_mtp AS Descricao
-			FROM TAB_mot_pend AS Pendencia";
+			FROM tab_mot_pend AS Pendencia";
 			$query = $connector->prepare($sql);
 			$query->execute();
 			$rowC = $query->rowCount();
@@ -696,8 +696,8 @@ class parameters
 		{
 			$connector = $connect->getConnector();
 			$sql = "SELECT cc.id_cc AS ID, cliente.id_clt AS IDCliente, cliente.nome_clt AS NomeCliente, cc.desc_cc AS CentroDeCusto 
-			FROM TAB_cc AS cc 
-			INNER JOIN TAB_cliente AS cliente ON cc.id_clt = cliente.id_clt 
+			FROM tab_cc AS cc 
+			INNER JOIN tab_cliente AS cliente ON cc.id_clt = cliente.id_clt 
 			WHERE cc.id_cc=:cc";
 			$query = $connector->prepare($sql);
 			$query->bindParam(':cc', $id, PDO::PARAM_STR);
@@ -720,9 +720,9 @@ class parameters
 		{
 			$connector = $connect->getConnector();
 			$sql = "SELECT cc.id_cc AS ID, cliente.id_clt AS IDCliente, cliente.nome_clt AS NomeCliente, cc.desc_cc AS CentroDeCusto 
-			FROM TAB_cc AS cc 
-			INNER JOIN TAB_cliente AS cliente ON cc.id_clt = cliente.id_clt 
-			WHERE cliente.id_clt = (SELECT id_clt FROM TAB_cc WHERE id_cc = :cc)";
+			FROM tab_cc AS cc 
+			INNER JOIN tab_cliente AS cliente ON cc.id_clt = cliente.id_clt 
+			WHERE cliente.id_clt = (SELECT id_clt FROM tab_cc WHERE id_cc = :cc)";
 			$query = $connector->prepare($sql);
 			$query->bindParam(':cc', $_SESSION['cc'], PDO::PARAM_STR);
 			$query->execute();

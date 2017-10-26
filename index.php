@@ -1,5 +1,4 @@
 <?php
-session_start();
 require_once('classes/PHPMailer/email.php');
 $mail = new email;
 
@@ -13,12 +12,7 @@ else
 	if(isset($_REQUEST['login']) && isset($_REQUEST['password']))
 	{
 		$user = new user;
-		if($user->login($_GET['login'], $_GET['password'])>0)
-		{
-			$_SESSION['login'] = $_GET['login'];
-			$_SESSION['password'] = $_GET['password'];
-			header('Location: home.php?ur='.$_SESSION['id'].'&fc='.$_SESSION['funcao'].'&cc='.$_SESSION['cc']);
-		}
+		$user->login($_GET['login'], $_GET['password']);
 	}
 }
 
