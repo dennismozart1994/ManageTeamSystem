@@ -53,45 +53,6 @@ class user
 		header('Location: index.php');
 	}
 	
-	// RESET PASSWORD
-	public function ResetPassword($usermail)
-	{
-		$connect = new connection;
-		$mail = new email;
-		
-		if($connect->tryconnect())
-		{
-			$connector = $connect->getConnector();
-			$sql = "SELECT * FROM tab_user WHERE email_in_user=:email AND active_user=0";
-			$query = $connector->prepare($sql);
-			$query->bindParam(':email', $usermail, PDO::PARAM_STR);
-			$query->execute();
-			$rowC = $query->rowCount();
-			if($rowC == 1)
-			{
-				while($result = $query->FETCH(PDO::FETCH_OBJ))
-				{
-					$newpass = 'resetinproject'.rand(0,9999);
-					$update = "UPDATE tab_user SET senha_user=:pass WHERE id_user=:user";
-					$queryup = $connector->prepare($update);
-					$queryup->bindParam(':pass', $newpass, PDO::PARAM_STR);
-					$queryup->bindParam(':user', $result->id_user, PDO::PARAM_INT);
-					$queryup->execute();
-					$message = "Foi solicitado o reset da sua senha!<br/><br/>
-					Sua senha temporária é ".utf8_decode($newpass)."<br/><br/>
-					Lembre-se de alterar a sua senha em <strong> \"Usuários\" >> \"Meu usuário\" </strong> em seu próximo acesso ao sistema!<br/><br/>
-					Att,<br/>Equipe de Suporte - Inproject<br/><br/><b>Este é um email automático encaminhado pelo sistema, por gentileza não responder. Em caso de dúvidas contate o seu Gerente ou Líder de Projeto!</b>";
-
-					$mail->sendEmail($usermail, '', utf8_decode('Recuperação de senha - Sistema Inproject'), utf8_decode($message), false, '', 'index.php', 'Senha resetada com sucesso! Uma senha temporária foi encaminhada ao seu e-mail!');
-				}
-			}
-			else
-			{
-				echo '<script>alert("E-mail não está cadastrado dentro do sistema ou acesso foi revogado. Contate o seu gestor!");</script>';
-			}
-		}
-	}
-	
 	// get any user field
 	public function getUserField($id, $field)
 	{
@@ -943,7 +904,7 @@ class user
 			{
 				$message = "Seu acesso ao sistema foi revogado!<br/><br/>
 				Att,<br/>Equipe de Suporte - Inproject<br/><br/><b>Este é um email automático encaminhado pelo sistema, por gentileza não responder. Em caso de dúvidas contate o seu Gerente ou Líder de Projeto!</b>";
-				$mail->sendEmail($address, $name, utf8_decode('Exclusão de acesso!'), utf8_decode($message), false, '', 'manageusers.php', 'Usuário desativado com sucesso!');
+				echo '<script>alert("Usuário desativado com sucesso!"); window.location.href = "manageusers.php"</script>';
 			}
 			else
 			{
@@ -969,7 +930,8 @@ class user
 			{
 				$message = "Seu acesso ao sistema foi concedido novamente!<br/><br/>Acesse http://10.10.5.161/inproject/ para utilizar o sistema utilizando <strong>este endereço de email!</strong><br/><br/>
 				Att,<br/>Equipe de Suporte - Inproject<br/><br/><b>Este é um email automático encaminhado pelo sistema, por gentileza não responder. Em caso de dúvidas contate o seu Gerente ou Líder de Projeto!</b>";
-				$mail->sendEmail($address, $name, utf8_decode('Reativação de usuário!'), utf8_decode($message), false, '', 'manageusers.php', 'Usuário reativado com sucesso!');
+				echo '<script>alert("Usuário reativado com sucesso!"); window.location.href = "manageusers.php"</script>';
+				
 			}
 			else
 			{
@@ -1071,7 +1033,7 @@ class user
 				{
 					$message = "Seja bem vindo ao Inproject $name! <br/><br/> Acesse o link http://10.10.5.161/inproject/ para logar no sistema utilizando <strong> este seu endereço de e-mail</strong> como login! <br/><br/>
 					Att,<br/>Equipe de Suporte - Inproject<br/><br/><b>Este é um email automático encaminhado pelo sistema, por gentileza não responder. Em caso de dúvidas contate o seu Gerente ou Líder de Projeto!</b>";
-					$mail->sendEmail($email, $name, utf8_decode('Acesso ao sistema Inproject'), utf8_decode($message), false, '', 'manageusers.php', 'Usuário inserido com sucesso!');
+					echo '<script>alert("Usuário inserido com sucesso!"); window.location.href = "manageusers.php"</script>';
 				}
 				else
 				{
@@ -1097,7 +1059,7 @@ class user
 				{
 					$message = "Foram realizadas alterações nos dados de seu usuário no sistema, em caso de dúvidas contate o seu Gerente ou Líder de projeto!<br/><br/>
 					Att,<br/>Equipe de Suporte - Inproject<br/><br/><b>Este é um email automático encaminhado pelo sistema, por gentileza não responder. Em caso de dúvidas contate o seu Gerente ou Líder de Projeto!</b>";
-					$mail->sendEmail($email, $name, utf8_decode('Alteração de informações do usuário'), utf8_decode($message), false, '', 'manageusers.php', 'Usuário alterado com sucesso!');
+					echo '<script>alert("Usuário alterado com sucesso!"); window.location.href = "manageusers.php"</script>';
 				}
 				else
 				{
@@ -1124,7 +1086,7 @@ class user
 				{
 					$message = "Foram realizadas alterações nos dados de seu usuário no sistema, em caso de dúvidas contate o seu Gerente ou Líder de projeto!<br/><br/>
 					Att,<br/>Equipe de Suporte - Inproject<br/><br/><b>Este é um email automático encaminhado pelo sistema, por gentileza não responder. Em caso de dúvidas contate o seu Gerente ou Líder de Projeto!</b>";
-					$mail->sendEmail($email, $name, utf8_decode('Alteração de informações do usuário'), utf8_decode($message), false, '', 'myuser.php', 'Usuário alterado com sucesso!');
+					echo '<script>alert("Usuário alterado com sucesso!"); window.location.href = "myuser.php"</script>';
 				}
 				else
 				{

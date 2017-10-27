@@ -8,10 +8,10 @@
 		{
 			try
 			{
-				$host = 'localhost';
+				$host = '10.10.1.37';
 				$dbname = 'inproject';
 				$userdb = 'root';
-				$pass = '';
+				$pass = 'Inmetrics1502';
 				$connection = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8","$userdb","$pass");
 				$connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 				self::$connector = $connection;

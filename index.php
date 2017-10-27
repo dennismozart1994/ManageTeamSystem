@@ -25,13 +25,6 @@ else
 		}
 	}
 }
-
-if(isset($_REQUEST['reset']) && isset($_GET['email']))
-{
-	$email = strip_tags($_GET['email']);
-	$user = new user;
-	$user->ResetPassword($email);
-}
 ?>
 
 <!DOCTYPE html>
@@ -77,39 +70,10 @@ if(isset($_REQUEST['reset']) && isset($_GET['email']))
 		            <input type="email" name="login" class="form-control" placeholder="Usuário" autofocus>
 		            <br>
 		            <input type="password" name="password" class="form-control" placeholder="Senha">
-		            <label class="checkbox">
-		                <span class="pull-right">
-		                    <a data-toggle="modal" href="index.php#myModal">Esqueceu a senha?</a>
-		
-		                </span>
-		            </label>
+		            <br/>
 		            <button class="btn btn-theme btn-block" type="submit"><i class="fa fa-lock"></i> Acessar</button>
 		
-		        </div>
-		
-		          <!-- Modal -->
-		          <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="myModal" class="modal fade">
-					<form method="post" action="">
-		              <div class="modal-dialog">
-		                  <div class="modal-content">
-		                      <div class="modal-header">
-		                          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-		                          <h4 class="modal-title">Esqueceu a senha?</h4>
-		                      </div>
-		                      <div class="modal-body">
-		                          <p>Informe seu e-mail cadastrado para reset da senha</p>
-		                          <input type="email" name="email" placeholder="Email" autocomplete="off" class="form-control placeholder-no-fix">
-		                      </div>
-		                      <div class="modal-footer">
-		                          <button data-dismiss="modal" class="btn btn-default" type="button">Cancelar</button>
-		                          <button class="btn btn-theme" type="submit" name="reset">Resetar Senha</button>
-		                      </div>
-		                  </div>
-		              </div>
-					</form>
-		          </div>
-		          <!-- modal -->
-		
+		        </div>		
 		      </form>	  	
 	  	
 	  	</div>
