@@ -668,7 +668,14 @@ class projects
 					$id_pendencia = $result->ID_Pendencia;
 					$previsto = $result->Previsto;
 					$realizado = $result->Realizado;
-					if(($id_f != 5) && ($id_f != 8)){$interact = "";}else{$interact = "disabled";}
+					if(($id_f != 5) && ($id_f != 8))
+					{
+						$interact = "";
+					}
+					else
+					{
+						$interact = "disabled";
+					}
 					echo '<div class="form-group">
                               <label class="col-lg-12 col-sm-12 control-label"><h4>Líderes</h4></label>
                               <div class="col-lg-3">
@@ -1538,7 +1545,7 @@ class projects
 						echo '				<a data-toggle="modal" href="projects.php#encerramento'.$idprojeto.'"><button class="btn btn-success btn-xs"><i class=" fa fa-check"></i></button></a>';
 						echo '				<a data-toggle="modal" href="projects.php#cancelamento'.$idprojeto.'"><button class="btn btn-danger btn-xs"><i class="fa fa-ban"></i></button></a>';
 					}
-					echo '				<a href="project.php?p='.$idprojeto.'"><button class="btn btn-primary btn-xs"><i class="fa fa-search"></i></button></a>';
+					echo '				<a data-toggle="modal" href="gerenciarprojetos.php?p='.$idprojeto.'"><button class="btn btn-primary btn-xs"><i class="fa fa-search"></i></button></a>';
 					echo '			  </td>';
 					echo '		</tr>';
 				}

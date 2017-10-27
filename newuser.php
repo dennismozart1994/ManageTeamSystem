@@ -1,7 +1,6 @@
 <?php
-if (session_status !== PHP_SESSION_ACTIVE) {
-	session_start();
-}
+session_start();
+
 require_once('classes/userf.php');
 require_once('classes/project.php');
 require_once('classes/parameters.php');
@@ -205,15 +204,6 @@ if(isset($_POST['save'])&&isset($_FILES['thumbnail']))
     <script src="assets/js/common-scripts.js"></script>
 
     <!--script for this page-->
-    
-  <script>
-      //custom select box
-
-      $(function(){
-          $('select.styled').customSelect();
-      });
-
-  </script>
 
   </body>
 </html>

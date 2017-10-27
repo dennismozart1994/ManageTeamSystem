@@ -20,24 +20,20 @@ class user
 			$rowC = $query->rowCount();
 			if($rowC > 0)
 			{
-				while($result=$query->FETCH(PDO::FETCH_OBJ))
+				while($result = $query->FETCH(PDO::FETCH_OBJ))
 				{
-					$id = $result->id_user;
-					$tel = $result->tel_user;
-					$cc = $result->id_cc;
-					$name = $result->nome_user;
-					$funcao = $result->funcao_user;
-					$image = $result->thumbnail_user;
+					$_SESSION['id'] = $result->id_user;
+					$_SESSION['tel'] = $result->tel_user;
+					$_SESSION['cc'] = $result->id_cc;
+					$_SESSION['nome'] = $result->nome_user;
+					$_SESSION['funcao'] = $result->funcao_user;
+					$_SESSION['image'] = $result->thumbnail_user;
 				}
-					$_SESSION['id'] = $id;
-					$_SESSION['login'] = $user;
-					$_SESSION['password'] = $pass;
-					$_SESSION['tel'] = $tel;
-					$_SESSION['cc'] = $cc;
-					$_SESSION['nome'] = $name;
-					$_SESSION['funcao'] = $funcao;
-					$_SESSION['image'] = $image;
-					header('Location: home.php?ur='.$_SESSION['id'].'&fc='.$_SESSION['funcao'].'&cc='.$_SESSION['cc']);
+				return true;
+			}
+			else
+			{
+				return false;
 			}
 		}
 	}
@@ -106,6 +102,25 @@ class user
 			$sql = "SELECT $field FROM tab_user WHERE id_user=:u AND active_user = 0";
 			$query = $connector->prepare($sql);
 			$query->bindParam(':u', $id, PDO::PARAM_STR);
+			$query->execute();
+			$rowC = $query->rowCount();
+			while($result=$query->FETCH(PDO::FETCH_OBJ))
+			{
+				$rField = $result->$field;
+			}
+			return $rField;
+		}
+	}
+
+	public function getUserFieldEmailBased($email, $field)
+	{
+		$connect = new connection;
+		if($connect->tryconnect())
+		{
+			$connector = $connect->getConnector();
+			$sql = "SELECT $field FROM tab_user WHERE email_in_user=:u AND active_user = 0";
+			$query = $connector->prepare($sql);
+			$query->bindParam(':u', $email, PDO::PARAM_STR);
 			$query->execute();
 			$rowC = $query->rowCount();
 			while($result=$query->FETCH(PDO::FETCH_OBJ))

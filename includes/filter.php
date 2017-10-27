@@ -1,8 +1,3 @@
-<?php 
-if (session_status !== PHP_SESSION_ACTIVE) {
-	session_start();
-}
-?>
 <form class="form-inline" role="form" method="post" action="">
   <div class="form-group">
 	  <input type="text" class="form-control" id="projectname" name="projectname" placeholder="Nome do projeto">

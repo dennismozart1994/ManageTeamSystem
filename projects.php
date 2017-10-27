@@ -1,7 +1,6 @@
 <?php
-if (session_status !== PHP_SESSION_ACTIVE) {
-	session_start();
-}
+session_start();
+
 require_once('classes/userf.php');
 require_once('classes/parameters.php');
 require_once('classes/project.php');
@@ -98,19 +97,8 @@ require_once('classes/project.php');
   <body>
 
   <section id="container" >
-      <!-- **********************************************************************************************************************************************************
-      TOP BAR CONTENT & NOTIFICATIONS
-      *********************************************************************************************************************************************************** -->
      <?php include('includes/header.php'); ?>
-      <!-- **********************************************************************************************************************************************************
-      MAIN SIDEBAR MENU
-      *********************************************************************************************************************************************************** -->
      <?php include('includes/menu.php');?>
-      
-      <!-- **********************************************************************************************************************************************************
-      MAIN CONTENT
-      *********************************************************************************************************************************************************** -->
-      <!--main content start-->
       <section id="main-content">
           <section class="wrapper site-min-height">
           	<h3><i class="fa fa-angle-right"></i>Lista de Projetos</h3>
@@ -164,16 +152,14 @@ require_once('classes/project.php');
                               </tbody>
                           </table>
                           </section>
-                  </div><!-- /content-panel -->
-               </div><!-- /col-lg-4 -->			
-		  	</div><!-- /row -->
-		</section><! --/wrapper -->
-      </section><!-- /MAIN CONTENT -->
+                  </div>
+               </div>		
+		  	</div>
+		</section>
+      </section>
 		<?php
 			$project->manageAddHistoryModal();
 		?>
-      <!--main content end-->
-      <!--footer start-->
       <footer class="site-footer">
           <div class="text-center">
               2014 - Alvarez.is
@@ -182,10 +168,8 @@ require_once('classes/project.php');
               </a>
           </div>
       </footer>
-      <!--footer end-->
   </section>
 
-    <!-- js placed at the end of the document so the pages load faster -->
     <script src="assets/js/jquery.js"></script>
     <script src="assets/js/bootstrap.min.js"></script>
     <script src="assets/js/jquery-ui-1.9.2.custom.min.js"></script>
@@ -195,19 +179,8 @@ require_once('classes/project.php');
     <script src="assets/js/jquery.nicescroll.js" type="text/javascript"></script>
 
 
-    <!--common script for all pages-->
     <script src="assets/js/common-scripts.js"></script>
 
-    <!--script for this page-->
-    
-  <script>
-      //custom select box
-
-      $(function(){
-          $('select.styled').customSelect();
-      });
-
-  </script>
 
   </body>
 </html>
