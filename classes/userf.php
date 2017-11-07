@@ -194,7 +194,7 @@ class user
 					$status = $result->status_notify;
 					$description = $result->description_notify;
 					
-					echo '<a href="project.php?p='.$project.'&del='.$id.'" style><div class="desc">';
+					echo '<a href="gerenciarprojetos.php?p='.$project.'&del='.$id.'" style><div class="desc">';
 					echo '	<div class="thumb">';
 					echo '		<span class="badge bg-theme"><i class="fa fa-bell"></i></span>';
 					echo '	</div>';

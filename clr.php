@@ -1,5 +1,6 @@
 <?php
 session_start();
+
 require_once('classes/userf.php');
 require_once('classes/parameters.php');
 
@@ -10,35 +11,41 @@ $permissions = array("Líder de Testes", "Gerente de Projetos", "Administrador")
 // ACCESS WITHOUT LOGIN
 if(!isset($_SESSION['login']))
 {
-	header('Location: index.php');
+  header('Location: index.php');
 }
 
 // PERMISSIONS
 if(!(in_array($_SESSION['funcao'], $permissions)))
 {
-	$user->logout();
+  $user->logout();
 }
 
 // LOGOUT
 if(isset($_REQUEST['logout']))
 {
-	$user->logout();
+  $user->logout();
 }
 
-if(isset($_REQUEST['name'])&&isset($_REQUEST['email']))
+if(isset($_POST['add']) && isset($_SESSION['id']))
 {
-	$param->InsertLTM(0, $_GET['name'],$_GET['email'], $_SESSION['id']);
+  $name = strip_tags($_POST['name']);
+  $desc = strip_tags($_POST['desc']);
+  $param->InsertCancelReason($name, $desc, $_SESSION['id']);
 }
 
-if(isset($_REQUEST['nameuser'])&&isset($_REQUEST['emailuser']))
+if(isset($_POST['save']) && isset($_SESSION['id']))
 {
-	$param->UpdateLTM(0, $_GET['id'], $_GET['nameuser'],$_GET['emailuser'], $_SESSION['id']);
+  $id = strip_tags($_POST['id']);
+  $name = strip_tags($_POST['name']);
+  $desc = strip_tags($_POST['description']);
+  $param->UpdateCancelReason($id, $name, $desc);
 }
 
-if(isset($_REQUEST['delete']))
+if(isset($_POST['delete_parameter']))
 {
-	$param->DeleteLTM(0, $_GET['delete']);
+  $param->DeleteCancelReason($_POST['delete']);
 }
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -48,9 +55,8 @@ if(isset($_REQUEST['delete']))
     <meta name="description" content="">
     <meta name="author" content="Dashboard">
     <meta name="keyword" content="Dashboard, Bootstrap, Admin, Template, Theme, Responsive, Fluid, Retina">
-	<meta http-equiv="Content-type" content="text/html;charset=utf-8" />
 
-    <title>InProject - Líderes de Projetos</title>
+    <title>InProject - Motivo da pendência</title>
 
     <!-- Bootstrap core CSS -->
     <link href="assets/css/bootstrap.css" rel="stylesheet">
@@ -74,7 +80,7 @@ if(isset($_REQUEST['delete']))
       <!-- **********************************************************************************************************************************************************
       TOP BAR CONTENT & NOTIFICATIONS
       *********************************************************************************************************************************************************** -->
-      <?php include('includes/header.php'); ?>
+     <?php include('includes/header.php');?>
       <!-- **********************************************************************************************************************************************************
       MAIN SIDEBAR MENU
       *********************************************************************************************************************************************************** -->
@@ -86,86 +92,87 @@ if(isset($_REQUEST['delete']))
       <!--main content start-->
       <section id="main-content">
           <section class="wrapper site-min-height">
-          	<h3><i class="fa fa-angle-right"></i>Líderes de Projetos</h3>
-          	<div class="row mt">
-			  		<div class="col-lg-12">
+            <h3><i class="fa fa-angle-right"></i>Motivo da pendência</h3>
+            <div class="row mt">
+            <div class="col-lg-12">
                       <div class="content-panel">
-						<!-- Todo Add new event -->
-						<a data-toggle="modal" class="btn btn-success btn-sm pull-left" href="lp.php#addLider">Adicionar Líder</a>
-						<!-- End Todo -->
+            <!-- Todo Add new event -->
+            <a data-toggle="modal" class="btn btn-success btn-sm pull-left" href="lp.php#addLider">Adicionar Parâmetro</a>
+            <!-- End Todo -->
                       <br/><br/><h4><i class="fa fa-angle-right"></i>Filtros</h4>
-						<!-- Todo Apply Filter -->
-						<form class="form-inline" role="form" action="?filter" method="post">
+            <!-- Todo Apply Filter -->
+            <form class="form-inline" role="form" method="post" action="">
                           <div class="form-group">
-                              <label class="sr-only" for="projectname">Nome</label>
-                              <input type="text" class="form-control" required id="name" name="name" placeholder="Nome do usuário">
+                              <label class="sr-only" for="projectname">Parâmetro</label>
+                              <input type="text" class="form-control" required id="reason_name" name="reason_name" placeholder="Motivo da pendência">
                           </div>
                           <button type="submit" class="btn btn-theme fa fa-filter" name="apply_filter"> Filtrar</button>
-						</form>
-						<!-- End Todo -->
+            </form>
+            <!-- End Todo -->
 
-						<br/>
+            <br/>
                           <section id="unseen">
                             <table class="table table-bordered table-striped table-condensed">
                               <thead>
                               <tr>
-                                  <th>Id</th>
-                                  <th>Nome</th>
-                                  <th>E-mail</th>
-                                  <th>Projeto</th>
-								  <th></th>
+                  <th>Id</th>
+                                  <th>Parâmetro</th>
+                  <th>Descrição</th>
+                  <th>Ações</th>
                               </tr>
                               </thead>
                               <tbody>
-								<?php
+                <?php
                   if(isset($_POST['apply_filter']))
                   {
-                    $param->apply_filterLP(strip_tags($_POST['name']));
+                    $name = strip_tags($_POST['reason_name']);
+                    $param->apply_filter($name);
                   }
                   else
                   {
-                    $param->getLP("normal", "none");
+                    $param->getCancelReasons("normal", "none");
                   }
-								?>
+                ?>
                               </tbody>
                           </table>
                           </section>
                   </div><!-- /content-panel -->
-               </div><!-- /col-lg-4 -->			
-		  	</div><!-- /row -->
-		</section><! --/wrapper -->
+               </div><!-- /col-lg-4 -->     
+        </div><!-- /row -->
+    </section><!-- /wrapper -->
       </section><!-- /MAIN CONTENT -->
-		 <!-- modal -->		 
-		<?php
-			$param->getLTM_DeleteModal(0);
-			$param->getLTM_Modal(0);
-		?>
-		 <!-- Modal Add Líder-->
-		  <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="addLider" class="modal fade">
-			<form method="get" action="">
-			  <div class="modal-dialog">
-				  <div class="modal-content">
-					  <div class="modal-header">
-						  <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-						  <h4 class="modal-title">Adicionar Líder</h4>
-					  </div>
-					  <div class="modal-body">
-						<p>Nome</p>
-						<input class="form-control" type="text" name="name" required placeholder="Nome do Líder de Projetos"/>
-						<p><br/>E-mail</p>
-						<input class="form-control" type="email" name="email" required placeholder="e-mail para contato"/>
-					  </div>
-					  <div class="modal-footer">
-						  <button data-dismiss="modal" class="btn btn-default" type="button">Cancelar</button>
-						  <button href="index.php#confirmation" class="btn btn-theme" type="submit">Adicionar</button>
-					  </div>
-				  </div>
-			  </div>
-			</form>
-		  </div>
-		 <!-- modal -->
-		 
-		 
+         
+     <?php
+        $param->getCancelReasons_DeleteModal();
+        $param->getEditCancelReasonModal();
+     ?>
+     
+     
+     <!-- Modal Add Parâmetro-->
+      <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="addLider" class="modal fade">
+        <form method="post" action="">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title">Adicionar Parâmetro</h4>
+              </div>
+              <div class="modal-body">
+              <p>Parâmetro</p>
+              <input class="form-control" type="text" name="name" required placeholder="Nome do parâmetro"/>
+              <p><br/>Descrição</p>
+              <textarea class="form-control" name="desc" rows="5" id="comment"></textarea>
+              </div>
+              <div class="modal-footer">
+                <button data-dismiss="modal" class="btn btn-default" type="button">Cancelar</button>
+                <button class="btn btn-theme" type="submit" name="add">Adicionar</button>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+     <!-- modal -->
+
       <!--main content end-->
       <!--footer start-->
       <footer class="site-footer">
@@ -191,8 +198,8 @@ if(isset($_REQUEST['delete']))
 
     <!--common script for all pages-->
     <script src="assets/js/common-scripts.js"></script>
-	<script type="text/javascript" src="jquery/jquery.mask.js"></script>
-	<script type="text/javascript" src="jquery/jquery.mask.test.js"></script>
+  <script type="text/javascript" src="jquery/jquery.mask.js"></script>
+  <script type="text/javascript" src="jquery/jquery.mask.test.js"></script>
 
     <!--script for this page-->
     

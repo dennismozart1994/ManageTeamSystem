@@ -76,7 +76,7 @@ class projects
 							echo '				<a data-toggle="modal" href="myprojects.php#encerramento'.$idprojeto.'"><button class="btn btn-success btn-xs"><i class=" fa fa-check"></i></button></a>';
 							echo '				<a data-toggle="modal" href="myprojects.php#cancelamento'.$idprojeto.'"><button class="btn btn-danger btn-xs"><i class="fa fa-ban"></i></button></a>';
 						}
-							echo '				<a href="project.php?p='.$idprojeto.'"><button class="btn btn-primary btn-xs"><i class="fa fa-search"></i></button></a>';
+							echo '				<a href="gerenciarprojetos.php?p='.$idprojeto.'"><button class="btn btn-primary btn-xs"><i class="fa fa-search"></i></button></a>';
 							echo '			  </td>';
 						echo '		</tr>';
 					}
@@ -136,7 +136,7 @@ class projects
 							echo '				<a data-toggle="modal" href="projects.php#encerramento'.$idprojeto.'"><button class="btn btn-success btn-xs"><i class=" fa fa-check"></i></button></a>';
 							echo '				<a data-toggle="modal" href="projects.php#cancelamento'.$idprojeto.'"><button class="btn btn-danger btn-xs"><i class="fa fa-ban"></i></button></a>';
 						}
-						echo '				<a href="project.php?p='.$idprojeto.'"><button class="btn btn-primary btn-xs"><i class="fa fa-search"></i></button></a>';
+						echo '				<a href="gerenciarprojetos.php?p='.$idprojeto.'"><button class="btn btn-primary btn-xs"><i class="fa fa-search"></i></button></a>';
 						echo '			  </td>';
 						echo '		</tr>';
 					}
@@ -300,7 +300,7 @@ class projects
 							echo '				<a data-toggle="modal" href="myprojects.php#encerramento'.$idprojeto.'"><button class="btn btn-success btn-xs"><i class=" fa fa-check"></i></button></a>';
 							echo '				<a data-toggle="modal" href="myprojects.php#cancelamento'.$idprojeto.'"><button class="btn btn-danger btn-xs"><i class="fa fa-ban"></i></button></a>';
 						}
-							echo '				<a href="project.php?p='.$idprojeto.'"><button class="btn btn-primary btn-xs"><i class="fa fa-search"></i></button></a>';
+							echo '				<a href="gerenciarprojetos.php?p='.$idprojeto.'"><button class="btn btn-primary btn-xs"><i class="fa fa-search"></i></button></a>';
 											echo '			  </td>';
 						echo '		</tr>';
 					}
@@ -449,7 +449,7 @@ class projects
 							echo '				<a data-toggle="modal" href="projects.php#encerramento'.$idprojeto.'"><button class="btn btn-success btn-xs"><i class=" fa fa-check"></i></button></a>';
 							echo '				<a data-toggle="modal" href="projects.php#cancelamento'.$idprojeto.'"><button class="btn btn-danger btn-xs"><i class="fa fa-ban"></i></button></a>';
 						}
-						echo '				<a href="project.php?p='.$idprojeto.'"><button class="btn btn-primary btn-xs"><i class="fa fa-search"></i></button></a>';
+						echo '				<a href="gerenciarprojetos.php?p='.$idprojeto.'"><button class="btn btn-primary btn-xs"><i class="fa fa-search"></i></button></a>';
 						echo '			  </td>';
 						echo '		</tr>';
 					}
@@ -516,7 +516,7 @@ class projects
 						echo '				<a data-toggle="modal" href="myprojects.php#encerramento'.$idprojeto.'"><button class="btn btn-success btn-xs"><i class=" fa fa-check"></i></button></a>';
 						echo '				<a data-toggle="modal" href="myprojects.php#cancelamento'.$idprojeto.'"><button class="btn btn-danger btn-xs"><i class="fa fa-ban"></i></button></a>';
 					}
-						echo '				<a href="project.php?p='.$idprojeto.'"><button class="btn btn-primary btn-xs"><i class="fa fa-search"></i></button></a>';
+						echo '				<a href="gerenciarprojetos.php?p='.$idprojeto.'"><button class="btn btn-primary btn-xs"><i class="fa fa-search"></i></button></a>';
 										echo '			  </td>';
 					echo '		</tr>';
 				}
@@ -601,10 +601,10 @@ class projects
 			$query->bindParam(':schedule', $schedule, PDO::PARAM_INT);
 			$query->bindParam(':approvement', $approvement, PDO::PARAM_INT);
 			$query->bindParam(':prjid', $id, PDO::PARAM_INT);
-			self::addHistoryNote(date('Y-m-d', time()), $phase, 0, 0, 'Alteração de dados/fase do projeto', $id, $_SESSION['id']);
+			self::addHistoryNote(date('Y-m-d', time()), $phase, $status, 0, 0, 'Alteração de dados/fase do projeto', $id, $_SESSION['id']);
 			if($query->execute())
 			{
-				echo '<script>alert("Dados atualizados com sucesso!"); window.location.href = "project.php?p='.$id.'"</script>';
+				echo '<script>alert("Dados atualizados com sucesso!"); window.location.href = "gerenciarprojetos.php?p='.$id.'"</script>';
 			}
 		}
 	}
@@ -911,7 +911,7 @@ class projects
 						echo '				<a data-toggle="modal" href="myprojects.php#encerramento'.$idprojeto.'"><button class="btn btn-success btn-xs"><i class=" fa fa-check"></i></button></a>';
 						echo '				<a data-toggle="modal" href="myprojects.php#cancelamento'.$idprojeto.'"><button class="btn btn-danger btn-xs"><i class="fa fa-ban"></i></button></a>';
 					}
-						echo '				<a href="project.php?p='.$idprojeto.'"><button class="btn btn-primary btn-xs"><i class="fa fa-search"></i></button></a>';
+						echo '				<a href="gerenciarprojetos.php?p='.$idprojeto.'"><button class="btn btn-primary btn-xs"><i class="fa fa-search"></i></button></a>';
 										echo '			  </td>';
 					echo '		</tr>';
 				}
@@ -968,7 +968,7 @@ class projects
 					echo '			  <td>'.$status.'</td>';
 					echo '			  <td>'.$pendencia.'</td>';
 					echo '			  <td>';
-					echo '				<a href="project.php?p='.$idprojeto.'"><button class="btn btn-primary btn-xs"><i class="fa fa-search"></i></button></a>';
+					echo '				<a href="gerenciarprojetos.php?p='.$idprojeto.'"><button class="btn btn-primary btn-xs"><i class="fa fa-search"></i></button></a>';
 					echo '			  </td>';
 					echo '		</tr>';
 				}
@@ -976,7 +976,7 @@ class projects
 		}
 	}
 	/* ------------------------------------------------- HISTORY FUNCTIONS ------------------------------------------*/
-	public function addHistoryNote($date, $phase, $predicted, $acomplished, $note, $prj, $user){
+	public function addHistoryNote($date, $phase, $status, $predicted, $acomplished, $note, $prj, $user){
 		$connect = new connection;
 		
 		if($connect->tryconnect())
@@ -996,9 +996,10 @@ class projects
 			$rowC = $query->rowCount();
 			if($rowC>0)
 			{
-				$updatephase = "UPDATE tab_projeto SET id_f=:phase WHERE id_prj=:prj";
+				$updatephase = "UPDATE tab_projeto SET id_f=:phase, id_status=:status WHERE id_prj=:prj";
 				$queryup = $connector->prepare($updatephase);
 				$queryup->bindParam(':phase', $phase, PDO::PARAM_INT);
+				$queryup->bindParam(':status', $status, PDO::PARAM_INT);
 				$queryup->bindParam(':prj', $prj, PDO::PARAM_INT);
 				$queryup->execute();
 				echo '<script>alert("Nota adicionada com sucesso!"); window.location.href = "history.php?p='.$prj.'"</script>';
@@ -1261,11 +1262,9 @@ class projects
 									  </div>
 									  <div class="modal-body">
 										<p><br/>Motivo</p>
-										<select class="form-control" name="reason" required>
-											<option value="Alto Custo">Alto Custo</option>
-											<option value="Cobertura">Cobertura</option>
-											<option value="Prazo">Prazo</option>
-											<option value="Outros">Outros</option>
+										<select class="form-control" name="reason" required>';
+												$param->getCancelReasons('select', '');	
+					echo '						<option value="Outros">Outros</option>
 										</select>
 										<textarea class="form-control" rows="5" id="comment" name="note"></textarea>
 										<input id="id" name="id" type="hidden" value="'.$idprojeto.'">
@@ -1298,7 +1297,7 @@ class projects
 			lp.nome_lp AS NomeLiderProjetos, 
 			user.nome_user AS NomeAnalista, 
 			fases.nome_f AS NomeFase,
-			status.nome_status AS NomeStatus,
+			status.id_status AS ID_Status, status.nome_status AS NomeStatus,
 			mot_pend.nome_mtp AS NomeMotivo 
 			FROM tab_projeto AS projeto 
 			INNER JOIN tab_lider_cliente AS ltm ON ltm.id_lc = projeto.id_lc 
@@ -1325,6 +1324,7 @@ class projects
 					$lp = $result->NomeLiderProjetos;
 					$analista = $result->NomeAnalista;
 					$fase = $result->NomeFase;
+					$id_status = $result->ID_Status;
 					$status = $result->NomeStatus;
 					$pendencia = $result->NomeMotivo;
 					
@@ -1347,6 +1347,12 @@ class projects
 											  $param->getOnePhase($id_fase);
 											  $param->getPhases("select", $id_fase);
 					echo '					</select>
+											<p><br/>Status</p>
+											<select class="form-control" name="status" required>';
+											  $param->getOneStatus($id_status);
+											  $param->getStatus("select", $id_status);
+					echo '
+											</select>
 											<p>Previsto</p>
 											<input class="form-control" type="text" name="predicted" required/>
 											<p>Realizado</p>
@@ -1399,11 +1405,9 @@ class projects
 									  </div>
 									  <div class="modal-body">
 										<p><br/>Motivo</p>
-										<select class="form-control" name="reason" required>
-											<option value="Alto Custo">Alto Custo</option>
-											<option value="Cobertura">Cobertura</option>
-											<option value="Prazo">Prazo</option>
-											<option value="Outros">Outros</option>
+										<select class="form-control" name="reason" required>';
+											$param->getCancelReasons('select', '');	
+					echo '					<option value="Outros">Outros</option>
 										</select>
 										<textarea class="form-control" rows="5" id="comment" name="note"></textarea>
 										<input id="id" name="id" type="hidden" value="'.$idprojeto.'">
@@ -1444,46 +1448,64 @@ class projects
 			$query->bindParam(':id', $prj, PDO::PARAM_STR);
 			$query->execute();
 			$rowC = $query->rowCount();
-			if($rowC > 0)
+
+			$getStatus = "SELECT id_status FROM tab_projeto WHERE id_prj=:prj";
+			$getSQuery = $connector->prepare($getStatus);
+			$getSQuery->bindParam(':prj', $prj, PDO::PARAM_INT);
+			$getSQuery->execute();
+			if($getSQuery->rowCount() > 0)
 			{
-				while($result = $query->FETCH(PDO::FETCH_OBJ))
+				while($getS = $getSQuery->FETCH(PDO::FETCH_OBJ))
 				{
-					echo '
-							<!-- Modal Add nota-->
-							  <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="myModal'.$prj.'" class="modal fade">
-								<form method="post" action="">
-								  <div class="modal-dialog">
-									  <div class="modal-content">
-										  <div class="modal-header">
-											  <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-											  <h4 class="modal-title">Adicionar Nota</h4>
-										  </div>
-										  <input id="id" name="id" type="hidden" value="'.$prj.'">
-										  <div class="modal-body">
-											<p>Data</p>
-											<input class="form-control" required name="date" type="date" max="'.date("Y-m-d", time()).'" value="'.date("Y-m-d", time()).'" data-mask="00-00-0000"/>
-											<p><br/>Fase</p>
-											<select class="form-control" name="phase" required>';
-											  $param->getOnePhase($result->id_fase);
-											  $param->getPhases("select", $result->id_fase);
-					echo '					</select>
-											<p>Previsto</p>
-											<input class="form-control" type="text" name="predicted" value="'.$result->previsto.'" required/>
-											<p>Realizado</p>
-											<input class="form-control" name="accomplished" required type="text"/>
-											<p><br/>Nota</p>
-											<textarea class="form-control" rows="5" id="comment" name="note" required></textarea>
-										  </div>
-										  <div class="modal-footer">
-											  <button data-dismiss="modal" class="btn btn-default" type="button">Cancelar</button>
-											  <button class="btn btn-theme" type="submit" name="add_note">Adicionar</button>
+					$id_status = $getS->id_status;
+				}
+				if($rowC > 0)
+				{
+					while($result = $query->FETCH(PDO::FETCH_OBJ))
+					{
+						echo '
+								<!-- Modal Add nota-->
+								  <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="myModal'.$prj.'" class="modal fade">
+									<form method="post" action="">
+									  <div class="modal-dialog">
+										  <div class="modal-content">
+											  <div class="modal-header">
+												  <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+												  <h4 class="modal-title">Adicionar Nota</h4>
+											  </div>
+											  <input id="id" name="id" type="hidden" value="'.$prj.'">
+											  <div class="modal-body">
+												<p>Data</p>
+												<input class="form-control" required name="date" type="date" max="'.date("Y-m-d", time()).'" value="'.date("Y-m-d", time()).'" data-mask="00-00-0000"/>
+												<p><br/>Fase</p>
+												<select class="form-control" name="phase" required>';
+												  $param->getOnePhase($result->id_fase);
+												  $param->getPhases("select", $result->id_fase);
+						echo '					</select>
+												<p><br/>Status</p>
+												<select class="form-control" name="status" required>';
+												  $param->getOneStatus($id_status);
+												  $param->getStatus("select", $id_status);
+						echo '
+												</select>
+												<p>Previsto</p>
+												<input class="form-control" type="text" name="predicted" value="'.$result->previsto.'" required/>
+												<p>Realizado</p>
+												<input class="form-control" name="accomplished" required type="text"/>
+												<p><br/>Nota</p>
+												<textarea class="form-control" rows="5" id="comment" name="note" required></textarea>
+											  </div>
+											  <div class="modal-footer">
+												  <button data-dismiss="modal" class="btn btn-default" type="button">Cancelar</button>
+												  <button class="btn btn-theme" type="submit" name="add_note">Adicionar</button>
+											  </div>
 										  </div>
 									  </div>
+									</form>
 								  </div>
-								</form>
-							  </div>
-							<!-- modal -->	
-						';
+								<!-- modal -->	
+							';
+					}
 				}
 			}
 		}

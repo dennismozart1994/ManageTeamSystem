@@ -94,12 +94,12 @@ if(isset($_REQUEST['delete']))
 						<!-- End Todo -->
                       <br/><br/><h4><i class="fa fa-angle-right"></i>Filtros</h4>
 						<!-- Todo Apply Filter -->
-						<form class="form-inline" role="form" action="?filter">
+						<form class="form-inline" role="form" method="post" action="?filter">
                           <div class="form-group">
                               <label class="sr-only" for="projectname">Nome</label>
-                              <input type="email" class="form-control" id="projectname" placeholder="Nome do usuário">
+                              <input type="text" class="form-control" required id="name" name="name" placeholder="Nome do usuário">
                           </div>
-                          <button type="submit" class="btn btn-theme fa fa-filter"> Filtrar</button>
+                          <button type="submit" class="btn btn-theme fa fa-filter" name="apply_filter"> Filtrar</button>
 						</form>
 						<!-- End Todo -->
 
@@ -117,7 +117,14 @@ if(isset($_REQUEST['delete']))
                               </thead>
                               <tbody>
 								<?php
-									$param->getLTM("normal", "none");
+                  if(isset($_POST['apply_filter']))
+                  {
+                    $param->apply_filterLTM(strip_tags($_POST['name']));
+                  }
+                  else
+                  {
+                    $param->getLTM("normal", "none");
+                  }
 								?>
                               </tbody>
                           </table>
@@ -144,13 +151,13 @@ if(isset($_REQUEST['delete']))
 					  </div>
 					  <div class="modal-body">
 						<p>Nome</p>
-						<input class="form-control" type="text" name="name" placeholder="Nome do Líder de Testes"/>
+						<input class="form-control" type="text" name="name" required placeholder="Nome do Líder de Testes"/>
 						<p><br/>E-mail</p>
-						<input class="form-control" name="email" type="email" placeholder="e-mail para contato"/>
+						<input class="form-control" name="email" type="email" required placeholder="e-mail para contato"/>
 					  </div>
 					  <div class="modal-footer">
 						  <button data-dismiss="modal" class="btn btn-default" type="button">Cancelar</button>
-						  <button href="index.php#confirmation" class="btn btn-theme" type="get">Adicionar</button>
+						  <button href="index.php#confirmation" class="btn btn-theme" type="submit">Adicionar</button>
 					  </div>
 				  </div>
 			  </div>

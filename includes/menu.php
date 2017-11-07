@@ -69,7 +69,7 @@
 										  <span>Parâmetros de Gerência</span>
 									  </a>
 									  <ul class="sub">
-											
+										  <li><a  href="clr.php">Motivos de Cancelamento</a></li>
 										  <li><a  href="ltm.php">Líder de Testes e Mudanças</a></li>
 										  <li><a  href="lp.php">Líder de Projetos</a></li>
 									  </ul>

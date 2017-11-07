@@ -20,14 +20,15 @@ session_start();
 	
 	if(isset($_POST['add_note']))
 	{
-		$id = $_POST['id'];
-		$date = $_POST['date'];
-		$phase = $_POST['phase'];
-		$predicted = $_POST['predicted'];
-		$accomplished = $_POST['accomplished'];
+		$id = strip_tags($_POST['id']);
+		$date = strip_tags($_POST['date']);
+		$phase = strip_tags($_POST['phase']);
+	  	$status = strip_tags($_POST['status']);
+		$predicted = strip_tags($_POST['predicted']);
+		$accomplished = strip_tags($_POST['accomplished']);
 		$note = strip_tags($_POST['note']);
 		
-		$project->addHistoryNote($date, $phase, $predicted, $accomplished, $note, $id, $_SESSION['id']);
+		$project->addHistoryNote($date, $phase, $status, $predicted, $accomplished, $note, $id, $_SESSION['id']);
 	}
 	
 	if(isset($_POST['finish_project']))

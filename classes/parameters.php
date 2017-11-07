@@ -191,7 +191,90 @@ class parameters
 			echo '<script>alert("Erro ao conectar com o banco de dados!"); window.location.href = "lp.php"</script>';
 		}
 	}
+
+// Cancel Reason
+	public function InsertCancelReason($name, $desc, $user)
+	{
+		$connect = new connection;
+		if($connect->tryconnect())
+		{
+			$connector = $connect->getConnector();
+			$sql = "INSERT INTO tab_reason(name_reason, desc_reason, id_user, last_update_reason) VALUES (:name, :description, :user, NOW())";
+			$query = $connector->prepare($sql);
+			$query->bindParam(':name', $name, PDO::PARAM_STR);
+			$query->bindParam(':description', $desc, PDO::PARAM_STR);
+			$query->bindParam(':user', $user, PDO::PARAM_INT);
+			$query->execute();
+			$rowC = $query->rowCount();
+			if($rowC>0)
+			{
+				echo '<script>alert("Parâmetro adicionado com sucesso!"); window.location.href = "clr.php";</script>';
+			}
+			else
+			{
+				echo '<script>alert("Erro ao conectar com o banco de dados!"); window.location.href = "clr.php";</script>';
+			}
+		}
+		else
+		{
+			echo '<script>alert("Erro ao conectar com o banco de dados!"); window.location.href = "clr.php";</script>';
+		}
+	}
 	
+	/* --------------------------------- UPDATE METHODS -------------------------------------------------------*/
+	public function UpdateCancelReason($id, $name, $description)
+	{
+		$connect = new connection;
+		if($connect->tryconnect())
+		{
+			$connector = $connect->getConnector();
+			$sql = "UPDATE tab_reason SET name_reason=:name, desc_reason=:description, id_user=:user, last_update_reason=NOW() WHERE id_reason=:reason";
+			$query = $connector->prepare($sql);
+			$query->bindParam(':name', $name, PDO::PARAM_STR);
+			$query->bindParam(':description', $description, PDO::PARAM_STR);
+			$query->bindParam(':user', $_SESSION['id'], PDO::PARAM_INT);
+			$query->bindParam(':reason', $id, PDO::PARAM_INT);
+			if($query->execute())
+			{
+				echo '<script>alert("Parâmetro alterado com sucesso! Os projetos já cancelados por esse parâmetro serão alocados na categoria \"Outros\""); window.location.href = "clr.php";</script>';
+			}
+			else
+			{
+				echo '<script>alert("Erro ao efetuar alteração do parâmetro! Tente novamente!"); window.location.href = "clr.php";</script>';
+			}
+		}
+		else
+		{
+			echo '<script>alert("Erro ao conectar com o banco de dados! Tente novamente!"); window.location.href = "clr.php";</script>';
+		}
+	}
+
+	/* ----------------------------------- DELETE METHODS -----------------------------------*/
+	public function DeleteCancelReason($id)
+	{
+		$connect = new connection;
+		if($connect->tryconnect())
+		{
+			$connector = $connect->getConnector();
+			$sql = "DELETE FROM tab_reason WHERE id_reason=:reason";
+			$query = $connector->prepare($sql);
+			$query->bindParam(':reason', $id, PDO::PARAM_INT);
+			$query->execute();
+			if($query->rowCount() > 0)
+			{
+				echo '<script>alert("Parâmetro excluído com sucesso! A partir de agora, todos os projetos cancelados por esse motivo de cancelamento se enquadrarão na categoria \"Outros\" "); window.location.href = "clr.php";</script>';
+			}
+			else
+			{
+				echo '<script>alert("Erro ao efetuar exclusão do parâmetro! Tente novamente!"); window.location.href = "clr.php";</script>';
+			}
+		}
+		else
+		{
+			echo '<script>alert("Erro ao conectar com o banco de dados! Tente novamente!"); window.location.href = "clr.php";</script>';
+		}
+		
+	}
 	/* ----------------------------------- GET METHODS --------------------------------------*/
 	public function getLP($type, $exception)
 	{
@@ -236,6 +319,118 @@ class parameters
 								  </td>
                             </tr>';
 					}
+				}
+			}
+		}
+	}
+
+	public function apply_filter($name)
+	{
+		$connect = new connection;
+		if($connect->tryconnect())
+		{
+			$connector = $connect->getConnector();
+
+			$sql = "SELECT * FROM tab_reason WHERE name_reason LIKE CONCAT('%', :name, '%')";
+			$query = $connector->prepare($sql);
+			$query->bindParam(':name', $name, PDO::PARAM_STR);
+			$query->execute();
+			if($query->rowCount() > 0)
+			{
+				while($result = $query->FETCH(PDO::FETCH_OBJ))
+				{
+					$id = $result->id_reason;
+					$name = $result->name_reason;
+					$description = $result->desc_reason;
+
+					echo '<tr>
+                              <td class="numeric">'.$id.'</td>
+                              <td>'.$name.'</td>
+                              <td>'.$description.'</td>
+							  <td>
+								<a data-toggle="modal" href="clr.php#editar'.$id.'"><button class="btn btn-primary btn-xs"><i class="fa fa-pencil"></i></button></a>
+								<a data-toggle="modal" href="clr.php#cancelamento'.$id.'"><button class="btn btn-danger btn-xs"><i class="fa fa-ban"></i></button></a>
+							  </td>
+                        </tr>';
+				}
+			}
+		}
+	}
+
+	public function apply_filterLP($name)
+	{
+		$connect = new connection;
+		if($connect->tryconnect())
+		{
+			$connector = $connect->getConnector();
+			$sql = "SELECT LP.id_lp AS ID, LP.nome_lp AS Nome, LP.email_lp AS Email, 
+			CLT.nome_clt AS NomeCliente
+			FROM tab_lider_projeto AS LP 
+			INNER JOIN tab_cliente AS CLT ON LP.id_clt = CLT.id_clt 
+			WHERE LP.id_clt = (SELECT id_clt FROM tab_cc WHERE id_cc=:cc) AND LP.active_lp = 0 AND LP.nome_lp LIKE CONCAT('%', :name, '%')";
+			$query = $connector->prepare($sql);
+			$query->bindParam(':cc', $_SESSION['cc'], PDO::PARAM_INT);
+			$query->bindParam(':name', $name, PDO::PARAM_STR);
+			$query->execute();
+			$rowC = $query->rowCount();
+			if($rowC > 0)
+			{
+				while($result = $query->FETCH(PDO::FETCH_OBJ))
+				{
+					$id_lp = $result->ID;
+					$nome = $result->Nome;
+					$email = $result->Email;
+					$cliente = $result->NomeCliente;
+					echo '<tr>
+                              <td class="numeric">'.$id_lp.'</td>
+                              <td>'.$nome.'</td>
+                              <td>'.$email.'</td>
+                              <td>'.$cliente.'</td>
+							  <td>
+								<a data-toggle="modal" href="lp.php=#editar'.$id_lp.'"><button class="btn btn-primary btn-xs"><i class="fa fa-pencil"></i></button></a>
+								<a data-toggle="modal" href="lp.php#cancelamento'.$id_lp.'"><button class="btn btn-danger btn-xs"><i class="fa fa-ban"></i></button></a>
+							  </td>
+                        </tr>';
+				}
+			}
+		}
+	}
+
+	public function apply_filterLTM($name)
+	{
+		$connect = new connection;
+		if($connect->tryconnect())
+		{
+			$connector = $connect->getConnector();
+			$sql = "SELECT LC.id_lc AS ID, LC.nome_lc AS Nome, LC.email_lc AS Email, 
+			CLT.nome_clt AS NomeCliente
+			FROM tab_lider_cliente AS LC 
+			INNER JOIN tab_cliente AS CLT ON LC.id_clt = CLT.id_clt 
+			WHERE LC.id_clt = (SELECT id_clt FROM tab_cc WHERE id_cc=:cc) AND LC.active_lc = 0 AND LC.nome_lc LIKE CONCAT('%', :name, '%')";
+			$query = $connector->prepare($sql);
+			$query->bindParam(':cc', $_SESSION['cc'], PDO::PARAM_STR);
+			$query->bindParam(':name', $name, PDO::PARAM_STR);
+			$query->execute();
+			$rowC = $query->rowCount();
+			if($rowC > 0)
+			{
+				while($result = $query->FETCH(PDO::FETCH_OBJ))
+				{
+					$id_lc = $result->ID;
+					$nome = $result->Nome;
+					$email = $result->Email;
+					$cliente = $result->NomeCliente;
+
+					echo '<tr>
+                              <td class="numeric">'.$id_lc.'</td>
+                              <td>'.$nome.'</td>
+                              <td>'.$email.'</td>
+                              <td>'.$cliente.'</td>
+							  <td>
+								<a data-toggle="modal" href="ltm.php#editar'.$id_lc.'"><button class="btn btn-primary btn-xs"><i class="fa fa-pencil"></i></button></a>
+								<a data-toggle="modal" href="ltm.php#cancelamento'.$id_lc.'"><button class="btn btn-danger btn-xs"><i class="fa fa-ban"></i></button></a>
+							  </td>
+                        </tr>';
 				}
 			}
 		}
@@ -327,9 +522,9 @@ class parameters
 										  <div class="modal-body">
 											<input id="id" name="id" type="hidden" value="'.$id_lc.'">
 											<p>Nome</p>
-											<input class="form-control" type="text" name="nameuser" value="'.$nome.'"/>
+											<input class="form-control" type="text" required name="nameuser" value="'.$nome.'"/>
 											<p><br/>E-mail</p>
-											<input class="form-control" type="email" name="emailuser" value="'.$email.'"/>
+											<input class="form-control" required type="email" name="emailuser" value="'.$email.'"/>
 										  </div>
 										  <div class="modal-footer">
 											  <button data-dismiss="modal" class="btn btn-default" type="button">Cancelar</button>
@@ -376,9 +571,9 @@ class parameters
 										  <div class="modal-body">
 											<input id="id" name="id" type="hidden" value="'.$id_lp.'">
 											<p>Nome</p>
-											<input class="form-control" type="text" name="nameuser" value="'.$nome.'"/>
+											<input class="form-control" type="text" name="nameuser" required value="'.$nome.'"/>
 											<p><br/>E-mail</p>
-											<input class="form-control" type="email" name="emailuser" value="'.$email.'"/>
+											<input class="form-control" type="email" name="emailuser" required value="'.$email.'"/>
 										  </div>
 										  <div class="modal-footer">
 											  <button data-dismiss="modal" class="btn btn-default" type="button">Cancelar</button>
@@ -391,6 +586,56 @@ class parameters
 							<!-- modal -->
 						';
 					}
+				}
+			}
+		}
+	}
+
+	public function getEditCancelReasonModal()
+	{
+		$connect = new connection;
+		if($connect->tryconnect())
+		{
+			$connector = $connect->getConnector();
+			$sql = "SELECT RS.id_reason AS ID, RS.name_reason AS Nome, RS.desc_reason AS Description, 
+			RS.id_user AS User	FROM tab_reason AS RS WHERE RS.active_reason=0";
+			$query = $connector->prepare($sql);
+			$query->execute();
+			$rowC = $query->rowCount();
+			if($rowC > 0)
+			{
+				while($result = $query->FETCH(PDO::FETCH_OBJ))
+				{
+					$id = $result->ID;
+					$nome = $result->Nome;
+					$desc = $result->Description;
+					echo '
+						<!-- Modal Editar Líder-->
+						  <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="editar'.$id.'" class="modal fade">
+							<form method="post" action="">
+							  <div class="modal-dialog">
+								  <div class="modal-content">
+									  <div class="modal-header">
+										  <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+										  <h4 class="modal-title">Editar dados do Líder de Testes e Mudanças?</h4>
+									  </div>
+									  <div class="modal-body">
+										<input id="id" name="id" type="hidden" value="'.$id.'">
+										<p>Nome</p>
+										<input class="form-control" type="text" required name="name" value="'.$nome.'"/>
+										<p><br/>E-mail</p>
+										<textarea class="form-control" rows="5" id="comment" name="description">'.$desc.'</textarea>
+									  </div>
+									  <div class="modal-footer">
+										  <button data-dismiss="modal" class="btn btn-default" type="button">Cancelar</button>
+										  <button class="btn btn-theme" type="submit" name="save">Salvar</button>
+									  </div>
+								  </div>
+							  </div>
+							</form>
+						  </div>
+						<!-- modal -->
+					';
 				}
 			}
 		}
@@ -482,6 +727,47 @@ class parameters
 							<!-- modal -->
 						';
 					}
+				}
+			}
+		}
+	}
+
+	public function getCancelReasons_DeleteModal()
+	{
+		$connect = new connection;
+		if($connect->tryconnect())
+		{
+			$connector = $connect->getConnector();
+			$sql = "SELECT RS.id_reason AS ID FROM tab_reason AS RS WHERE RS.active_reason=0";
+			$query = $connector->prepare($sql);
+			$query->execute();
+			$rowC = $query->rowCount();
+			if($rowC > 0)
+			{
+				while($result = $query->FETCH(PDO::FETCH_OBJ))
+				{
+					$id = $result->ID;
+					echo '
+						<!-- Modal cancelamento-->
+						  <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="cancelamento'.$id.'" class="modal fade">
+							<form method="post" action="">
+							  <div class="modal-dialog">
+								  <div class="modal-content">
+									  <div class="modal-header">
+										  <input id="delete" name="delete" type="hidden" value="'.$id.'">
+										  <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+										  <h4 class="modal-title">Tem certeza que deseja excluir esse parâmetro?</h4>
+									  </div>
+									  <div class="modal-footer">
+										  <button data-dismiss="modal" class="btn btn-default" type="button">Não</button>
+										  <button class="btn btn-theme" type="submit" name="delete_parameter">Sim</button>
+									  </div>
+								  </div>
+							  </div>
+							</form>
+						  </div>
+						<!-- modal -->
+					';
 				}
 			}
 		}
@@ -604,6 +890,31 @@ class parameters
 			}
 		}
 	}
+
+	public function getOneStatus($statusid)
+	{
+		$connect = new connection;
+		if($connect->tryconnect())
+		{
+			$connector = $connect->getConnector();
+			$sql = "SELECT status.id_status AS ID, status.nome_status AS Nome, status.desc_status AS Descricao
+			FROM tab_status AS status WHERE status.id_status=:status";
+			$query = $connector->prepare($sql);
+			$query->bindParam(':status', $statusid, PDO::PARAM_INT);
+			$query->execute();
+			$rowC = $query->rowCount();
+			if($rowC > 0)
+			{
+				while($result = $query->FETCH(PDO::FETCH_OBJ))
+				{
+					$id_status = $result->ID;
+					$nome = $result->Nome;
+					$description = $result->Descricao;
+					echo '<option value="'.$id_status.'">'.$nome.'</option>';
+				}
+			}
+		}
+	}
 	
 	public function getStatus($type, $exception)
 	{
@@ -646,6 +957,8 @@ class parameters
 			}
 		}
 	}
+
+
 	
 	public function getPendencia($type, $exception)
 	{
@@ -688,7 +1001,48 @@ class parameters
 			}
 		}
 	}
-	
+
+	public function getCancelReasons($type, $exception)
+	{
+		$connect = new connection;
+		if($connect->tryconnect())
+		{
+			$connector = $connect->getConnector();
+			$sql = "SELECT reason.id_reason AS ID, reason.name_reason AS Nome, reason.desc_reason AS Descricao
+			FROM tab_reason AS reason WHERE active_reason = 0";
+			$query = $connector->prepare($sql);
+			$query->execute();
+			$rowC = $query->rowCount();
+			if($rowC > 0)
+			{
+				while($result = $query->FETCH(PDO::FETCH_OBJ))
+				{
+					$id = $result->ID;
+					$name = $result->Nome;
+					$description = $result->Descricao;
+					if($type == "select")
+					{
+						if($name != $exception)
+						{
+							echo '<option value="'.$name.'">'.$name.'</option>';
+						}
+					}
+					else
+					{
+						echo '<tr>
+                                  <td class="numeric">'.$id.'</td>
+                                  <td>'.$name.'</td>
+                                  <td>'.$description.'</td>
+								  <td>
+									<a data-toggle="modal" href="clr.php#editar'.$id.'"><button class="btn btn-primary btn-xs"><i class="fa fa-pencil"></i></button></a>
+									<a data-toggle="modal" href="clr.php#cancelamento'.$id.'"><button class="btn btn-danger btn-xs"><i class="fa fa-ban"></i></button></a>
+								  </td>
+                            </tr>';
+					}
+				}
+			}
+		}
+	}
 	public function GetThisCC($id)
 	{
 		$connect = new connection;

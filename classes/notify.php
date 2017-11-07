@@ -30,7 +30,7 @@ class notify
 			if($rowC>0)
 			{
 				$text = 'Um novo projeto com o nome "'.$project->getProjectField($projectid, 'nmp_prj').'" foi atribuído a você pelo usuário <strong>'.$user->getUserField($from, 'nome_user').' </strong>';
-				$link = "<a href='project.php?p=".$projectid."'><strong>Clique aqui!</strong></a>";
+				$link = "<a href='gerenciarprojetos.php?p=".$projectid."'><strong>Clique aqui!</strong></a>";
 				$text2 = " para visualizar esse projeto.";
 				
 				$message = $text."<br/><br/>".$link.$text2;
