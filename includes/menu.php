@@ -66,11 +66,14 @@
 					$lvl = array("Líder de Testes", "Gerente de Projetos", "Administrador");
 					if(isset($_SESSION['funcao']))
 					{
-	                  echo '
-		                      <ul class="sub">
-								  <li><a  href="newtraining.php">Novo Treinamento</a></li>
-		                      </ul>';
-              		}
+						if(in_array($_SESSION['funcao'], $lvl))
+						{
+		                  echo '
+			                      <ul class="sub">
+									  <li><a  href="newtraining.php">Novo Treinamento</a></li>
+			                      </ul>';
+	              		}
+	              	}
               	  ?>
       	  			<ul class="sub">
 						<li><a  href="trainings.php">Ver Treinamentos</a></li>

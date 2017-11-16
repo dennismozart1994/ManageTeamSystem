@@ -13,12 +13,6 @@ if(!isset($_SESSION['login']))
 	header('Location: index.php');
 }
 
-// PERMISSIONS
-if(!(in_array($_SESSION['funcao'], $permissions)))
-{
-	$user->logout();
-}
-
 // LOGOUT
 if(isset($_REQUEST['logout']))
 {
