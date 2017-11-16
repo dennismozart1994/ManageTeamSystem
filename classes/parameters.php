@@ -4,6 +4,7 @@ require_once('connection.php');
 class parameters
 {
 	private static $client;
+	public $users = array();
 	/* ----------------------------------- INSERT METHODS --------------------------------------*/
 	//DELETE CLIENT LEADER
 	public function DeleteLTM($type, $id)
@@ -772,7 +773,232 @@ class parameters
 			}
 		}
 	}
-	
+
+	public function InsertTraining($theme, $description, $local, $date, $time, $responsables)
+	{
+		$connect = new connection;
+		if($connect->tryconnect())
+		{
+			$connector = $connect->getConnector();
+			$sql = "INSERT INTO tab_treina(tema_treina, desc_treina, local_treina, date_treina, time_treina, id_users) VALUES(:theme, :descrip, :place, :schedule, :hour, :responsable)";
+			$query = $connector->prepare($sql);
+			$query->bindParam(':theme', $theme, PDO::PARAM_STR);
+			$query->bindParam(':descrip', $description, PDO::PARAM_STR);
+			$query->bindParam(':place', $local, PDO::PARAM_STR);
+			$query->bindParam(':schedule', $date, PDO::PARAM_STR);
+			$query->bindParam(':hour', $time, PDO::PARAM_STR);
+			$query->bindParam(':responsable', $responsables, PDO::PARAM_STR);
+			if($query->execute())
+			{
+				echo '<script>alert("Treinamento inserido com sucesso!"); window.location.href = "newtraining.php";</script>';
+			}
+			else
+			{
+				echo '<script>alert("Erro ao cadastrar treinamento! Tente novamente!"); window.location.href = "newtraining.php";</script>';
+			}
+		}
+	}
+
+	public function ViewTraining($id)
+	{
+		$connect = new connection;
+		if($connect->tryconnect())
+		{
+			$connector = $connect->getConnector();
+			$sql = "SELECT T.id_treina AS ID, T.tema_treina AS Tema, T.desc_treina AS Descricao, T.local_treina AS Local, T.date_treina AS Data, T.time_treina AS Horario, T.id_users AS Usuarios FROM tab_treina AS T WHERE T.id_treina=:filter";
+			$query = $connector->prepare($sql);
+			$query->bindParam(':filter', $id, PDO::PARAM_INT);
+			$query->execute();
+			if($query->rowCount() > 0)
+			{
+				$responsables = "";
+				while($result = $query->FETCH(PDO::FETCH_OBJ))
+				{
+					$id = $result->ID;
+					$theme = $result->Tema;
+					$description = $result->Descricao;
+					$local = $result->Local;
+					$date = $result->Data;
+					$time = $result->Horario;
+					$users = explode("_", $result->Usuarios);
+
+					foreach ($users as $value) 
+					{
+						if($value != "start")
+						{
+							$getUsers = "SELECT nome_user AS Nome FROM tab_user WHERE id_user=:id";
+							$queryname = $connector->prepare($getUsers);
+							$queryname->bindParam(':id', $value, PDO::PARAM_STR);
+							$queryname->execute();
+							if($queryname->rowCount() > 0)
+							{
+								while($resultname = $queryname->FETCH(PDO::FETCH_OBJ))
+								{
+									if($responsables == "")
+									{
+										$responsables = '<p class="col-lg-12 col-sm-12">'.$resultname->Nome.'</p>';
+									}
+									else
+									{
+										$responsables = $responsables.'<p class="col-lg-12 col-sm-12">'.$resultname->Nome.'</p>';
+									}
+								}
+							}
+						}
+					}
+
+					// Show
+					echo '
+							<h3><i class="fa fa-angle-right"></i>'.$theme.'</h3>
+				            <div class="row mt">
+				              <div class="col-lg-12">
+				      					<div class="form-panel">
+				      						<form class="form-horizontal style-form" method="post"> 
+				                    <div class="form-group">
+				                      <label class="col-lg-12 col-sm-12 control-label"><h4>Descrição</h4></label>
+				                        <p class="col-lg-12 col-sm-12">'.$description.'</p>
+				                    </div>
+
+				                    <div class="form-group">
+				                      <label class="col-lg-12 col-sm-12 control-label"><h4>Data</h4></label>
+				                        <p class="col-lg-12 col-sm-12">'.date('d-m-Y', strtotime($date)).' às '.$time.'</p>
+				                    </div> 
+
+				                    <div class="form-group">
+				                      <label class="col-lg-12 col-sm-12 control-label"><h4>Local</h4></label>
+				                        <p class="col-lg-12 col-sm-12">'.$local.'</p>
+				                    </div>
+
+				      						  <div class="form-group">
+				                      <label class="col-lg-12 col-sm-12 control-label"><h4>Analistas inmetrics que aplicarão o treinamento:</h4></label>
+				                      '.$responsables.'
+				                    </div>
+				                  </form>
+				      					</div>
+				              </div>
+				            </div>';
+				}
+			}
+		}
+	}
+
+	public function ListTrainings()
+	{
+		$connect = new connection;
+		if($connect->tryconnect())
+		{
+			$connector = $connect->getConnector();
+			$sql = "SELECT T.id_treina AS ID, T.tema_treina AS Tema, T.date_treina AS Data, T.time_treina AS Horario, T.id_users AS Usuarios FROM tab_treina AS T";
+			$query = $connector->prepare($sql);
+			$query->execute();
+			if($query->rowCount() > 0)
+			{
+				$responsables = "";
+				while($result = $query->FETCH(PDO::FETCH_OBJ))
+				{
+					$id = $result->ID;
+					$theme = $result->Tema;
+					$date = $result->Data;
+					$time = $result->Horario;
+					$users = explode("_", $result->Usuarios);
+
+					foreach ($users as $value) 
+					{
+						if($value != "start")
+						{
+							$getUsers = "SELECT nome_user AS Nome FROM tab_user WHERE id_user=:id";
+							$queryname = $connector->prepare($getUsers);
+							$queryname->bindParam(':id', $value, PDO::PARAM_STR);
+							$queryname->execute();
+							if($queryname->rowCount() > 0)
+							{
+								while($resultname = $queryname->FETCH(PDO::FETCH_OBJ))
+								{
+									if($responsables == "")
+									{
+										$responsables = $resultname->Nome;
+									}
+									else
+									{
+										$responsables = $responsables." / ".$resultname->Nome;
+									}
+								}
+							}
+						}
+					}
+						echo '<tbody>
+			                    <tr>
+			                        <td>'.$theme.'</td>
+			                        <td>'.$responsables.'</td>
+			                        <td>'.date('d-m-Y', strtotime($date)).' às '.$time.'</td>
+			                        <td><a href="viewtraining.php?v='.$id.'"><button class="btn btn-primary btn-xs"><i class="fa fa-search"></i></button></a></td>
+			                    </tr>
+			                  </tbody>';
+				}
+			}
+
+		}
+	}
+
+	public function FilterTrainings($filter)
+	{
+		$connect = new connection;
+		if($connect->tryconnect())
+		{
+			$apply = date('Y-m-d', strtotime($filter));
+			$connector = $connect->getConnector();
+			$sql = "SELECT T.id_treina AS ID, T.tema_treina AS Tema, T.date_treina AS Data, T.time_treina AS Horario, T.id_users AS Usuarios FROM tab_treina AS T WHERE T.date_treina=:data";
+			$query = $connector->prepare($sql);
+			$query->bindParam(':data', $apply, PDO::PARAM_STR);
+			$query->execute();
+			if($query->rowCount() > 0)
+			{
+				$responsables = "";
+				while($result = $query->FETCH(PDO::FETCH_OBJ))
+				{
+					$id = $result->ID;
+					$theme = $result->Tema;
+					$date = $result->Data;
+					$time = $result->Horario;
+					$users = explode("_", $result->Usuarios);
+
+					foreach ($users as $value) 
+					{
+						if($value != "start")
+						{
+							$getUsers = "SELECT nome_user AS Nome FROM tab_user WHERE id_user=:id";
+							$queryname = $connector->prepare($getUsers);
+							$queryname->bindParam(':id', $value, PDO::PARAM_STR);
+							$queryname->execute();
+							if($queryname->rowCount() > 0)
+							{
+								while($resultname = $queryname->FETCH(PDO::FETCH_OBJ))
+								{
+									if($responsables == "")
+									{
+										$responsables = $resultname->Nome;
+									}
+									else
+									{
+										$responsables = $responsables." / ".$resultname->Nome;
+									}
+								}
+							}
+						}
+					}
+						echo '<tbody>
+			                    <tr>
+			                        <td>'.$theme.'</td>
+			                        <td>'.$responsables.'</td>
+			                        <td>'.date('d-m-Y', strtotime($date)).' às '.$time.'</td>
+			                        <td><a href="viewtraining.php?v='.$id.'"><button class="btn btn-primary btn-xs"><i class="fa fa-search"></i></button></a></td>
+			                    </tr>
+			                  </tbody>';
+				}
+			}
+
+		}
+	}
 	
 	public function getAnalyst($type, $exception)
 	{
@@ -803,6 +1029,27 @@ class parameters
 						if($id_user != $exception)
 						{
 							echo '<option value="'.$id_user.'">'.$nome.'</option>';
+						}
+					}
+					else if($type == "check")
+					{
+						if($id_user != $exception)
+						{	
+							if(array_key_exists(0, $this->users))
+							{
+								array_push($this->users, 'user'.$id_user);
+							}
+							else
+							{
+								$this->users = array('user'.$id_user);
+							}
+							
+							echo '<div class="checkbox">
+								  <label>
+								    <input type="checkbox" name="user'.$id_user.'" value="'.$id_user.'">
+								    '.$nome.'
+								  </label>
+								</div>';
 						}
 					}
 					else

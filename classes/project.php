@@ -15,7 +15,265 @@ class projects
 			break;
 		}
 	}
-	
+
+	public function CanceledProjects()
+	{
+		$connection = new connection;
+		if($connection->tryconnect())
+		{
+			$connector = $connection->getConnector();
+			// Get total of canceled projects
+			$getcancelled = "SELECT COUNT(*) FROM tab_projeto AS projeto WHERE projeto.id_f = 8";
+			$query_totalprojects = $connector->prepare($getcancelled);
+			$query_totalprojects->execute();
+			$total_cancelled = $query_totalprojects->FETCH(PDO::FETCH_NUM);
+			// Get Reasons
+			$getreasons = "SELECT * FROM tab_reason";
+			$query_getreasons = $connector->prepare($getreasons);
+			$query_getreasons->execute();
+			$CountReasons = $query_getreasons->rowCount();
+			$reasons = array();
+			if($CountReasons > 0)
+			{
+				while($result_reasons = $query_getreasons->FETCH(PDO::FETCH_OBJ))
+				{
+					// Get Projects canceled by reason
+					array_push($reasons, $result_reasons->name_reason);
+					$sql = "SELECT COUNT(*)
+					FROM tab_projeto AS projeto INNER JOIN tab_historico AS historico ON historico.id_prj = projeto.id_prj 
+					INNER JOIN tab_user AS usuario ON historico.id_user = usuario.id_user 
+					INNER JOIN tab_lider_cliente AS ltm ON projeto.id_lc = ltm.id_lc 
+					INNER JOIN tab_fases AS fases ON projeto.id_f = fases.id_f 
+					WHERE historico.id_f = 8 AND historico.desc_hst LIKE CONCAT(:filter, '%')
+					ORDER BY projeto.ts_prj ASC";
+					$query = $connector->prepare($sql);
+					$query->bindParam(':filter', $result_reasons->name_reason, PDO::PARAM_STR);
+					$query->execute();
+					$count = $query->FETCH(PDO::FETCH_NUM);
+					if(reset($count)>0)
+					{
+						echo '<div class="bar">
+                              <div class="title">'.$result_reasons->name_reason.'</div>
+                              <a href="relatorios.php?filter='.$result_reasons->name_reason.'"><div class="value tooltips" data-original-title="'.((reset($count) * 100)/reset($total_cancelled)).'%" data-toggle="tooltip" data-placement="top">'.((reset($count) * 100)/reset($total_cancelled)).'%</div></a>
+                          </div>';
+					}
+				}
+
+				// Projects canceled for any other reason
+				$mysql_reasons = "";
+				foreach ($reasons as $key) {
+					$mysql_reasons = $mysql_reasons." AND historico.desc_hst NOT LIKE CONCAT('".$key."', '%')";
+				}
+				$sql_others = "SELECT COUNT(*)
+					FROM tab_projeto AS projeto INNER JOIN tab_historico AS historico ON historico.id_prj = projeto.id_prj 
+					INNER JOIN tab_user AS usuario ON historico.id_user = usuario.id_user 
+					INNER JOIN tab_lider_cliente AS ltm ON projeto.id_lc = ltm.id_lc 
+					INNER JOIN tab_fases AS fases ON projeto.id_f = fases.id_f 
+					WHERE historico.id_f = 8 ".$mysql_reasons."	ORDER BY projeto.ts_prj ASC";
+				$query_others = $connector->prepare($sql_others);
+				$query_others->execute();
+				$count_others = $query_others->FETCH(PDO::FETCH_NUM);
+				if(reset($count)>0)
+				{
+					echo '<div class="bar">';
+					echo '<div class="title">Outros</div>';
+					echo '<a href="relatorios.php?filter=Outros"><div class="value tooltips" data-original-title="'.((reset($count_others) * 100)/reset($total_cancelled)).'%" data-toggle="tooltip" data-placement="top">'.((reset($count_others) * 100)/reset($total_cancelled)).'%</div></a>';
+					echo '</div>';
+				}
+			}
+			else
+			{
+				// Projects canceled for any other reason
+				$mysql_reasons = "";
+				foreach ($reasons as $key) {
+					$mysql_reasons = $mysql_reasons." AND historico.desc_hst NOT LIKE CONCAT('".$key."', '%')";
+				}
+				$sql_others = "SELECT COUNT(*)
+					FROM tab_projeto AS projeto INNER JOIN tab_historico AS historico ON historico.id_prj = projeto.id_prj 
+					INNER JOIN tab_user AS usuario ON historico.id_user = usuario.id_user 
+					INNER JOIN tab_lider_cliente AS ltm ON projeto.id_lc = ltm.id_lc 
+					INNER JOIN tab_fases AS fases ON projeto.id_f = fases.id_f 
+					WHERE historico.id_f = 8 ".$mysql_reasons."	ORDER BY projeto.ts_prj ASC";
+				$query_others = $connector->prepare($sql_others);
+				$query_others->execute();
+				$count_others = $query_others->FETCH(PDO::FETCH_NUM);
+				if(reset($count)>0)
+				{
+					echo '<div class="bar">';
+					echo '<div class="title">Outros</div>';
+					echo '<a href="relatorios.php?filter=Outros"><div class="value tooltips" data-original-title="'.((reset($count_others) * 100)/reset($total_cancelled)).'%" data-toggle="tooltip" data-placement="top">'.((reset($count_others) * 100)/reset($total_cancelled)).'%</div></a>';
+					echo '</div>';
+				}
+			}
+		}
+	}
+
+	public function getCanceledProjects($name ,$filter)
+	{
+		$connect = new connection;
+		if($connect->tryconnect())
+		{
+			$connector = $connect->getConnector();
+			if($filter == "all" && $name == "")
+			{
+				$sql = "SELECT historico.data_hst AS DATA_DE_ENCERRAMENTO, historico.desc_hst AS NOTA, historico.id_prj AS PROJETO, 
+					usuario.nome_user AS RESPONSAVEL, 
+					projeto.ts_prj AS TS, projeto.nmp_prj AS NOME_DO_PROJETO, 
+					ltm.nome_lc AS LIDER_CLIENTE, 
+					fases.nome_f AS FASE 
+					FROM tab_projeto AS projeto INNER JOIN tab_historico AS historico ON historico.id_prj = projeto.id_prj 
+					INNER JOIN tab_user AS usuario ON historico.id_user = usuario.id_user 
+					INNER JOIN tab_lider_cliente AS ltm ON projeto.id_lc = ltm.id_lc 
+					INNER JOIN tab_fases AS fases ON projeto.id_f = fases.id_f 
+					WHERE historico.id_f = 8 
+					ORDER BY projeto.ts_prj ASC";
+					$query = $connector->prepare($sql);
+					$query->execute();
+					$rowC = $query->rowCount();
+			}
+			else if($filter == "Outros" && $name != "")
+			{
+				$getreasons = "SELECT * FROM tab_reason";
+				$query_getreasons = $connector->prepare($getreasons);
+				$query_getreasons->execute();
+				$CountReasons = $query_getreasons->rowCount();
+				$reasons = array();
+
+				if($CountReasons > 0)
+				{
+					while($result_reasons = $query_getreasons->FETCH(PDO::FETCH_OBJ))
+					{
+						array_push($reasons, $result_reasons->name_reason);
+					}
+					// Projects canceled for any other reason
+					$mysql_reasons = "";
+					foreach ($reasons as $key) {
+						$mysql_reasons = $mysql_reasons." AND historico.desc_hst NOT LIKE CONCAT('".$key."', '%')";
+					}
+					$sql = "SELECT historico.data_hst AS DATA_DE_ENCERRAMENTO, historico.desc_hst AS NOTA, historico.id_prj AS PROJETO, 
+						usuario.nome_user AS RESPONSAVEL, 
+						projeto.ts_prj AS TS, projeto.nmp_prj AS NOME_DO_PROJETO, 
+						ltm.nome_lc AS LIDER_CLIENTE, 
+						fases.nome_f AS FASE 
+					FROM tab_projeto AS projeto INNER JOIN tab_historico AS historico ON historico.id_prj = projeto.id_prj
+					INNER JOIN tab_user AS usuario ON historico.id_user = usuario.id_user 
+					INNER JOIN tab_lider_cliente AS ltm ON projeto.id_lc = ltm.id_lc 
+					INNER JOIN tab_fases AS fases ON projeto.id_f = fases.id_f 
+					WHERE historico.id_f = 8 ".$mysql_reasons."	AND projeto.nmp_prj LIKE CONCAT('%', :name, '%') 
+					ORDER BY projeto.ts_prj ASC";
+					$query = $connector->prepare($sql);
+					$query->bindParam(':name', $name, PDO::PARAM_STR);
+					$query->execute();
+					$rowC = $query->rowCount();
+				}
+			}
+			else if($filter == "Outros" && $name == "")
+			{
+				$getreasons = "SELECT * FROM tab_reason";
+				$query_getreasons = $connector->prepare($getreasons);
+				$query_getreasons->execute();
+				$CountReasons = $query_getreasons->rowCount();
+				$reasons = array();
+
+				if($CountReasons > 0)
+				{
+					while($result_reasons = $query_getreasons->FETCH(PDO::FETCH_OBJ))
+					{
+						array_push($reasons, $result_reasons->name_reason);
+					}
+					// Projects canceled for any other reason
+					$mysql_reasons = "";
+					foreach ($reasons as $key) {
+						$mysql_reasons = $mysql_reasons." AND historico.desc_hst NOT LIKE CONCAT('".$key."', '%')";
+					}
+					$sql = "SELECT historico.data_hst AS DATA_DE_ENCERRAMENTO, historico.desc_hst AS NOTA, historico.id_prj AS PROJETO, 
+						usuario.nome_user AS RESPONSAVEL, 
+						projeto.ts_prj AS TS, projeto.nmp_prj AS NOME_DO_PROJETO, 
+						ltm.nome_lc AS LIDER_CLIENTE, 
+						fases.nome_f AS FASE 
+					FROM tab_projeto AS projeto INNER JOIN tab_historico AS historico ON historico.id_prj = projeto.id_prj
+					INNER JOIN tab_user AS usuario ON historico.id_user = usuario.id_user 
+					INNER JOIN tab_lider_cliente AS ltm ON projeto.id_lc = ltm.id_lc 
+					INNER JOIN tab_fases AS fases ON projeto.id_f = fases.id_f 
+					WHERE historico.id_f = 8 ".$mysql_reasons."	ORDER BY projeto.ts_prj ASC";
+					$query = $connector->prepare($sql);
+					$query->execute();
+					$rowC = $query->rowCount();
+				}
+
+			}
+			else if($filter != "all" && $filter != "Outros" && $name == "")
+			{
+				$sql = "SELECT historico.data_hst AS DATA_DE_ENCERRAMENTO, historico.desc_hst AS NOTA, historico.id_prj AS PROJETO, 
+					usuario.nome_user AS RESPONSAVEL, 
+					projeto.ts_prj AS TS, projeto.nmp_prj AS NOME_DO_PROJETO, 
+					ltm.nome_lc AS LIDER_CLIENTE, 
+					fases.nome_f AS FASE 
+					FROM tab_projeto AS projeto INNER JOIN tab_historico AS historico ON historico.id_prj = projeto.id_prj 
+					INNER JOIN tab_user AS usuario ON historico.id_user = usuario.id_user 
+					INNER JOIN tab_lider_cliente AS ltm ON projeto.id_lc = ltm.id_lc 
+					INNER JOIN tab_fases AS fases ON projeto.id_f = fases.id_f 
+					WHERE historico.desc_hst LIKE CONCAT(:filter, '%') 
+					ORDER BY projeto.ts_prj ASC";
+				$query = $connector->prepare($sql);
+				$query->bindParam(':filter', $filter, PDO::PARAM_STR);
+				$query->execute();
+				$rowC = $query->rowCount();
+			}
+			else if($filter == "Nao_Informado" && $name != "")
+			{
+				$sql = "SELECT historico.data_hst AS DATA_DE_ENCERRAMENTO, historico.desc_hst AS NOTA, historico.id_prj AS PROJETO, 
+					usuario.nome_user AS RESPONSAVEL, 
+					projeto.ts_prj AS TS, projeto.nmp_prj AS NOME_DO_PROJETO, 
+					ltm.nome_lc AS LIDER_CLIENTE, 
+					fases.nome_f AS FASE 
+					FROM tab_projeto AS projeto INNER JOIN tab_historico AS historico ON historico.id_prj = projeto.id_prj 
+					INNER JOIN tab_user AS usuario ON historico.id_user = usuario.id_user 
+					INNER JOIN tab_lider_cliente AS ltm ON projeto.id_lc = ltm.id_lc 
+					INNER JOIN tab_fases AS fases ON projeto.id_f = fases.id_f 
+					WHERE historico.id_f = 8 AND projeto.nmp_prj LIKE CONCAT('%', :name, '%')
+					ORDER BY projeto.ts_prj ASC";
+					$query = $connector->prepare($sql);
+					$query->bindParam(':name', $name, PDO::PARAM_STR);
+					$query->execute();
+					$rowC = $query->rowCount();
+			}
+			else
+			{
+				$sql = "SELECT historico.data_hst AS DATA_DE_ENCERRAMENTO, historico.desc_hst AS NOTA, historico.id_prj AS PROJETO, 
+					usuario.nome_user AS RESPONSAVEL, 
+					projeto.ts_prj AS TS, projeto.nmp_prj AS NOME_DO_PROJETO, 
+					ltm.nome_lc AS LIDER_CLIENTE, 
+					fases.nome_f AS FASE 
+					FROM tab_projeto AS projeto INNER JOIN tab_historico AS historico ON historico.id_prj = projeto.id_prj 
+					INNER JOIN tab_user AS usuario ON historico.id_user = usuario.id_user 
+					INNER JOIN tab_lider_cliente AS ltm ON projeto.id_lc = ltm.id_lc 
+					INNER JOIN tab_fases AS fases ON projeto.id_f = fases.id_f 
+					WHERE historico.desc_hst LIKE CONCAT(:filter, '%') AND projeto.nmp_prj LIKE CONCAT('%', :name, '%')
+					ORDER BY projeto.ts_prj ASC";
+					$query = $connector->prepare($sql);
+					$query->bindParam(':filter', $filter, PDO::PARAM_STR);
+					$query->bindParam(':name', $name, PDO::PARAM_STR);
+					$query->execute();
+					$rowC = $query->rowCount();
+			}
+			while($result = $query->FETCH(PDO::FETCH_OBJ))
+			{
+				echo '		<tr>';
+				echo '			  <td class="numeric">'.$result->TS.'</td>';
+				echo '			  <td>'.$result->NOME_DO_PROJETO.'</td>';
+				echo '			  <td>'.$result->LIDER_CLIENTE.'</td>';
+				echo '			  <td>'.$result->RESPONSAVEL.'</td>';
+				echo '			  <td>'.$result->FASE.'</td>';
+				echo '			  <td>'.$result->NOTA.'</td>';
+				echo '			  <td>';
+				echo '			  <a href="gerenciarprojetos.php?p='.$result->PROJETO.'"><button class="btn btn-primary btn-xs"><i class="fa fa-search"></i></button></a>';
+				echo '			  </td>';
+				echo '		</tr>';
+			}
+		}
+	}
+
 	public function ApplyFilter($user, $phase, $projectname, $lvl)
 	{
 		$connect = new connection;

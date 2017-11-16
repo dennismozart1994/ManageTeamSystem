@@ -28,6 +28,7 @@
 								{
 									echo '<li><a  href="projects.php">Gerenciar Projetos</a></li>';
 									echo '<li><a  href="newproject.php">Novo Projeto</a></li>';
+									echo '<li><a  href="relatorios.php">Relatório de Cancelados</a></li>';
 								}
 							}
 							
@@ -56,6 +57,25 @@
 						  <li><a  href="myuser.php">Meu usuário</a></li>
                       </ul>
                   </li>
+                  <li class="sub-menu">
+	                  <a href="javascript:;" >
+	                      <i class="fa fa-gamepad"></i>
+	                      <span>Treinamentos</span>
+	                  </a>
+                  <?php
+					$lvl = array("Líder de Testes", "Gerente de Projetos", "Administrador");
+					if(isset($_SESSION['funcao']))
+					{
+	                  echo '
+		                      <ul class="sub">
+								  <li><a  href="newtraining.php">Novo Treinamento</a></li>
+		                      </ul>';
+              		}
+              	  ?>
+      	  			<ul class="sub">
+						<li><a  href="trainings.php">Ver Treinamentos</a></li>
+                    </ul>
+              	  </li>
 
                   <?php
 					$lvl = array("Líder de Testes", "Gerente de Projetos", "Administrador");

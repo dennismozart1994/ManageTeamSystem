@@ -18,4 +18,3 @@
   </div>
   <button type="submit" class="btn btn-theme fa fa-filter" name="apply_filter"> Filtrar</button>
 </form>
-<!-- End Todo -->

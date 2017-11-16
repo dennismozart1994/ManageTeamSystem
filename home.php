@@ -2,8 +2,11 @@
 session_start();
 
 require_once('classes/userf.php');
+require_once('classes/project.php');
 
 $user = new user;
+$project = new projects;
+
 
 if(!isset($_SESSION['login'])){
 	header('Location: index.php');
@@ -174,8 +177,27 @@ if(isset($_REQUEST['logout']))
                           <?php $user->getProjects('graphic');?>
                       </div>
                       <!--custom chart end-->
-					</div><!-- /row -->				
-                  </div><!-- /col-lg-9 END SECTION MIDDLE -->
+					           </div><!-- /row -->
+
+                     <div class="row mt">
+                      <!--CUSTOM CHART START -->
+                      <div class="border-head">
+                          <h3>Relação de Motivos de cancelamento</h3>
+                      </div>
+                      <div class="custom-bar-chart">
+                          <ul class="y-axis">
+                              <li><span>100</span></li>
+                              <li><span>80</span></li>
+                              <li><span>60</span></li>
+                              <li><span>40</span></li>
+                              <li><span>20</span></li>
+                              <li><span>0</span></li>
+                          </ul>
+                          <?php $project->CanceledProjects();?>
+                      </div>
+                      <!--custom chart end-->
+          </div><!-- /row --> 
+        </div><!-- /col-lg-9 END SECTION MIDDLE -->
                   
                   
       <!-- **********************************************************************************************************************************************************

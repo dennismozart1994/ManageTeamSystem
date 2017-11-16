@@ -3,5 +3,5 @@
 
 	$config = new config;
 
-	$config->create_reason_table();
+	$config->create_notify_table();
 ?>
