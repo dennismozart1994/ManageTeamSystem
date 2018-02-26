@@ -36,7 +36,7 @@ require_once('classes/project.php');
 	  	$status = strip_tags($_POST['status']);
 		$predicted = strip_tags($_POST['predicted']);
 		$accomplished = strip_tags($_POST['accomplished']);
-		$note = strip_tags($_POST['note']);
+		$note = $_POST['note'];
 		
 		$project->addHistoryNote($date, $phase, $status, $predicted, $accomplished, $note, $id, $_SESSION['id']);
 	}
@@ -178,10 +178,6 @@ require_once('classes/project.php');
     <script class="include" type="text/javascript" src="assets/js/jquery.dcjqaccordion.2.7.js"></script>
     <script src="assets/js/jquery.scrollTo.min.js"></script>
     <script src="assets/js/jquery.nicescroll.js" type="text/javascript"></script>
-
-
     <script src="assets/js/common-scripts.js"></script>
-
-
   </body>
 </html>

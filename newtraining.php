@@ -82,35 +82,35 @@ if(isset($_REQUEST['logout']))
       						  <div class="form-group">
                       <label class="col-lg-1 col-sm-1 control-label">Tema</label>
       							  <div class="col-sm-4">
-                        <input type="text" name="tema" class="form-control" placeholder="Tema do treinamento" required>
+                        <input type="text" name="tema" <?php if(isset($_GET['v'])){echo 'value="'.$param->GetTrainingInfo($_GET["v"], "tema_treina").'"';}?> class="form-control" placeholder="Tema do treinamento" required>
                       </div>
                     </div>
 
                     <div class="form-group">
                       <label class="col-lg-1 col-sm-1 control-label">Descrição</label>
                       <div class="col-sm-4">
-                        <textarea name="description" class="form-control" rows="5" cols="50" required>Resumo sobre o tema do treinamento</textarea>
+                        <textarea name="description" class="form-control" rows="5" cols="50" required><?php if(isset($_GET['v'])){echo $param->GetTrainingInfo($_GET["v"], "desc_treina");}else{echo 'Resumo sobre o tema do treinamento';} ?></textarea>
                       </div>
                     </div>
 
                     <div class="form-group">
                       <label class="col-lg-1 col-sm-1 control-label">Data</label>
                       <div class="col-sm-4">
-                        <input type="date" name="date" class="form-control" required>
+                        <input type="date" name="date" <?php if(isset($_GET['v'])){echo 'value="'.$param->GetTrainingInfo($_GET["v"], "date_treina").'"';}?> class="form-control" required>
                       </div>
                     </div>
       						  
                     <div class="form-group">
                       <label class="col-lg-1 col-sm-1 control-label">Horário</label>
                       <div class="col-sm-4">
-                        <input type="time" name="time" class="form-control">
+                        <input type="time" name="time" <?php if(isset($_GET['v'])){echo 'value="'.$param->GetTrainingInfo($_GET["v"], "time_treina").'"';}?> class="form-control">
                       </div>
                     </div>  
 
                     <div class="form-group">
                       <label class="col-lg-1 col-sm-1 control-label">Local</label>
                       <div class="col-sm-4">
-                        <input type="text" name="local" value="Sala Leonardo da Vinci" class="form-control" placeholder="Sala em que acontecerá o treinamento">
+                        <input type="text" name="local" <?php if(isset($_GET['v'])){echo 'value="'.$param->GetTrainingInfo($_GET["v"], "local_treina").'"';}else{echo 'value="Sala Leonardo da Vinci"';} ?> class="form-control" placeholder="Sala em que acontecerá o treinamento">
                       </div>
                     </div>
 
@@ -118,13 +118,29 @@ if(isset($_REQUEST['logout']))
       							   <div class="col-lg-4">
                           <p class="form-control-static"><b>Responsável Inmetrics:</b></p>
         									  <?php 
-        										$param->getAnalyst("check", "none");
+                              if(isset($_GET['v']))
+                              {
+                                $param->GetTrainingAnalyst($param->GetTrainingInfo($_GET["v"], "id_users"));
+                              }
+                              else
+                              {
+                                $param->getAnalyst("check", "none");
+                              }
         									  ?>
                         </div>
                     </div>
       						  <div class="form-group">
         							<div class="col-sm-4">
-                        <button class="btn btn-success btn-sm pull-left" name="add" type="submit">Adicionar</button>
+                        <?php
+                          if(isset($_GET['v']))
+                          {
+                            echo '<button class="btn btn-success btn-sm pull-left" name="update" type="submit">Salvar</button>';
+                          }
+                          else
+                          {
+                            echo '<button class="btn btn-success btn-sm pull-left" name="add" type="submit">Adicionar</button>';
+                          }
+                        ?>
                       </div>
       						  </div> 
                   </form>
@@ -140,7 +156,19 @@ if(isset($_REQUEST['logout']))
                           }
                         }
                       $param->InsertTraining($_POST['tema'], $_POST['description'], $_POST['local'], $_POST['date'], $_POST['time'], $names);
-                    } 
+                    }
+
+                    if(isset($_POST['update']) && isset($_GET['v']))
+                    {
+                      $names = "start";
+                        foreach ($param->users as $value) {
+                          if(isset($_POST[$value]))
+                          {
+                            $names = $names."_".$_POST[$value];
+                          }
+                        }
+                      $param->UpdateTraining($_GET['v'], $_POST['tema'], $_POST['description'], $_POST['local'], $_POST['date'], $_POST['time'], $names);
+                    }
                   ?>
       					</div>
               </div>

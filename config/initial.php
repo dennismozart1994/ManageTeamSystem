@@ -3,5 +3,5 @@
 
 	$config = new config;
 
-	$config->create_notify_table();
+	$config->Truncate_Projetos();
 ?>

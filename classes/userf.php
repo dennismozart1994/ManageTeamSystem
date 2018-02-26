@@ -119,7 +119,7 @@ class user
 					{
 						// NORMAL USER
 						// CHECK IF IT IS AVAILABLE
-						$sqlav = "SELECT COUNT(*) FROM tab_projeto AS projeto WHERE projeto.id_inmetrics_user=:user AND projeto.id_f != 5 AND projeto.id_f != 8 AND projeto.id_cc=:cc";
+						$sqlav = "SELECT COUNT(*) FROM tab_projeto AS projeto WHERE projeto.id_inmetrics_user=:user AND projeto.id_f != 3 AND projeto.id_f != 5 AND projeto.id_f != 8 AND projeto.id_cc=:cc";
 						$queryav = $connector->prepare($sqlav);
 						$queryav->bindParam(':user', $id, PDO::PARAM_STR);
 						$queryav->bindParam(':cc', $_SESSION['cc'], PDO::PARAM_STR);
@@ -721,7 +721,7 @@ class user
 					$id = $return_users->id_user;
 					$nome = $return_users->nome_user;
 					$sqlproject = "SELECT COUNT(*) from tab_projeto AS projeto INNER JOIN tab_user AS user ON projeto.id_cc = user.id_cc
-					WHERE projeto.id_inmetrics_user=:user AND (projeto.id_inmetrics_user = user.id_user) AND projeto.id_f != 5 AND projeto.id_f != 8 AND user.active_user = 0";
+					WHERE projeto.id_inmetrics_user=:user AND (projeto.id_inmetrics_user = user.id_user) AND projeto.id_f != 5 AND projeto.id_f != 8 AND projeto.id_f != 3 AND user.active_user = 0";
 					$queryproject = $connector->prepare($sqlproject);
 					$queryproject->bindParam(':user', $id, PDO::PARAM_STR);
 					$queryproject->execute();

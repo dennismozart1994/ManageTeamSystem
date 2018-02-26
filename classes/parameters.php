@@ -6,106 +6,6 @@ class parameters
 	private static $client;
 	public $users = array();
 	/* ----------------------------------- INSERT METHODS --------------------------------------*/
-	//DELETE CLIENT LEADER
-	public function DeleteLTM($type, $id)
-	{
-		$connect = new connection;
-		if($connect->tryconnect())
-		{
-			if($type == 1)
-			{
-				$connector = $connect->getConnector();
-				$sql = "UPDATE tab_lider_cliente SET active_lc=1 WHERE id_lc=:id";
-				$query = $connector->prepare($sql);
-				$query->bindParam(':id', $id, PDO::PARAM_STR);
-				$query->execute();
-				$rowC = $query->rowCount();
-				if($rowC == 1)
-				{
-					echo '<script>alert("O líder foi desativado com sucesso!"); window.location.href = "ltm.php"</script>';
-				}
-				else
-				{
-					echo '<script>alert("Erro ao tentar efetuar exclusão!"); window.location.href = "ltm.php"</script>';
-				}
-			}
-			else
-			{
-				$connector = $connect->getConnector();
-				$sql = "UPDATE tab_lider_projeto SET active_lp=1 WHERE id_lp=:id";
-				$query = $connector->prepare($sql);
-				$query->bindParam(':id', $id, PDO::PARAM_STR);
-				$query->execute();
-				$rowC = $query->rowCount();
-				if($rowC == 1)
-				{
-					echo '<script>alert("O líder foi desativado com sucesso!"); window.location.href = "lp.php"</script>';
-				}
-				else
-				{
-					echo '<script>alert("Erro ao tentar efetuar exclusão!"); window.location.href = "lp.php"</script>';
-				}
-			}
-		}
-		else
-		{
-			echo '<script>alert("Erro ao conectar com o banco de dados!"); window.location.href = "lp.php"</script>';
-		}
-	}
-	
-	//UPDATE CLIENT LEADER
-	public function UpdateLTM($type, $id, $name, $email, $responsable){
-		$connect = new connection;
-		if($connect->tryconnect())
-		{
-			$connector = $connect->getConnector();
-			
-			if($type == 1)
-			{
-				$sql = "UPDATE tab_lider_cliente SET nome_lc=?, email_lc=?, id_user=? WHERE id_lc=?";
-				$query=$connector->prepare($sql);
-				$query->bindParam(1, $name, PDO::PARAM_STR);
-				$query->bindParam(2, $email, PDO::PARAM_STR);
-				$query->bindParam(3, $responsable, PDO::PARAM_STR);
-				$query->bindParam(4, $id, PDO::PARAM_STR);
-				$query->execute();
-				$rowC = $query->rowCount();
-				if($rowC == 1)
-				{
-					echo '<script>alert("Os dados foram alterados com sucesso!"); window.location.href = "ltm.php"</script>';
-				}
-				else
-				{
-					echo '<script>alert("Erro ao efetuar alteração!"); window.location.href = "ltm.php"</script>';
-				}
-			}
-			else
-			{
-				$sql = "UPDATE tab_lider_projeto SET nome_lp=?, email_lp=?, id_user=? WHERE id_lp=?";
-				$query=$connector->prepare($sql);
-				$query->bindParam(1, $name, PDO::PARAM_STR);
-				$query->bindParam(2, $email, PDO::PARAM_STR);
-				$query->bindParam(3, $responsable, PDO::PARAM_STR);
-				$query->bindParam(4, $id, PDO::PARAM_STR);
-				$query->execute();
-				$rowC = $query->rowCount();
-				if($rowC == 1)
-				{
-					echo '<script>alert("Os dados foram alterados com sucesso!"); window.location.href = "lp.php"</script>';
-				}
-				else
-				{
-					echo '<script>alert("Erro ao efetuar alteração!"); window.location.href = "lp.php"</script>';
-				}
-			}
-			
-		}
-		else
-		{
-			echo '<script>alert("Erro ao conectar com o banco de dados!"); window.location.href = "lp.php"</script>';
-		}
-	}
-	
 	// INSERT CLIENT LEADER
 	public function InsertLTM($type, $name, $email, $responsable)
 	{
@@ -221,8 +121,133 @@ class parameters
 			echo '<script>alert("Erro ao conectar com o banco de dados!"); window.location.href = "clr.php";</script>';
 		}
 	}
-	
+
+	public function InsertTraining($theme, $description, $local, $date, $time, $responsables)
+	{
+		$connect = new connection;
+		if($connect->tryconnect())
+		{
+			$connector = $connect->getConnector();
+			$sql = "INSERT INTO tab_treina(tema_treina, desc_treina, local_treina, date_treina, time_treina, id_users) VALUES(:theme, :descrip, :place, :schedule, :hour, :responsable)";
+			$query = $connector->prepare($sql);
+			$query->bindParam(':theme', $theme, PDO::PARAM_STR);
+			$query->bindParam(':descrip', $description, PDO::PARAM_STR);
+			$query->bindParam(':place', $local, PDO::PARAM_STR);
+			$query->bindParam(':schedule', $date, PDO::PARAM_STR);
+			$query->bindParam(':hour', $time, PDO::PARAM_STR);
+			$query->bindParam(':responsable', $responsables, PDO::PARAM_STR);
+			if($query->execute())
+			{
+				echo '<script>alert("Treinamento inserido com sucesso!"); window.location.href = "trainings.php";</script>';
+			}
+			else
+			{
+				echo '<script>alert("Erro ao cadastrar treinamento! Tente novamente!"); window.location.href = "trainings.php";</script>';
+			}
+		}
+	}
+
 	/* --------------------------------- UPDATE METHODS -------------------------------------------------------*/
+	//DELETE CLIENT LEADER
+	public function DeleteLTM($type, $id)
+	{
+		$connect = new connection;
+		if($connect->tryconnect())
+		{
+			if($type == 1)
+			{
+				$connector = $connect->getConnector();
+				$sql = "UPDATE tab_lider_cliente SET active_lc=1 WHERE id_lc=:id";
+				$query = $connector->prepare($sql);
+				$query->bindParam(':id', $id, PDO::PARAM_STR);
+				$query->execute();
+				$rowC = $query->rowCount();
+				if($rowC == 1)
+				{
+					echo '<script>alert("O líder foi desativado com sucesso!"); window.location.href = "ltm.php"</script>';
+				}
+				else
+				{
+					echo '<script>alert("Erro ao tentar efetuar exclusão!"); window.location.href = "ltm.php"</script>';
+				}
+			}
+			else
+			{
+				$connector = $connect->getConnector();
+				$sql = "UPDATE tab_lider_projeto SET active_lp=1 WHERE id_lp=:id";
+				$query = $connector->prepare($sql);
+				$query->bindParam(':id', $id, PDO::PARAM_STR);
+				$query->execute();
+				$rowC = $query->rowCount();
+				if($rowC == 1)
+				{
+					echo '<script>alert("O líder foi desativado com sucesso!"); window.location.href = "lp.php"</script>';
+				}
+				else
+				{
+					echo '<script>alert("Erro ao tentar efetuar exclusão!"); window.location.href = "lp.php"</script>';
+				}
+			}
+		}
+		else
+		{
+			echo '<script>alert("Erro ao conectar com o banco de dados!"); window.location.href = "lp.php"</script>';
+		}
+	}
+	
+	//UPDATE CLIENT LEADER
+	public function UpdateLTM($type, $id, $name, $email, $responsable){
+		$connect = new connection;
+		if($connect->tryconnect())
+		{
+			$connector = $connect->getConnector();
+			
+			if($type == 1)
+			{
+				$sql = "UPDATE tab_lider_cliente SET nome_lc=?, email_lc=?, id_user=? WHERE id_lc=?";
+				$query=$connector->prepare($sql);
+				$query->bindParam(1, $name, PDO::PARAM_STR);
+				$query->bindParam(2, $email, PDO::PARAM_STR);
+				$query->bindParam(3, $responsable, PDO::PARAM_STR);
+				$query->bindParam(4, $id, PDO::PARAM_STR);
+				$query->execute();
+				$rowC = $query->rowCount();
+				if($rowC == 1)
+				{
+					echo '<script>alert("Os dados foram alterados com sucesso!"); window.location.href = "ltm.php"</script>';
+				}
+				else
+				{
+					echo '<script>alert("Erro ao efetuar alteração!"); window.location.href = "ltm.php"</script>';
+				}
+			}
+			else
+			{
+				$sql = "UPDATE tab_lider_projeto SET nome_lp=?, email_lp=?, id_user=? WHERE id_lp=?";
+				$query=$connector->prepare($sql);
+				$query->bindParam(1, $name, PDO::PARAM_STR);
+				$query->bindParam(2, $email, PDO::PARAM_STR);
+				$query->bindParam(3, $responsable, PDO::PARAM_STR);
+				$query->bindParam(4, $id, PDO::PARAM_STR);
+				$query->execute();
+				$rowC = $query->rowCount();
+				if($rowC == 1)
+				{
+					echo '<script>alert("Os dados foram alterados com sucesso!"); window.location.href = "lp.php"</script>';
+				}
+				else
+				{
+					echo '<script>alert("Erro ao efetuar alteração!"); window.location.href = "lp.php"</script>';
+				}
+			}
+			
+		}
+		else
+		{
+			echo '<script>alert("Erro ao conectar com o banco de dados!"); window.location.href = "lp.php"</script>';
+		}
+	}
+
 	public function UpdateCancelReason($id, $name, $description)
 	{
 		$connect = new connection;
@@ -250,7 +275,33 @@ class parameters
 		}
 	}
 
+	public function UpdateTraining($id, $theme, $description, $local, $date, $time, $responsables)
+	{
+		$connect = new connection;
+		if($connect->tryconnect())
+		{
+			$connector = $connect->getConnector();
+			$sql = "UPDATE tab_treina SET tema_treina=:theme, desc_treina=:descrip, local_treina=:place, date_treina=:schedule, time_treina=:hour, id_users=:responsable WHERE id_treina=:id";
+			$query = $connector->prepare($sql);
+			$query->bindParam(':theme', $theme, PDO::PARAM_STR);
+			$query->bindParam(':descrip', $description, PDO::PARAM_STR);
+			$query->bindParam(':place', $local, PDO::PARAM_STR);
+			$query->bindParam(':schedule', $date, PDO::PARAM_STR);
+			$query->bindParam(':hour', $time, PDO::PARAM_STR);
+			$query->bindParam(':responsable', $responsables, PDO::PARAM_STR);
+			$query->bindParam(':id', $id, PDO::PARAM_INT);
+			if($query->execute())
+			{
+				echo '<script>alert("Dados alterados com sucesso!"); window.location.href = "trainings.php";</script>';
+			}
+			else
+			{
+				echo '<script>alert("Erro ao alterar treinamento! Tente novamente!"); window.location.href = "trainings.php";</script>';
+			}
+		}
+	}
 	/* ----------------------------------- DELETE METHODS -----------------------------------*/
+	// Cancel reason
 	public function DeleteCancelReason($id)
 	{
 		$connect = new connection;
@@ -273,6 +324,32 @@ class parameters
 		else
 		{
 			echo '<script>alert("Erro ao conectar com o banco de dados! Tente novamente!"); window.location.href = "clr.php";</script>';
+		}
+		
+	}
+	// Training
+	public function DeleteTraining($id)
+	{
+		$connect = new connection;
+		if($connect->tryconnect())
+		{
+			$connector = $connect->getConnector();
+			$sql = "DELETE FROM tab_treina WHERE id_treina=:treina";
+			$query = $connector->prepare($sql);
+			$query->bindParam(':treina', $id, PDO::PARAM_INT);
+			$query->execute();
+			if($query->rowCount() > 0)
+			{
+				echo '<script>alert("Treinamento excluído com sucesso!"); window.location.href = "trainings.php";</script>';
+			}
+			else
+			{
+				echo '<script>alert("Erro ao efetuar exclusão do treinamento! Tente novamente!"); window.location.href = "trainings.php";</script>';
+			}
+		}
+		else
+		{
+			echo '<script>alert("Erro ao conectar com o banco de dados! Tente novamente!"); window.location.href = "trainings.php";</script>';
 		}
 		
 	}
@@ -773,32 +850,30 @@ class parameters
 			}
 		}
 	}
-
-	public function InsertTraining($theme, $description, $local, $date, $time, $responsables)
+	// GetTraining Info
+	public function GetTrainingInfo($id, $field)
 	{
 		$connect = new connection;
 		if($connect->tryconnect())
 		{
 			$connector = $connect->getConnector();
-			$sql = "INSERT INTO tab_treina(tema_treina, desc_treina, local_treina, date_treina, time_treina, id_users) VALUES(:theme, :descrip, :place, :schedule, :hour, :responsable)";
+			$sql = "SELECT * FROM tab_treina WHERE id_treina=:filter";
 			$query = $connector->prepare($sql);
-			$query->bindParam(':theme', $theme, PDO::PARAM_STR);
-			$query->bindParam(':descrip', $description, PDO::PARAM_STR);
-			$query->bindParam(':place', $local, PDO::PARAM_STR);
-			$query->bindParam(':schedule', $date, PDO::PARAM_STR);
-			$query->bindParam(':hour', $time, PDO::PARAM_STR);
-			$query->bindParam(':responsable', $responsables, PDO::PARAM_STR);
-			if($query->execute())
+			$query->bindParam(':filter', $id, PDO::PARAM_INT);
+			$query->execute();
+			if($query->rowCount() > 0)
 			{
-				echo '<script>alert("Treinamento inserido com sucesso!"); window.location.href = "newtraining.php";</script>';
-			}
-			else
-			{
-				echo '<script>alert("Erro ao cadastrar treinamento! Tente novamente!"); window.location.href = "newtraining.php";</script>';
+				$responsables = "";
+				while($result = $query->FETCH(PDO::FETCH_OBJ))
+				{
+					$return = $result->$field;
+				}
+				return $return;
 			}
 		}
 	}
 
+	// View Training detail
 	public function ViewTraining($id)
 	{
 		$connect = new connection;
@@ -881,7 +956,7 @@ class parameters
 			}
 		}
 	}
-
+	// Show all trainings
 	public function ListTrainings()
 	{
 		$connect = new connection;
@@ -893,9 +968,9 @@ class parameters
 			$query->execute();
 			if($query->rowCount() > 0)
 			{
-				$responsables = "";
 				while($result = $query->FETCH(PDO::FETCH_OBJ))
 				{
+					$responsables = "";
 					$id = $result->ID;
 					$theme = $result->Tema;
 					$date = $result->Data;
@@ -931,7 +1006,11 @@ class parameters
 			                        <td>'.$theme.'</td>
 			                        <td>'.$responsables.'</td>
 			                        <td>'.date('d-m-Y', strtotime($date)).' às '.$time.'</td>
-			                        <td><a href="viewtraining.php?v='.$id.'"><button class="btn btn-primary btn-xs"><i class="fa fa-search"></i></button></a></td>
+			                        <td>
+			                        	<a data-toggle="modal" href="newtraining.php?v='.$id.'"><button class="btn btn-primary btn-xs"><i class="fa fa-pencil"></i></button></a>
+			                        	<a href="viewtraining.php?v='.$id.'"><button class="btn btn-primary btn-xs"><i class="fa fa-search"></i></button></a>
+			                        	<a data-toggle="modal" href="trainings.php#cancelamento'.$id.'"><button class="btn btn-danger btn-xs"><i class="fa fa-ban"></i></button></a>
+			                        </td>
 			                    </tr>
 			                  </tbody>';
 				}
@@ -939,7 +1018,7 @@ class parameters
 
 		}
 	}
-
+	// Apply training filter
 	public function FilterTrainings($filter)
 	{
 		$connect = new connection;
@@ -953,9 +1032,9 @@ class parameters
 			$query->execute();
 			if($query->rowCount() > 0)
 			{
-				$responsables = "";
 				while($result = $query->FETCH(PDO::FETCH_OBJ))
 				{
+					$responsables = "";
 					$id = $result->ID;
 					$theme = $result->Tema;
 					$date = $result->Data;
@@ -991,7 +1070,11 @@ class parameters
 			                        <td>'.$theme.'</td>
 			                        <td>'.$responsables.'</td>
 			                        <td>'.date('d-m-Y', strtotime($date)).' às '.$time.'</td>
-			                        <td><a href="viewtraining.php?v='.$id.'"><button class="btn btn-primary btn-xs"><i class="fa fa-search"></i></button></a></td>
+			                        <td>
+			                        	<a data-toggle="modal" href="newtraining.php?v='.$id.'"><button class="btn btn-primary btn-xs"><i class="fa fa-pencil"></i></button></a>
+			                        	<a href="viewtraining.php?v='.$id.'"><button class="btn btn-primary btn-xs"><i class="fa fa-search"></i></button></a>
+			                        	<a data-toggle="modal" href="trainings.php#cancelamento'.$id.'"><button class="btn btn-danger btn-xs"><i class="fa fa-ban"></i></button></a>
+			                        </td>
 			                    </tr>
 			                  </tbody>';
 				}
@@ -1000,6 +1083,129 @@ class parameters
 		}
 	}
 	
+	// Edit Training
+	public function GetTrainingAnalyst($exception)
+	{
+		$connect = new connection;
+		if($connect->tryconnect())
+		{
+			$id_usersfounded = array();
+			$name_usersfounded = array();
+			$users = explode("_", $exception);
+			$connector = $connect->getConnector();
+			$sql = "SELECT user.id_user AS ID, user.nome_user AS Nome, user.email_in_user AS Email, user.funcao_user AS Funcao, 
+			CC.desc_cc AS CentroDeCusto
+			FROM tab_user AS user 
+			INNER JOIN tab_cc AS CC ON user.id_cc = CC.id_cc 
+			WHERE user.id_CC =:cc AND user.active_user = 0";
+			$query = $connector->prepare($sql);
+			$query->bindParam(':cc', $_SESSION['cc'], PDO::PARAM_STR);
+			$query->execute();
+			$rowC = $query->rowCount();
+			if($rowC > 0)
+			{
+				while($result = $query->FETCH(PDO::FETCH_OBJ))
+				{
+					$id_user = $result->ID;
+					$nome = $result->Nome;
+
+					// Update list of active users
+					if(array_key_exists(0, $this->users))
+					{
+						array_push($this->users, 'user'.$id_user);
+					}
+					else
+					{
+						$this->users = array('user'.$id_user);
+					}
+
+					// add id users to personal array
+					if(array_key_exists(0, $id_usersfounded))
+					{
+						array_push($id_usersfounded, $id_user);
+					}
+					else
+					{
+						$id_usersfounded = array($id_user);
+					}
+					// add usernames to personal array
+					if(array_key_exists(0, $name_usersfounded))
+					{
+						array_push($name_usersfounded, $nome);
+					}
+					else
+					{
+						$name_usersfounded = array($nome);
+					}
+				}
+
+				// loop through id usernames to print checkboxes
+				foreach ($id_usersfounded as $key => $value) 
+				{
+					if(in_array($value, $users))
+					{
+						echo '<div class="checkbox">
+							  <label>
+							    <input type="checkbox" name="user'.$value.'" checked value="'.$value.'">
+							    '.$name_usersfounded[$key].'
+							  </label>
+							</div>';
+					}
+					else
+					{
+						echo '<div class="checkbox">
+							  <label>
+							    <input type="checkbox" name="user'.$value.'" value="'.$value.'">
+							    '.$name_usersfounded[$key].'
+							  </label>
+							</div>';
+					}
+				}
+			}
+		}
+	}
+	// Get Training delete modal
+	public function getTrainings_DeleteModal()
+	{
+		$connect = new connection;
+		if($connect->tryconnect())
+		{
+			$connector = $connect->getConnector();
+			$sql = "SELECT T.id_treina AS ID FROM tab_treina AS T";
+			$query = $connector->prepare($sql);
+			$query->execute();
+			$rowC = $query->rowCount();
+			if($rowC > 0)
+			{
+				while($result = $query->FETCH(PDO::FETCH_OBJ))
+				{
+					$id = $result->ID;
+					echo '
+						<!-- Modal cancelamento-->
+						  <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="cancelamento'.$id.'" class="modal fade">
+							<form method="post" action="">
+							  <div class="modal-dialog">
+								  <div class="modal-content">
+									  <div class="modal-header">
+										  <input id="delete" name="delete" type="hidden" value="'.$id.'">
+										  <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+										  <h4 class="modal-title">Tem certeza que deseja excluir esse treinamento?</h4>
+									  </div>
+									  <div class="modal-footer">
+										  <button data-dismiss="modal" class="btn btn-default" type="button">Não</button>
+										  <button class="btn btn-theme" type="submit" name="delete_training">Sim</button>
+									  </div>
+								  </div>
+							  </div>
+							</form>
+						  </div>
+						<!-- modal -->
+					';
+				}
+			}
+		}
+	}
+
 	public function getAnalyst($type, $exception)
 	{
 		$connect = new connection;

@@ -26,7 +26,7 @@ if(isset($_POST['add_note']))
   $status = strip_tags($_POST['status']);
 	$predicted = strip_tags($_POST['predicted']);
 	$accomplished = strip_tags($_POST['accomplished']);
-	$note = strip_tags($_POST['note']);
+	$note = $_POST['note'];
 	
 	$project->addHistoryNote($date, $phase, $status, $predicted, $accomplished, $note, $id, $_SESSION['id']);
 }
@@ -197,6 +197,10 @@ if(isset($_POST['add_note']))
           $('select.styled').customSelect();
       });
   </script>
-
+  <!--EDITOR -->
+  <script src="classes/ckeditor/ckeditor.js"></script>
+  <script>
+      CKEDITOR.replace( 'note' );
+  </script>
   </body>
 </html>

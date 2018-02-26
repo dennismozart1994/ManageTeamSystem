@@ -5,14 +5,31 @@ class config
 {
 	private static $connector;
 	private function setConnector()
-	/* ------------------------------ DELETE TABLE ----------------------*/
-	/* ------------------------------ REASON TABLE ----------------------*/
 	{
 		$connect = new connection;
 		$connect->tryconnect();
 		self::$connector = $connect->getConnector();
 	}
 
+	/* ------------------------------ DELETE TABLE ----------------------*/
+	private function Truncate_Projetos()
+	{
+		$sql = "TRUNCATE tab_projeto";
+		self::setConnector();
+		$query = self::$connector->prepare($sql);
+		try
+		{
+			if($query->execute())
+			{
+				return true;
+			}
+		}
+		catch(Exception $e)
+		{
+			return false;
+		}
+	}
+	/* ------------------------------ REASON TABLE ----------------------*/
 	private function DelReasonTable()
 	{
 		$sql = "DROP TABLE tab_reason";

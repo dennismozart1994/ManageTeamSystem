@@ -54,7 +54,7 @@ class projects
 					{
 						echo '<div class="bar">
                               <div class="title">'.$result_reasons->name_reason.'</div>
-                              <a href="relatorios.php?filter='.$result_reasons->name_reason.'"><div class="value tooltips" data-original-title="'.((reset($count) * 100)/reset($total_cancelled)).'%" data-toggle="tooltip" data-placement="top">'.((reset($count) * 100)/reset($total_cancelled)).'%</div></a>
+                              <a href="relatorios.php?filter='.$result_reasons->name_reason.'"><div class="value tooltips" data-original-title="'.round(((reset($count) * 100)/reset($total_cancelled))).'%" data-toggle="tooltip" data-placement="top">'.round(((reset($count) * 100)/reset($total_cancelled))).'%</div></a>
                           </div>';
 					}
 				}
@@ -77,7 +77,7 @@ class projects
 				{
 					echo '<div class="bar">';
 					echo '<div class="title">Outros</div>';
-					echo '<a href="relatorios.php?filter=Outros"><div class="value tooltips" data-original-title="'.((reset($count_others) * 100)/reset($total_cancelled)).'%" data-toggle="tooltip" data-placement="top">'.((reset($count_others) * 100)/reset($total_cancelled)).'%</div></a>';
+					echo '<a href="relatorios.php?filter=Outros"><div class="value tooltips" data-original-title="'.round(((reset($count_others) * 100)/reset($total_cancelled))).'%" data-toggle="tooltip" data-placement="top">'.round(((reset($count_others) * 100)/reset($total_cancelled))).'%</div></a>';
 					echo '</div>';
 				}
 			}
@@ -101,7 +101,7 @@ class projects
 				{
 					echo '<div class="bar">';
 					echo '<div class="title">Outros</div>';
-					echo '<a href="relatorios.php?filter=Outros"><div class="value tooltips" data-original-title="'.((reset($count_others) * 100)/reset($total_cancelled)).'%" data-toggle="tooltip" data-placement="top">'.((reset($count_others) * 100)/reset($total_cancelled)).'%</div></a>';
+					echo '<a href="relatorios.php?filter=Outros"><div class="value tooltips" data-original-title="'.round(((reset($count_others) * 100)/reset($total_cancelled))).'%" data-toggle="tooltip" data-placement="top">'.round(((reset($count_others) * 100)/reset($total_cancelled))).'%</div></a>';
 					echo '</div>';
 				}
 			}
@@ -1420,7 +1420,7 @@ class projects
 			lp.nome_lp AS NomeLiderProjetos, 
 			user.nome_user AS NomeAnalista, 
 			fases.nome_f AS NomeFase,
-			status.nome_status AS NomeStatus,
+			status.id_status AS ID_Status, status.nome_status AS NomeStatus, 
 			mot_pend.nome_mtp AS NomeMotivo 
 			FROM tab_projeto AS projeto 
 			INNER JOIN tab_lider_cliente AS ltm ON ltm.id_lc = projeto.id_lc 
@@ -1448,7 +1448,8 @@ class projects
 					$fase = $result->NomeFase;
 					$status = $result->NomeStatus;
 					$pendencia = $result->NomeMotivo;
-					
+					$id_status = $result->ID_Status;
+
 					echo '
 							<!-- Modal Add nota-->
 							  <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="myModal'.$idprojeto.'" class="modal fade">
@@ -1468,6 +1469,12 @@ class projects
 											  $param->getOnePhase($id_fase);
 											  $param->getPhases("select", $id_fase);
 					echo '					</select>
+											<p><br/>Status</p>
+											<select class="form-control" name="status" required>';
+											  $param->getOneStatus($id_status);
+											  $param->getStatus("select", $id_status);
+					echo '
+										    </select>
 											<p>Previsto</p>
 											<input class="form-control" type="text" name="predicted" required/>
 											<p>Realizado</p>
@@ -1717,52 +1724,64 @@ class projects
 				{
 					$id_status = $getS->id_status;
 				}
-				if($rowC > 0)
+				
+				$getphaseq = "SELECT id_f FROM tab_projeto WHERE id_prj=:projeto";
+				$querygetphase = $connector->prepare($getphaseq);
+				$querygetphase->bindParam(':projeto', $prj, PDO::PARAM_INT);
+				$querygetphase->execute();
+				if($querygetphase->rowCount() > 0)
 				{
-					while($result = $query->FETCH(PDO::FETCH_OBJ))
+					while($resultsphase = $querygetphase->FETCH(PDO::FETCH_OBJ))
 					{
-						echo '
-								<!-- Modal Add nota-->
-								  <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="myModal'.$prj.'" class="modal fade">
-									<form method="post" action="">
-									  <div class="modal-dialog">
-										  <div class="modal-content">
-											  <div class="modal-header">
-												  <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-												  <h4 class="modal-title">Adicionar Nota</h4>
-											  </div>
-											  <input id="id" name="id" type="hidden" value="'.$prj.'">
-											  <div class="modal-body">
-												<p>Data</p>
-												<input class="form-control" required name="date" type="date" max="'.date("Y-m-d", time()).'" value="'.date("Y-m-d", time()).'" data-mask="00-00-0000"/>
-												<p><br/>Fase</p>
-												<select class="form-control" name="phase" required>';
-												  $param->getOnePhase($result->id_fase);
-												  $param->getPhases("select", $result->id_fase);
-						echo '					</select>
-												<p><br/>Status</p>
-												<select class="form-control" name="status" required>';
-												  $param->getOneStatus($id_status);
-												  $param->getStatus("select", $id_status);
-						echo '
-												</select>
-												<p>Previsto</p>
-												<input class="form-control" type="text" name="predicted" value="'.$result->previsto.'" required/>
-												<p>Realizado</p>
-												<input class="form-control" name="accomplished" required type="text"/>
-												<p><br/>Nota</p>
-												<textarea class="form-control" rows="5" id="comment" name="note" required></textarea>
-											  </div>
-											  <div class="modal-footer">
-												  <button data-dismiss="modal" class="btn btn-default" type="button">Cancelar</button>
-												  <button class="btn btn-theme" type="submit" name="add_note">Adicionar</button>
+						$fase_projeto = $resultsphase->id_f;
+					}
+					if($rowC > 0)
+					{
+						while($result = $query->FETCH(PDO::FETCH_OBJ))
+						{
+							echo '
+									<!-- Modal Add nota-->
+									  <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="myModal'.$prj.'" class="modal fade">
+										<form method="post" action="">
+										  <div class="modal-dialog">
+											  <div class="modal-content">
+												  <div class="modal-header">
+													  <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+													  <h4 class="modal-title">Adicionar Nota</h4>
+												  </div>
+												  <input id="id" name="id" type="hidden" value="'.$prj.'">
+												  <div class="modal-body">
+													<p>Data</p>
+													<input class="form-control" required name="date" type="date" max="'.date("Y-m-d", time()).'" value="'.date("Y-m-d", time()).'" data-mask="00-00-0000"/>
+													<p><br/>Fase</p>
+													<select class="form-control" name="phase" required>';
+													  $param->getOnePhase($fase_projeto);
+													  $param->getPhases("select", $fase_projeto);
+							echo '					</select>
+													<p><br/>Status</p>
+													<select class="form-control" name="status" required>';
+													  $param->getOneStatus($id_status);
+													  $param->getStatus("select", $id_status);
+							echo '
+													</select>
+													<p>Previsto</p>
+													<input class="form-control" type="text" name="predicted" value="'.$result->previsto.'" required/>
+													<p>Realizado</p>
+													<input class="form-control" name="accomplished" required type="text"/>
+													<p><br/>Nota</p>
+													<textarea class="form-control" rows="5" id="comment" name="note" required></textarea>
+												  </div>
+												  <div class="modal-footer">
+													  <button data-dismiss="modal" class="btn btn-default" type="button">Cancelar</button>
+													  <button class="btn btn-theme" type="submit" name="add_note">Adicionar</button>
+												  </div>
 											  </div>
 										  </div>
+										</form>
 									  </div>
-									</form>
-								  </div>
-								<!-- modal -->	
-							';
+									<!-- modal -->	
+								';
+						}
 					}
 				}
 			}

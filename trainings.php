@@ -19,6 +19,11 @@ if(isset($_REQUEST['logout']))
 	$user->logout();
 }
 
+if(isset($_POST['delete_training']))
+{
+  $param->DeleteTraining(strip_tags($_POST['delete']));
+}
+
 ?>
 
 <!DOCTYPE html>
@@ -108,7 +113,9 @@ if(isset($_REQUEST['logout']))
 		</section><!--/wrapper -->
       </section><!-- /MAIN CONTENT -->
       <!--main content end-->
-
+        <?php
+          $param->getTrainings_DeleteModal();
+        ?>
       <!--footer start-->
       <footer class="site-footer">
           <div class="text-center">
