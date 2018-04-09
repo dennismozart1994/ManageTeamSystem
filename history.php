@@ -122,7 +122,6 @@ if(isset($_POST['add_note']))
 								{
 									$from = date('Y-m-d', strtotime($_POST['from']));
 									$to = date('Y-m-d', strtotime($_POST['to']));
-									echo "<script>alert('".$from." - ".$to."');</script>";
 									$project->FilterHistory($_GET['p'], $from, $to);
 								}
 								else

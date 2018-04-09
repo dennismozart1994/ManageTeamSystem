@@ -748,7 +748,8 @@ class user
 			$sql = "SELECT user.id_user AS ID, user.nome_user AS Nome, user.email_in_user AS Email, centroc.desc_cc AS CentroCusto, user.funcao_user AS Funcao, user.active_user AS Enabled 
 			FROM tab_user AS user 
 			INNER JOIN tab_cc AS centroc ON user.id_cc=centroc.id_cc 
-			WHERE user.id_cc=:cc AND user.id_user != :myuser";
+			WHERE user.id_cc=:cc AND user.id_user != :myuser 
+			ORDER BY Enabled ASC, Nome ASC";
 			$query = $connector->prepare($sql);
 			$query->bindParam(':cc', $_SESSION['cc'], PDO::PARAM_STR);
 			$query->bindParam(':myuser', $_SESSION['id'], PDO::PARAM_STR);
@@ -798,7 +799,8 @@ class user
 			$sql = "SELECT user.id_user AS ID, user.nome_user AS Nome, user.email_in_user AS Email, centroc.desc_cc AS CentroCusto, user.funcao_user AS Funcao, user.active_user AS Enabled 
 			FROM tab_user AS user 
 			INNER JOIN tab_cc AS centroc ON user.id_cc=centroc.id_cc 
-			WHERE user.id_cc=:cc AND user.id_user != :myuser AND user.nome_user LIKE CONCAT('%',:name,'%')";
+			WHERE user.id_cc=:cc AND user.id_user != :myuser AND user.nome_user LIKE CONCAT('%',:name,'%') 
+			ORDER BY Enabled ASC, Nome ASC";
 			$query = $connector->prepare($sql);
 			$query->bindParam(':cc', $_SESSION['cc'], PDO::PARAM_STR);
 			$query->bindParam(':myuser', $_SESSION['id'], PDO::PARAM_STR);

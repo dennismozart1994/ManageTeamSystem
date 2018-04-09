@@ -60,20 +60,16 @@ class projects
 				}
 
 				// Projects canceled for any other reason
-				$mysql_reasons = "";
-				foreach ($reasons as $key) {
-					$mysql_reasons = $mysql_reasons." AND historico.desc_hst NOT LIKE CONCAT('".$key."', '%')";
-				}
 				$sql_others = "SELECT COUNT(*)
 					FROM tab_projeto AS projeto INNER JOIN tab_historico AS historico ON historico.id_prj = projeto.id_prj 
 					INNER JOIN tab_user AS usuario ON historico.id_user = usuario.id_user 
 					INNER JOIN tab_lider_cliente AS ltm ON projeto.id_lc = ltm.id_lc 
 					INNER JOIN tab_fases AS fases ON projeto.id_f = fases.id_f 
-					WHERE historico.id_f = 8 ".$mysql_reasons."	ORDER BY projeto.ts_prj ASC";
+					WHERE historico.id_f = 8 AND historico.desc_hst LIKE CONCAT('Outros', '%') ORDER BY projeto.ts_prj ASC";
 				$query_others = $connector->prepare($sql_others);
 				$query_others->execute();
 				$count_others = $query_others->FETCH(PDO::FETCH_NUM);
-				if(reset($count)>0)
+				if(reset($count_others)>0)
 				{
 					echo '<div class="bar">';
 					echo '<div class="title">Outros</div>';
@@ -84,20 +80,16 @@ class projects
 			else
 			{
 				// Projects canceled for any other reason
-				$mysql_reasons = "";
-				foreach ($reasons as $key) {
-					$mysql_reasons = $mysql_reasons." AND historico.desc_hst NOT LIKE CONCAT('".$key."', '%')";
-				}
 				$sql_others = "SELECT COUNT(*)
 					FROM tab_projeto AS projeto INNER JOIN tab_historico AS historico ON historico.id_prj = projeto.id_prj 
 					INNER JOIN tab_user AS usuario ON historico.id_user = usuario.id_user 
 					INNER JOIN tab_lider_cliente AS ltm ON projeto.id_lc = ltm.id_lc 
 					INNER JOIN tab_fases AS fases ON projeto.id_f = fases.id_f 
-					WHERE historico.id_f = 8 ".$mysql_reasons."	ORDER BY projeto.ts_prj ASC";
+					WHERE historico.id_f = 8 AND historico.desc_hst LIKE CONCAT('Outros', '%') ORDER BY projeto.ts_prj ASC";
 				$query_others = $connector->prepare($sql_others);
 				$query_others->execute();
 				$count_others = $query_others->FETCH(PDO::FETCH_NUM);
-				if(reset($count)>0)
+				if(reset($count_others)>0)
 				{
 					echo '<div class="bar">';
 					echo '<div class="title">Outros</div>';

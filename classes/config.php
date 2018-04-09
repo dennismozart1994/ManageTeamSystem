@@ -10,9 +10,9 @@ class config
 		$connect->tryconnect();
 		self::$connector = $connect->getConnector();
 	}
-
-	/* ------------------------------ DELETE TABLE ----------------------*/
-	private function Truncate_Projetos()
+	/* ------------------------------ TRUNCATE TABLE ----------------------*/
+	/* ------------------------------ PROJECT TABLE ----------------------*/
+	public function truncate_projetos()
 	{
 		$sql = "TRUNCATE tab_projeto";
 		self::setConnector();
@@ -29,6 +29,25 @@ class config
 			return false;
 		}
 	}
+	/* ------------------------------ HISTORY TABLE ----------------------*/
+	public function truncate_historico()
+	{
+		$sql = "TRUNCATE tab_historico";
+		self::setConnector();
+		$query = self::$connector->prepare($sql);
+		try
+		{
+			if($query->execute())
+			{
+				return true;
+			}
+		}
+		catch(Exception $e)
+		{
+			return false;
+		}
+	}
+	/* ------------------------------ DELETE TABLE ----------------------*/
 	/* ------------------------------ REASON TABLE ----------------------*/
 	private function DelReasonTable()
 	{
@@ -176,6 +195,17 @@ class config
 			{
 				echo '<script>alert("Tabela Notificações criada com sucesso!");</script>';
 			}
+		}
+	}
+
+	/* ------------------------------ ALTER TABLE ----------------------*/
+	public function alter_table($string)
+	{
+		self::setConnector();
+		$query = self::$connector->prepare($string);
+		if($query->execute())
+		{
+			echo '<script>alert("Tabela alterada com sucesso!");</script>';
 		}
 	}
 }

@@ -16,12 +16,13 @@ require_once('classes/project.php');
 		header('Location: index.php');
 	}
 
-	// PERMISSIONS
+	/* ------PERMISSIONS
 	if(!(in_array($_SESSION['funcao'], $permissions)))
 	{
 		$user->logout();
 	}
-
+	------- */
+	
 	// LOGOUT
 	if(isset($_REQUEST['logout']))
 	{
